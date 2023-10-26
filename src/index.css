@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+@font-face {
+  font-family: "TuskerGrotesk";   /*Can be any text*/
+  src: local("TuskerGrotesk"),
+    url("/fonts/TuskerGrotesk-3600Semibold.ttf") format("truetype");
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+}
+
+*, body {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.long-title {
+  font-family: 'TuskerGrotesk';
+}
