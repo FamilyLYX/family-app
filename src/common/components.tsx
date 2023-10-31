@@ -3,6 +3,7 @@ import { TokenId } from "./objects";
 import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
 import { Button } from "./buttons";
 import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
+import { useModal } from "@ebay/nice-modal-react";
 
 export function ShortAddress ({ address }: { address: string }) {
   return <a className="cursor-pointer" onClick={() => navigator.clipboard.writeText(address)}>
@@ -13,6 +14,7 @@ export function ShortAddress ({ address }: { address: string }) {
 export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, showActions?: boolean }) {
   const { getTokenMetadata } = usePhygitalCollection();
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
+  const modal = useModal('family-marketplace-list');
 
   if (query.isLoading) {
     return <div className="w-full aspect-square animate-pulse p-5 bg-slate-200 rounded-3xl"></div>
@@ -28,7 +30,7 @@ export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, 
     { 
       showActions && <>
         <div className="flex flex-row">
-          <Button variant="dark" onClick={() => alert('Sell in not available currently. Marketplace is coming soon.')}>Sell</Button>
+          <Button variant="dark" onClick={() => modal.show({ tokenId })}>Sell</Button>
           <Button onClick={() => console.log('Info Clicked')}>Info</Button>
         </div>
       </>
@@ -36,7 +38,7 @@ export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, 
   </div>
 }
 
-export function TokenMetadata ({ tokenId }: { tokenId: TokenId }) {
+export function TokenMetadata ({ tokenId, children }: { tokenId: TokenId, children: (owner: string) => any }) {
   const { getTokenMetadata } = usePhygitalCollection();
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
 
@@ -45,7 +47,8 @@ export function TokenMetadata ({ tokenId }: { tokenId: TokenId }) {
   }
 
   return <div className="w-full bg-slate-50 rounded-2xl text-slate-900 py-2 px-4 text-center">
-    This token is owned by <ShortAddress address={query.data?.owner}/>
+    <p>This token is owned by <ShortAddress address={query.data?.owner}/></p>
+    {children(query.data?.owner)}
   </div>
 }
 

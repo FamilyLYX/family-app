@@ -24,9 +24,11 @@ import BuyModal from './common/BuyModal';
 import RegisterModal from "./common/RegisterModal";
 import { Order } from "./pages/order";
 import { Login } from "./pages/login";
+import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
 
 NiceModal.register('family-buy-modal', BuyModal);
 NiceModal.register('family-register-modal', RegisterModal);
+NiceModal.register('family-marketplace-list', ListOnMarketplaceModal);
 
 const router = (queryClient: QueryClient) => createBrowserRouter(
   createRoutesFromElements(

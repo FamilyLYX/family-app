@@ -6,7 +6,6 @@ import EmptyState from "./emptyState";
 import { Button } from "../../common/buttons";
 import { useModal } from "@ebay/nice-modal-react";
 import { getAuth } from "firebase/auth";
-import { useEffect } from "react";
 
 export default function Orders () {
   const { getOrders } = useAssetPlaceholder();

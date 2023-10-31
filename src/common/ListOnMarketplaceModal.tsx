@@ -36,7 +36,7 @@ export function Loader() {
   );
 }
 
-const RegisterModal = NiceModal.create(() => {
+const ListOnMarketplaceModal = NiceModal.create(() => {
   const modal = useModal();
   const { registerToken } = useAssetPlaceholder();
   const [waiting, setWaiting] = useState<number>(0);
@@ -60,15 +60,7 @@ const RegisterModal = NiceModal.create(() => {
 
         setWaiting(2);
 
-        registerToken(data.uid, data.signature, tokenId)
-          .then(console.log)
-          .catch(console.error)
-          .finally(() => {
-            setTimeout(() => {
-              modal.hide();
-              window.location.reload();
-            }, 10000)
-          })
+        alert('signature received');
       }
     });
   }
@@ -104,7 +96,7 @@ const RegisterModal = NiceModal.create(() => {
                   as="h2"
                   className="font-medium text-gray-900 text-center long-title text-5xl"
                 >
-                  Register
+                  List on marketplace
                 </Dialog.Title>
                 <Dialog.Description
                   as="p"
@@ -140,4 +132,4 @@ const RegisterModal = NiceModal.create(() => {
   );
 });
 
-export default RegisterModal;
+export default ListOnMarketplaceModal;
