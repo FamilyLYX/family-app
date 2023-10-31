@@ -12,7 +12,7 @@ const StoreLandingPage = () => {
   return (
     <div className="">
       {/* section 1 */}
-      <section className="min-h-screen flex flex-col bg-black hidden">
+      <section className="min-h-screen flex flex-col bg-black ">
         <Header />
         <div className=" flex-grow flex items-center justify-center px-4">
           <div

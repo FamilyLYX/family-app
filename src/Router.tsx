@@ -8,26 +8,26 @@ import {
 import NiceModal from "@ebay/nice-modal-react";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
-import Layout from "./pages/Layout";
-import Marketplace from "./pages/marketplace";
-import Inventory from "./pages/inventory";
-import Store from "./pages/store";
-import Trade from "./pages/trade";
-import Phygitals from "./pages/inventory/phygitals";
-import Digitals from "./pages/inventory/digitals";
-import Orders from "./pages/inventory/orders";
-import Admin from "./pages/admin/Admin";
-import RegisterToken from "./pages/register";
+// import Layout from "./pages/Layout";
+// import Marketplace from "./pages/marketplace";
+// import Inventory from "./pages/inventory";
+// import Store from "./pages/store";
+// import Trade from "./pages/trade";
+// import Phygitals from "./pages/inventory/phygitals";
+// import Digitals from "./pages/inventory/digitals";
+// import Orders from "./pages/inventory/orders";
+// import Admin from "./pages/admin/Admin";
+// import RegisterToken from "./pages/register";
 
-import BuyModal from "./common/BuyModal";
-import RegisterModal from "./common/RegisterModal";
-import { Order } from "./pages/order";
-import { Login } from "./pages/login";
+// import BuyModal from "./common/BuyModal";
+// import RegisterModal from "./common/RegisterModal";
+// import { Order } from "./pages/order";
+// import { Login } from "./pages/login";
 import StoreLandingPage from "./pages/landing-page/store";
 import LandingPage from "./pages/landing-page/LandingPage";
 
-NiceModal.register("family-buy-modal", BuyModal);
-NiceModal.register("family-register-modal", RegisterModal);
+// NiceModal.register("family-buy-modal", BuyModal);
+// NiceModal.register("family-register-modal", RegisterModal);
 
 const router = (queryClient: QueryClient) =>
   createBrowserRouter(
@@ -36,7 +36,7 @@ const router = (queryClient: QueryClient) =>
         <Route path="/store-landing-page" element={<StoreLandingPage />} />
         <Route path="/landing-page" element={<LandingPage />} />
 
-        <Route path="/t/:uid" element={<RegisterToken />} />
+        {/* <Route path="/t/:uid" element={<RegisterToken />} />
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Store />} />
           <Route path="/login" element={<Login />} />
@@ -54,7 +54,7 @@ const router = (queryClient: QueryClient) =>
             <Route path="/inventory/digitals" element={<Digitals />} />
             <Route path="/inventory/orders" element={<Orders />} />
           </Route>
-        </Route>
+        </Route> */}
       </>
     )
   );
