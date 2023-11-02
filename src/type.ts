@@ -11,6 +11,7 @@ type ProductType = {
   unit_label:           null;
   url:                  null;
   price: Price;
+  lyxPrice: string;
   metadata: {
     contract: string
   }

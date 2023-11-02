@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../common/buttons";
 
-export default function EmptyState ({ message }: { message: string }) {
+export default function EmptyState ({ message }: { message?: string }) {
   const navigate = useNavigate();
 
   return <div className="flex flex-col text-center align-middle bg-gray-100 py-24 rounded-xl">

@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../common/buttons";
 import { useEffect, useState } from "react";
 import { getAuth, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink } from "firebase/auth";
+import ConnectWallet from "../../common/ConnectWallet";
 
 export function Login() {
   const navigate = useNavigate();
@@ -40,9 +41,12 @@ export function Login() {
 
   return <div className="mt-24">
     <h2 className="long-title text-center text-8xl">Login</h2>
-    <div className="max-w-md mx-auto text-center space-y-4 mt-4">
-      <input placeholder="email" type="email" onChange={(e) => setEmail(e.target.value)}/>
+    <div className="max-w-md mx-auto text-center space-y-4 mt-8">
+      <input className="w-full border px-2 py-4 rounded-lg" placeholder="Email" type="email" onChange={(e) => setEmail(e.target.value)}/>
       <Button variant="dark" onClick={authenticate}>Login</Button>
+    </div>
+    <div className="max-w-md mx-auto text-center space-y-4 mt-4 pb-4 pt-4 border-t-2">
+      <ConnectWallet />
     </div>
   </div>
 }

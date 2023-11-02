@@ -55,9 +55,11 @@ const BuyModal = NiceModal.create(() => {
   const modal = useModal();
   const { executeTransactionRequest } = useTransactionSender();
   const [loading, setLoading] = useState({ status: 0, message: 'Not Loading' });
+  const [error, setError] = useState<null|string>(null);
   const [address, setAddress] = useState<any>(
     modal.args?.addressRequired ?  null : { status: "not_required" }
   );
+  const product = modal.args?.product as ProductType;
 
   function isAddressSet() {
     return !!address;
@@ -65,7 +67,7 @@ const BuyModal = NiceModal.create(() => {
 
   function buyWithCrypto() {
     if (typeof modal.args?.to !== "string") {
-      console.log("wallet not connected");
+      window.alert("wallet not connected");
 
       return;
     }
@@ -94,19 +96,14 @@ const BuyModal = NiceModal.create(() => {
         data: orderCalldata,
       })
         .then((response) => {
-          console.log("submitted", response.hash);
-
           return response.wait();
         })
         .then(() => {
-          console.log("transaction completed");
+          window.location.pathname = `/orders/${orderId}`;
         })
         .catch((error) => {
-          console.log("transaction failed");
-          console.log(JSON.stringify(error));
-        })
-        .finally(() => {
-          window.location.pathname = `/orders/${orderId}`;
+          setError(error.message);
+          setLoading({ status: 0, message: 'Not Loading' });
         });
     });
   }
@@ -164,10 +161,13 @@ const BuyModal = NiceModal.create(() => {
                   <AddressForm update={setAddress} />
                 ) : (
                   <div className="space-y-2">
+                    { error && <p className="p-4 bg-red-100 text-red-900 w-full rounded-md text-center">{error}</p> }
                     {!loading.status && <Button variant="dark" onClick={() => buyWithCrypto()}>
-                      Pay with LYX
+                      Pay with LYX ({(modal.args?.product as ProductType).lyxPrice} LYX)
                     </Button>}
-                    {!loading.status && <Button onClick={() => payWithFiat()}>Continue without LYX</Button>}
+                    {!loading.status && <Button onClick={() => payWithFiat()}>
+                      Continue without LYX ({product.price.unit_amount / 100} {product.price.currency.toUpperCase()})
+                    </Button>}
                     {loading.status > 0 && <p className="text-center">{loading.message}</p>}
                   </div>
                 )}

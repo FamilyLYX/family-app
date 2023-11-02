@@ -22,12 +22,13 @@ function ProductCard({
     queryFn: getMintStatus,
   });
 
-  async function handleCheckout () {
+  async function handleCheckout (product: ProductType) {
     buyModal.show({
       addressRequired: true,
       collection: import.meta.env.VITE_ASSET_CONTRACT,
       variant: '0x00000000000000000000001d',
-      to: account as string
+      to: account as string,
+      product: product
     });
   }
 
@@ -79,12 +80,12 @@ function ProductCard({
       )}
       <div className="inline">
         <div className="inline-block w-2/3">
-          <Button onClick={handleCheckout} variant="dark">
+          <Button onClick={() => handleCheckout(product)} variant="dark">
             Buy
           </Button>
         </div>
         <div className="inline-block w-1/3 text-center font-bold">
-          <p>$ {product.price.unit_amount / 100}</p>
+          <p>$ {Number(product.price.unit_amount) / 100}</p>
         </div>
       </div>
     </div>

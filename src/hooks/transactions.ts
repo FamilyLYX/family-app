@@ -1,4 +1,4 @@
-import { Contract, BrowserProvider, FunctionFragment, TransactionRequest, Interface } from 'ethers';
+import { Contract, BrowserProvider, FunctionFragment, TransactionRequest, Interface, formatEther } from 'ethers';
 
 import { abi as ExtensionABI } from 'family-contracts/artifacts/contracts/OrderExtension.sol/OrderExtension.json';
 import { abi as PlaceholderABI } from 'family-contracts/artifacts/contracts/AssetPlaceholder.sol/AssetPlaceholder.json';
@@ -59,6 +59,13 @@ export function useTransactionSender () {
 
   async function executeTransactionRequest (transactionReq: TransactionRequest) {
     const signer = await provider.getSigner();
+    const valueRequired = transactionReq.value;
+    const address = localStorage.getItem('family:connected:wallet');
+    const balance = await provider.getBalance(address as string);
+
+    if (Number(balance) < Number(valueRequired)) {
+      throw new Error(`You do not have sufficient LYX balance for complete this order. Your balance is ${formatEther(balance)}`);
+    }
 
     addToast('sending transaction', { appearance: 'info', autoDismiss: true });
 
@@ -69,7 +76,11 @@ export function useTransactionSender () {
 
       return txnResponse
     }
-    catch (_err) {
+    catch (_err: any) {
+      if (_err.code === 'ACTION_REJECTED') {
+        throw new Error('Transaction rejected by user');
+      }
+
       const error =  parseTransactionError(_err);
 
       addToast(`transaction failed: ${error.name}`);

@@ -9,6 +9,7 @@ import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
 import 'swiper/css/navigation';
+import EmptyState from "./EmptyState";
 // import 'swiper/css/pagination';
 
 export default function Phygitals() {
@@ -18,6 +19,14 @@ export default function Phygitals() {
     queryKey: ["phygitals", account],
     queryFn: () => getTokens(account as string),
   });
+
+  if (isLoading) {
+    return <p>Loading Phygital Tokens</p>
+  }
+
+  if (!data || data.length == 0) {
+    return <EmptyState />
+  }
 
   return (
     <div className="w-full flex flex-row space-x-2">
