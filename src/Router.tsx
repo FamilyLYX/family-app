@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import NiceModal from '@ebay/nice-modal-react';
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
+// import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 import Layout from "./pages/Layout";
 import Marketplace from "./pages/marketplace";
@@ -30,7 +30,7 @@ NiceModal.register('family-buy-modal', BuyModal);
 NiceModal.register('family-register-modal', RegisterModal);
 NiceModal.register('family-marketplace-list', ListOnMarketplaceModal);
 
-const router = (queryClient: QueryClient) => createBrowserRouter(
+const router = () => createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path='/t/:uid' element={<RegisterToken />} />
@@ -53,7 +53,5 @@ const router = (queryClient: QueryClient) => createBrowserRouter(
 );
 
 export default function Router () {
-  const queryClient = useQueryClient();
-
-  return <RouterProvider router={router(queryClient)} />
+  return <RouterProvider router={router()} />
 }

@@ -5,14 +5,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Link } from "react-router-dom";
-
 import { User, getAuth, onAuthStateChanged } from "firebase/auth";
-import { useConnectWallet } from "@web3-onboard/react";
 import { useEffect, useState } from "react";
-import { BrowserProvider } from "ethers";
 
-import { hooks } from "../connectors/default";
-import { authenticate } from "../utils/siwe";
 import { LinkButton, Button } from "../common/buttons";
 
 import logo from "../logo.svg";
@@ -76,8 +71,6 @@ function NavActions() {
 }
 
 export default function Header() {
-  const account = hooks.useAccount();
-
   return (
     <Disclosure as="nav" className="bg-white">
       {({ open }) => (

@@ -6,7 +6,6 @@ import { Button } from "./buttons";
 import { requestToClaimHandover } from "../utils/api";
 import { TokenId } from "./objects";
 import { getAuth } from "firebase/auth";
-import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { hooks } from "../connectors/default";
 import { Web3ReactHooks } from "@web3-react/core";
@@ -38,12 +37,12 @@ export function Loader() {
 
 const ListOnMarketplaceModal = NiceModal.create(() => {
   const modal = useModal();
-  const { registerToken } = useAssetPlaceholder();
   const [waiting, setWaiting] = useState<number>(0);
   const [code, setCode] = useState<string>();
   const provider = (hooks as Web3ReactHooks).useProvider();
 
   async function register(tokenId: TokenId, code: string) {
+    console.log(tokenId);
     const idToken = await getAuth().currentUser?.getIdToken();
 
     const handoverData = await requestToClaimHandover(idToken as string, code as string);

@@ -7,8 +7,6 @@ import { Button } from "../../common/buttons";
 import { useModal } from "@ebay/nice-modal-react";
 import useUser from "../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
-import { isAddress } from "ethers";
-import ConnectWallet from "../../common/ConnectWallet";
 
 function TargetOrders({ address }: { address: string }) {
   const { getOrders } = useAssetPlaceholder();
@@ -56,7 +54,9 @@ export default function Orders() {
   }
 
   if (!user) {
-    return navigate("/login");
+    navigate("/login");
+
+    return <p></p>;
   }
 
   if (user && !target) {
