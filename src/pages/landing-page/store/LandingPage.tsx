@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../common/Header";
 
 import storeImage from "../assets/store-hero.png";
@@ -16,15 +16,32 @@ import sizeChartMan from "../assets/sizeChart-man.png";
 import SizeChart from "../common/SizeChart";
 
 import phygicalOrange from "../assets/phygital-01.png";
-import phygicalGray from "../assets/phygital-02.png";
-import Footer from "../common/Footer";
-const StoreLandingPage = () => {
+import {
+  MeshPortalMaterial,
+  OrbitControls,
+  Scroll,
+  ScrollControls,
+  meshBounds,
+} from "@react-three/drei";
+import { Canvas, extend, useThree } from "@react-three/fiber";
+import Walk from "./Walk";
+import { geometry } from "maath";
+import {
+  EffectComposer,
+  Glitch,
+  Select,
+  Selection,
+} from "@react-three/postprocessing";
+
+extend(geometry);
+
+const HtmlSection = () => {
   return (
-    <div>
+    <>
       {/* section 1 */}
-      <section className="min-h-screen flex flex-col bg-black hidden">
-        <Header />
-        <div className=" flex-grow flex items-center justify-center px-4">
+      <section className="min-h-screen flex flex-col -z-[1]">
+        {/* <Header /> */}
+        <div className=" flex-grow flex items-center justify-center px-4 bg-black">
           <div
             className="text-[11rem] sm:text-[20rem] md:text-[24rem] long-title font-bold text-transparent bg-clip-text bg-green-100 bg-contain"
             style={{ backgroundImage: `url(${storeImage})` }}
@@ -35,13 +52,13 @@ const StoreLandingPage = () => {
       </section>
       {/* section 2 */}
       <section
-        className="min-h-screen bg-center bg-cover hidden "
+        className="min-h-screen bg-center bg-cover "
         style={{ backgroundImage: `url(${storeImage2})` }}
       ></section>
 
       {/* section 3 */}
 
-      <section className="min-h-screen p-8 flex items-center justify-center hidden">
+      <section className="min-h-screen p-8 flex items-center justify-center ">
         <div className="flex container mx-auto flex-col-reverse md:flex-row">
           {/* Left Content */}
           <div className="flex-1 flex flex-col justify-center md:p-16 space-y-16">
@@ -84,21 +101,17 @@ const StoreLandingPage = () => {
                 081 – Black Forest&gt;&gt;
               </p>
             </div>
-            <img src={honftImage} alt="" className="w-full max-w-xl" />
+            {/* <img src={honftImage} alt="" className="w-full max-w-xl" /> */}
           </div>
         </div>
       </section>
 
-      <section
-        className="min-h-screen max-h-[800px]  items-center justify-center bg-black text-white hidden
-      hidden"
-      >
-        {/* md:flex  */}
+      <section className="min-h-screen max-h-[800px]  items-center justify-center  text-white hidden md:flex">
         <div className="flex container mx-auto ">
           {/* Left Content */}
 
           <div className="flex-1 relative flex items-center justify-center">
-            <img src={nfcBadgeHoodie} alt="" className="w-full max-w-xl" />
+            {/* <img src={nfcBadgeHoodie} alt="" className="w-full max-w-xl" /> */}
           </div>
 
           {/* Right Content */}
@@ -113,7 +126,7 @@ const StoreLandingPage = () => {
       </section>
 
       <section
-        className="min-h-screen bg-center bg-cover flex items-center justify-center md:hidden  hidden"
+        className="min-h-screen bg-center bg-cover flex items-center justify-center md:hidden"
         style={{ backgroundImage: `url(${nfcBadgeHoodie})` }}
       >
         <div className="flex gap-2 items  flex-col items-center">
@@ -124,7 +137,7 @@ const StoreLandingPage = () => {
         </div>
       </section>
 
-      <section className="min-h-screen flex flex-col hidden">
+      <section className="min-h-screen flex flex-col ">
         <div
           className=" flex-grow flex  justify-start bg-cover bg-center"
           style={{ backgroundImage: `url(${backHoodie})` }}
@@ -151,7 +164,7 @@ const StoreLandingPage = () => {
         </div>
       </section>
 
-      <section className="min-h-[20rem] md:min-h-screen flex flex-col hidden">
+      <section className="min-h-[20rem] md:min-h-screen flex flex-col ">
         <div
           className=" flex-grow flex  justify-start bg-cover bg-center min-h-screen"
           style={{ backgroundImage: `url(${sizeChartMan})` }}
@@ -172,181 +185,135 @@ const StoreLandingPage = () => {
         </div>
       </section>
 
-      <section className="container mx-auto flex py-10 ">
-        <div className="flex  gap-8 flex-col md:flex-row px-4">
+      <section className="container mx-auto flex ">
+        <div className="">
           {/* left */}
-          <div className="w-full md:w-1/2">
-            <div className="relative mt-14">
-              <h4 className="long-title absolute -top-14 text-8xl whitespace-nowrap left-[50%] translate-x-[-50%]">
-                Phygical NFT
-              </h4>
-              <img src={phygicalOrange} alt="" className="mx-auto" />
+          <div>
+            <div>
+              <h4 className="long-title">PHygical NFT</h4>
+              <img src={phygicalOrange} alt="" />
             </div>
 
-            <div className="px-4 md:px-16 flex flex-col gap-6 mt-10">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium whitespace-nowrap text-black/50">
-                  limited to
-                </span>
+            <p>
+              Lorem ipsum dolor sit amet consectetur. Commodo sit neque libero
+              arcu eget. Augue proin ac sit sit tellus diam pretium. Nunc
+              consectetur eleifend risus dolor maecenas pharetra lectus.
+            </p>
 
-                <div className="w-full bg-gray-300 rounded-full h-1.5 dark:bg-gray-700">
-                  <div
-                    className="bg-black h-1.5 rounded-full"
-                    style={{ width: `calc(100% * (${42} / ${180}))` }}
-                  ></div>
-                </div>
+            <div>
+              <span>Select Sizes:</span>
 
-                <span className="text-sm font-medium whitespace-nowrap">{`42/180pcs`}</span>
+              <div>
+                <span>XS</span>
+                <span>S</span>
+                <span>M</span>
+                <span>L</span>
+                <span>XL</span>
               </div>
+            </div>
 
-              <p className="text-center">
-                Lorem ipsum dolor sit amet consectetur. Commodo sit neque libero
-                arcu eget. Augue proin ac sit sit tellus diam pretium. Nunc
-                consectetur eleifend risus dolor maecenas pharetra lectus.
-              </p>
+            <p>Orders open for next 7 days 6 hours</p>
 
-              <div className="">
-                <span className="text-black/50">Select Sizes:</span>
-
-                <div className="flex items-stretch gap-2 mt-2">
-                  <span className="border w-full p-3 rounded-full text-center">
-                    XS
-                  </span>
-                  <span className="border w-full p-3 rounded-full text-center">
-                    S
-                  </span>
-                  <span className="border w-full p-3 rounded-full text-center">
-                    M
-                  </span>
-                  <span className="border w-full p-3 rounded-full text-center">
-                    L
-                  </span>
-                  <span className="border w-full p-3 rounded-full text-center">
-                    XL
-                  </span>
-                </div>
+            <div>
+              <div>
+                <span>7</span>
+                <span>Day</span>
               </div>
-
-              <div className="flex flex-col gap-2 bg-[#F5F5F5] p-2 rounded-3xl">
-                <p className="text-center">
-                  Orders open for next 7 days 6 hours
-                </p>
-
-                <div className="flex items-center gap-3 ">
-                  <div className="border rounded-3xl flex flex-col gap-2 items-center p-4 w-full">
-                    <span className="text-5xl long-title">7</span>
-                    <span>Day</span>
-                  </div>
-                  <span className="text-6xl long-title">:</span>
-                  <div className="border rounded-3xl flex flex-col gap-2 items-center p-4 w-full">
-                    <span className="text-5xl long-title">6</span>
-                    <span>Hours</span>
-                  </div>
-                  <span className="text-6xl long-title">:</span>
-
-                  <div className="border rounded-3xl flex flex-col gap-2 items-center p-4 w-full">
-                    <span className="text-5xl long-title">00</span>
-                    <span>Minutes</span>
-                  </div>
-                </div>
+              :
+              <div>
+                <span>6</span>
+                <span>Hours</span>
               </div>
-
-              <div className="flex gap-2">
-                <button className="bg-black text-white w-full p-3 rounded-full flex-1s">
-                  Buy
-                </button>
-
-                <div className="flex items-center">
-                  <p className="whitespace-nowrap font-bold">$ 256</p>
-                </div>
-                <div className="h-full">
-                  <span className="line-through text-black/50 whitespace-nowrap">
-                    $ 556
-                  </span>
-                </div>
+              :
+              <div>
+                <span>00</span>
+                <span>Minutes</span>
               </div>
+            </div>
 
-              <hr />
+            <div>
+              <button>Buy</button>
 
-              <div className="flex items-center justify-between">
-                <p>The discount will expire in</p>
-
-                <div className="flex gap-[2px] text-3xl">
-                  <p className="long-title">
-                    22
-                    <span className="long-title text-black/50">h</span>
-                  </p>
-                  <span className="long-title">:</span>
-                  <p className="long-title">
-                    32
-                    <span className="long-title text-black/50">m</span>
-                  </p>
-                  <span className="long-title">:</span>
-                  <p className="long-title">
-                    23
-                    <span className="long-title text-black/50">s</span>
-                  </p>
-                </div>
+              <div>
+                <p>$256</p>
+                <span>$256</span>
               </div>
             </div>
           </div>
+
           {/* attached */}
-          <div className="w-full md:w-1/2 ">
-            <div className="relative mt-14">
-              <h4 className="long-title absolute -top-14 text-8xl whitespace-nowrap left-[50%] translate-x-[-50%]">
-                Digital NFT
-              </h4>
-              <img src={phygicalGray} alt="" className="mx-auto" />
-            </div>
-
-            <div className="px-4 md:px-16 flex flex-col gap-6 mt-10">
-              <p className="text-center">
-                Lorem ipsum dolor sit amet consectetur. Commodo sit neque libero
-                arcu eget. Augue proin ac sit sit tellus diam pretium. Nunc
-                consectetur eleifend risus dolor maecenas pharetra lectus.
-              </p>
-
-              <div className="flex gap-2">
-                <button className="bg-black text-white w-full p-3 rounded-full flex-1s">
-                  Buy
-                </button>
-
-                <div className="flex items-center">
-                  <p className="whitespace-nowrap font-bold">$ 256</p>
-                </div>
-                <div className="h-full">
-                  <span className="line-through text-black/50 whitespace-nowrap">
-                    $ 556
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between bg-gray-100/80 py-4 rounded-full px-6">
-                <p>The discount will expire in</p>
-
-                <div className="flex gap-[2px] text-3xl">
-                  <p className="long-title">
-                    22
-                    <span className="long-title text-black/50">h</span>
-                  </p>
-                  <span className="long-title">:</span>
-                  <p className="long-title">
-                    32
-                    <span className="long-title text-black/50">m</span>
-                  </p>
-                  <span className="long-title">:</span>
-                  <p className="long-title">
-                    23
-                    <span className="long-title text-black/50">s</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>{" "}
+          <div></div>
         </div>
       </section>
+    </>
+  );
+};
 
-      <Footer />
+const Experience = () => {
+  const { viewport } = useThree();
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <>
+      {/* jacket bg */}
+      <mesh position={[0, -23.2, -0.001]}>
+        <planeGeometry args={[viewport.width, viewport.height]} />
+        <meshBasicMaterial color="black" />
+      </mesh>
+      {/* jacket */}
+      <mesh
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        raycast={meshBounds}
+        position={[-3.5, -23, 0]}
+      >
+        <boxGeometry />
+        <meshNormalMaterial />
+      </mesh>
+      {hovered && (
+        <mesh position={[0, -22, 0]}>
+          <boxGeometry />
+          <meshNormalMaterial />
+        </mesh>
+      )}
+    </>
+  );
+};
+
+const StoreLandingPage = () => {
+  return (
+    <div className="absolute w-screen h-screen top-0 left-0">
+      <Canvas gl={{ antialias: false }} dpr={[1, 2]}>
+        <ScrollControls pages={6.1}>
+          <Scroll>
+            <Experience />
+            <Selection>
+              <EffectComposer disableNormalPass multisampling={0}>
+                <Glitch
+                  delay={[1.5, 3.5]} // min and max glitch delay
+                  duration={[0.2, 0.6]} // min and max glitch duration
+                  strength={[0.2, 0.6]} // min and max glitch strength
+                  chromaticAberrationOffset={4} // min and max glitch strength
+                />
+              </EffectComposer>
+              <Select enabled>
+                <mesh position={[4, -15.2, 0]}>
+                  <roundedPlaneGeometry args={[4, 5]} />
+                  <MeshPortalMaterial>
+                    <color attach="background" args={["#000"]} />
+                    <ambientLight />
+                    <directionalLight position={[10, 10, 10]} />
+                    <Walk scale={3} position={[0, -4, 0]} />
+                  </MeshPortalMaterial>
+                </mesh>
+              </Select>
+            </Selection>
+          </Scroll>
+          <Scroll html>
+            <HtmlSection />
+          </Scroll>
+        </ScrollControls>
+      </Canvas>
     </div>
   );
 };
