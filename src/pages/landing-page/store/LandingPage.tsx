@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../common/Header";
 
 import storeImage from "../assets/store-hero.png";
@@ -16,13 +16,32 @@ import sizeChartMan from "../assets/sizeChart-man.png";
 import SizeChart from "../common/SizeChart";
 
 import phygicalOrange from "../assets/phygital-01.png";
-const StoreLandingPage = () => {
+import {
+  MeshPortalMaterial,
+  OrbitControls,
+  Scroll,
+  ScrollControls,
+  meshBounds,
+} from "@react-three/drei";
+import { Canvas, extend, useThree } from "@react-three/fiber";
+import Walk from "./Walk";
+import { geometry } from "maath";
+import {
+  EffectComposer,
+  Glitch,
+  Select,
+  Selection,
+} from "@react-three/postprocessing";
+
+extend(geometry);
+
+const HtmlSection = () => {
   return (
-    <div className="">
+    <>
       {/* section 1 */}
-      <section className="min-h-screen flex flex-col bg-black ">
-        <Header />
-        <div className=" flex-grow flex items-center justify-center px-4">
+      <section className="min-h-screen flex flex-col -z-[1]">
+        {/* <Header /> */}
+        <div className=" flex-grow flex items-center justify-center px-4 bg-black">
           <div
             className="text-[11rem] sm:text-[20rem] md:text-[24rem] long-title font-bold text-transparent bg-clip-text bg-green-100 bg-contain"
             style={{ backgroundImage: `url(${storeImage})` }}
@@ -82,17 +101,17 @@ const StoreLandingPage = () => {
                 081 – Black Forest&gt;&gt;
               </p>
             </div>
-            <img src={honftImage} alt="" className="w-full max-w-xl" />
+            {/* <img src={honftImage} alt="" className="w-full max-w-xl" /> */}
           </div>
         </div>
       </section>
 
-      <section className="min-h-screen max-h-[800px]  items-center justify-center bg-black text-white hidden md:flex">
+      <section className="min-h-screen max-h-[800px]  items-center justify-center  text-white hidden md:flex">
         <div className="flex container mx-auto ">
           {/* Left Content */}
 
           <div className="flex-1 relative flex items-center justify-center">
-            <img src={nfcBadgeHoodie} alt="" className="w-full max-w-xl" />
+            {/* <img src={nfcBadgeHoodie} alt="" className="w-full max-w-xl" /> */}
           </div>
 
           {/* Right Content */}
@@ -226,6 +245,75 @@ const StoreLandingPage = () => {
           <div></div>
         </div>
       </section>
+    </>
+  );
+};
+
+const Experience = () => {
+  const { viewport } = useThree();
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <>
+      {/* jacket bg */}
+      <mesh position={[0, -23.2, -0.001]}>
+        <planeGeometry args={[viewport.width, viewport.height]} />
+        <meshBasicMaterial color="black" />
+      </mesh>
+      {/* jacket */}
+      <mesh
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        raycast={meshBounds}
+        position={[-3.5, -23, 0]}
+      >
+        <boxGeometry />
+        <meshNormalMaterial />
+      </mesh>
+      {hovered && (
+        <mesh position={[0, -22, 0]}>
+          <boxGeometry />
+          <meshNormalMaterial />
+        </mesh>
+      )}
+    </>
+  );
+};
+
+const StoreLandingPage = () => {
+  return (
+    <div className="absolute w-screen h-screen top-0 left-0">
+      <Canvas gl={{ antialias: false }} dpr={[1, 2]}>
+        <ScrollControls pages={6.1}>
+          <Scroll>
+            <Experience />
+            <Selection>
+              <EffectComposer disableNormalPass multisampling={0}>
+                <Glitch
+                  delay={[1.5, 3.5]} // min and max glitch delay
+                  duration={[0.2, 0.6]} // min and max glitch duration
+                  strength={[0.2, 0.6]} // min and max glitch strength
+                  chromaticAberrationOffset={4} // min and max glitch strength
+                />
+              </EffectComposer>
+              <Select enabled>
+                <mesh position={[4, -15.2, 0]}>
+                  <roundedPlaneGeometry args={[4, 5]} />
+                  <MeshPortalMaterial>
+                    <color attach="background" args={["#000"]} />
+                    <ambientLight />
+                    <directionalLight position={[10, 10, 10]} />
+                    <Walk scale={3} position={[0, -4, 0]} />
+                  </MeshPortalMaterial>
+                </mesh>
+              </Select>
+            </Selection>
+          </Scroll>
+          <Scroll html>
+            <HtmlSection />
+          </Scroll>
+        </ScrollControls>
+      </Canvas>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import {
+  BrowserRouter,
   createBrowserRouter,
   createRoutesFromElements,
   Route,

@@ -11,20 +11,27 @@
 }
 
 @font-face {
-  font-family: "TuskerGrotesk";   /*Can be any text*/
+  font-family: "TuskerGrotesk"; /*Can be any text*/
   src: local("TuskerGrotesk"),
     url("/fonts/TuskerGrotesk-3600Semibold.ttf") format("truetype");
 }
+
+/* body,
+html,
+#root {
+  overflow: hidden;
+} */
 
 body {
   min-height: 100vh;
   position: relative;
 }
 
-*, body {
-  font-family: 'IBM Plex Mono', monospace;
+*,
+body {
+  font-family: "IBM Plex Mono", monospace;
 }
 
 .long-title {
-  font-family: 'TuskerGrotesk';
+  font-family: "TuskerGrotesk";
 }

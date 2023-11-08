@@ -1,12 +1,12 @@
-import Web3Container from './Web3Container';
-import Router from './Router';
+import Web3Container from "./Web3Container";
+import Router from "./Router";
 
 function App() {
   return (
     <Web3Container>
-      <Router />
+        <Router />
     </Web3Container>
-  )
+  );
 }
 
-export default App
+export default App;
