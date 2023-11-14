@@ -1,34 +1,43 @@
-import { abi } from "family-contracts/artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json";
+import { abi } from "../artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json";
 import { useContract } from "./useContract";
 import { TokenId } from "../common/objects";
 import { useAssetPlaceholder } from "./useAssetPlaceholder";
 
-export function usePhygitalCollection (address?: string) {
-  const phygital = useContract(address || import.meta.env.VITE_ASSET_CONTRACT, abi);
+export function usePhygitalCollection(address?: string) {
+  const phygital = useContract(
+    address || import.meta.env.VITE_ASSET_CONTRACT,
+    abi
+  );
   const { placeholder } = useAssetPlaceholder();
 
-  async function getTokens (address: string) {
-    if (!address) { return []; }
-  
-    const tokens = await phygital.getFunction('tokenIdsOf')(address);
-  
-    return Array.from(tokens).map((idStr) => TokenId.parseTokenId(idStr as string));
+  async function getTokens(address: string) {
+    if (!address) {
+      return [];
+    }
+
+    const tokens = await phygital.getFunction("tokenIdsOf")(address);
+
+    return Array.from(tokens).map((idStr) =>
+      TokenId.parseTokenId(idStr as string)
+    );
   }
 
-  async function getTokenMetadata (tokenId: TokenId) {
-    const owner = await phygital.getFunction('tokenOwnerOf')(tokenId.toString());
+  async function getTokenMetadata(tokenId: TokenId) {
+    const owner = await phygital.getFunction("tokenOwnerOf")(
+      tokenId.toString()
+    );
 
     return {
       name: "Honft",
       description: "Black Forest",
-      owner: owner
-    }
+      owner: owner,
+    };
   }
 
-  async function getMintStatus () {
+  async function getMintStatus() {
     const [supply, [startAt, endAt, minted]] = await Promise.all([
-      phygital.getFunction('tokenSupplyCap')(),
-      placeholder.getFunction('collectionMeta')(phygital.target)
+      phygital.getFunction("tokenSupplyCap")(),
+      placeholder.getFunction("collectionMeta")(phygital.target),
     ]);
 
     return {
@@ -39,12 +48,18 @@ export function usePhygitalCollection (address?: string) {
     };
   }
 
-  async function getCollectionMetadata () {
+  async function getCollectionMetadata() {
     return {
       name: "Honft",
-      description: "Black Forest"
-    }
+      description: "Black Forest",
+    };
   }
 
-  return { phygital, getTokens, getMintStatus, getTokenMetadata, getCollectionMetadata };
+  return {
+    phygital,
+    getTokens,
+    getMintStatus,
+    getTokenMetadata,
+    getCollectionMetadata,
+  };
 }

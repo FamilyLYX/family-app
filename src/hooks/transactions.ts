@@ -1,11 +1,11 @@
 import { Contract, BrowserProvider, FunctionFragment, TransactionRequest, Interface, formatEther } from 'ethers';
 
-import { abi as ExtensionABI } from 'family-contracts/artifacts/contracts/OrderExtension.sol/OrderExtension.json';
-import { abi as PlaceholderABI } from 'family-contracts/artifacts/contracts/AssetPlaceholder.sol/AssetPlaceholder.json';
-import { abi as AssetABI } from 'family-contracts/artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json';
-import { abi as ProfileABI } from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
-import { abi as KeyManagerABI } from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
-import { useToasts } from 'react-toast-notifications';
+import { abi as ExtensionABI } from "../artifacts/contracts/OrderExtension.sol/OrderExtension.json";
+import { abi as PlaceholderABI } from "../artifacts/contracts/AssetPlaceholder.sol/AssetPlaceholder.json";
+import { abi as AssetABI } from "../artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json";
+import { abi as ProfileABI } from "@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json";
+import { abi as KeyManagerABI } from "@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json";
+import { useToasts } from "react-toast-notifications";
 
 export const ExtensionInterface = new Interface(ExtensionABI);
 export const PlaceholderInterface = new Interface(PlaceholderABI);
@@ -21,7 +21,7 @@ class FamilyError extends Error {
   }
 }
 
-function parseTransactionError (error: any) {
+function parseTransactionError(error: any) {
   console.error(error);
 
   if (!error.data) {
@@ -34,10 +34,16 @@ function parseTransactionError (error: any) {
   // const profileError = ProfileInterface.parseError(error.data);
   // const keyManagerError = KeyManagerInterfae.parseError(error.data);
 
-  const MatchingInterface = [ExtensionInterface, PlaceholderInterface, AssetInterface, ProfileInterface, KeyManagerInterfae].find((_interface) => {
-    return _interface.parseError(error.data) !== null
+  const MatchingInterface = [
+    ExtensionInterface,
+    PlaceholderInterface,
+    AssetInterface,
+    ProfileInterface,
+    KeyManagerInterfae,
+  ].find((_interface) => {
+    return _interface.parseError(error.data) !== null;
   });
-  
+
   const parsedError = MatchingInterface?.parseError(error.data);
 
   if (!parsedError) {
@@ -47,17 +53,21 @@ function parseTransactionError (error: any) {
   return new FamilyError(parsedError.name);
 }
 
-export function useTransactionSender () {
+export function useTransactionSender() {
   const provider = new BrowserProvider(window.ethereum);
   const { addToast } = useToasts();
 
-  async function sendTransaction (contract: Contract, functionName: string | FunctionFragment, args: unknown[]) {
+  async function sendTransaction(
+    contract: Contract,
+    functionName: string | FunctionFragment,
+    args: unknown[]
+  ) {
     const signer = await provider.getSigner();
 
     return contract.connect(signer).getFunction(functionName)(...args);
   }
 
-  async function executeTransactionRequest (transactionReq: TransactionRequest) {
+  async function executeTransactionRequest(transactionReq: TransactionRequest) {
     const signer = await provider.getSigner();
     const valueRequired = transactionReq.value;
     const address = localStorage.getItem('family:connected:wallet');
@@ -67,12 +77,12 @@ export function useTransactionSender () {
       throw new Error(`You do not have sufficient LYX balance for complete this order. Your balance is ${formatEther(balance)}`);
     }
 
-    addToast('sending transaction', { appearance: 'info', autoDismiss: true });
+    addToast("sending transaction", { appearance: "info", autoDismiss: true });
 
     try {
       const txnResponse = await signer.sendTransaction(transactionReq);
 
-      addToast('sent transaction', { appearance: 'info', autoDismiss: true });
+      addToast("sent transaction", { appearance: "info", autoDismiss: true });
 
       return txnResponse
     }
@@ -89,9 +99,9 @@ export function useTransactionSender () {
     }
   }
 
-  return { sendTransaction, executeTransactionRequest }
+  return { sendTransaction, executeTransactionRequest };
 }
 
-export function useTransactionWatcher (txnHash: string) {
+export function useTransactionWatcher(txnHash: string) {
   console.log(txnHash);
 }

@@ -37,7 +37,6 @@
     "base64url": "^3.0.1",
     "caniuse-lite": "^1.0.30001551",
     "ethers": "^6.8.0",
-    "family-contracts": "file:../family-contracts",
     "firebase": "^9.21.0",
     "lodash": "^4.17.21",
     "masonic": "^3.7.0",
