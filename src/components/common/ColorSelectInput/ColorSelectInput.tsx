@@ -1,11 +1,17 @@
 import React from "react";
-import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  SelectChangeEvent,
+} from "@mui/material";
 import { FaChevronDown } from "react-icons/fa";
 
 interface ColorSelectInputProps {
   data: { hexCode: string; title: string }[];
   value: string;
-  onChange: (event: React.ChangeEvent<{ value: unknown }>) => void;
+  onChange: (event: SelectChangeEvent<string>) => void;
 }
 
 const ColorSelectInput: React.FC<ColorSelectInputProps> = ({
