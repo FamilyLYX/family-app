@@ -93,14 +93,8 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-[80%] transform overflow-hidden rounded-2xl bg-transparent  text-left align-middle shadow-xl transition-all">
-                <div className="flex justify-between">
-                  <div className="w-1/2 px-6 py-8 rounded-2xl bg-white">
-                    Left
-                  </div>
-                  <div>Right</div>
-                </div>
-                {/* <Dialog.Title
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8  text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
                   as="h2"
                   className="font-medium text-gray-900 text-center long-title text-5xl"
                 >
@@ -110,27 +104,46 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                   as="p"
                   className="text-center px-8 mt-4 text-gray-400"
                 >
-                  { waiting === 0 && 'Enter your 6-digit code' }
-                  { waiting === 1 && 'Waiting for confirmation' }
-                  { waiting === 2 && 'Preparing and sending registration transaction' }
+                  {waiting === 0 && "Enter your 6-digit code"}
+                  {waiting === 1 && "Waiting for confirmation"}
+                  {waiting === 2 &&
+                    "Preparing and sending registration transaction"}
                 </Dialog.Description>
-                { waiting === 0 && <>
-                  <OtpInput
-                    containerStyle="justify-center my-4"
-                    inputStyle={{ width: '32px' }}
-                    value={code}
-                    onChange={setCode}
-                    numInputs={6}
-                    renderSeparator={<span></span>}
-                    inputType="number"
-                    renderInput={({ className, ...props }) => <input className="border mx-2 py-2" {...props} />}
-                  />
-                  <Button variant="dark" onClick={() => register(modal.args?.tokenId as TokenId, code as string)}>Continue</Button>
-                </>}
-                { waiting === 1 && <p className="text-xs text-center text-gray-400">Please accept the request on your mobile device to complete registration.</p> }
-                { waiting === 2 && <>
-                  <Loader />
-                </>} */}
+                {waiting === 0 && (
+                  <>
+                    <OtpInput
+                      containerStyle="justify-center my-4"
+                      inputStyle={{ width: "32px" }}
+                      value={code}
+                      onChange={setCode}
+                      numInputs={6}
+                      renderSeparator={<span></span>}
+                      inputType="number"
+                      renderInput={({ className, ...props }) => (
+                        <input className="border mx-2 py-2" {...props} />
+                      )}
+                    />
+                    <Button
+                      variant="dark"
+                      onClick={() =>
+                        register(modal.args?.tokenId as TokenId, code as string)
+                      }
+                    >
+                      Continue
+                    </Button>
+                  </>
+                )}
+                {waiting === 1 && (
+                  <p className="text-xs text-center text-gray-400">
+                    Please accept the request on your mobile device to complete
+                    registration.
+                  </p>
+                )}
+                {waiting === 2 && (
+                  <>
+                    <Loader />
+                  </>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
