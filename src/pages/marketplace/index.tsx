@@ -1,7 +1,6 @@
 import { Tab } from "@headlessui/react";
 
 import { CiFilter } from "react-icons/ci";
-import classes from "./marketplace.module.css";
 import {
   Button,
   CardCarousel,
@@ -17,7 +16,7 @@ import React, { useState } from "react";
 import { CgShoppingBag } from "react-icons/cg";
 import { IoPlayOutline } from "react-icons/io5";
 
-function classNames(...classes) {
+function classNames(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -147,6 +146,7 @@ export default function Marketplace() {
                   <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
                       <ChipSelect
+                        onChange={() => {}}
                         options={["1H", "1D", "7D", "30D"]}
                         selectedOption="1D"
                       />
@@ -162,9 +162,24 @@ export default function Marketplace() {
                         }
                         PopoverContent={
                           <div className="grid grid-cols-2 gap-3">
-                            <Select placeholder="Condition" data={[]} />
-                            <Select placeholder="Status" data={[]} />
-                            <Select placeholder="Size" data={[]} />
+                            <Select
+                              placeholder="Condition"
+                              data={[]}
+                              onChange={() => {}}
+                              value={""}
+                            />
+                            <Select
+                              placeholder="Status"
+                              data={[]}
+                              onChange={() => {}}
+                              value={""}
+                            />
+                            <Select
+                              data={[]}
+                              placeholder="Size"
+                              onChange={() => {}}
+                              value={""}
+                            />
                             <ColorSelectInput
                               onChange={() => {}}
                               value={""}
@@ -176,16 +191,31 @@ export default function Marketplace() {
                     </div>
                     <div className="hidden xl:flex  gap-6">
                       <div className=" gap-5 flex flex-1 ">
-                        <Select placeholder="Condition" data={[]} />
-                        <Select placeholder="Status" data={[]} />
-                        <Select placeholder="Size" data={[]} />
+                        <Select
+                          placeholder="Condition"
+                          data={[]}
+                          value={""}
+                          onChange={() => {}}
+                        />
+                        <Select
+                          placeholder="Status"
+                          data={[]}
+                          value={""}
+                          onChange={() => {}}
+                        />
+                        <Select
+                          placeholder="Size"
+                          data={[]}
+                          value={""}
+                          onChange={() => {}}
+                        />
                         <ColorSelectInput
                           onChange={() => {}}
                           value={""}
                           data={colors}
                         />
                       </div>
-                      <Button>Clear all</Button>
+                      <Button onClick={() => {}}>Clear all</Button>
                     </div>
                   </div>
 
@@ -197,7 +227,7 @@ export default function Marketplace() {
 
                   <div className="mt-8 flex flex-col gap-4">
                     <p className="text-center mx-auto text-black/50">60/206</p>
-                    <Button>Load More</Button>
+                    <Button onClick={() => {}}>Load More</Button>
                   </div>
                 </section>
 
@@ -230,13 +260,13 @@ export default function Marketplace() {
                     />
 
                     <div className="flex w-full max-w-none md:max-w-lg gap-4 relative md:absolute bottom-0 md:bottom-5 right-0 md:right-8 mt-5">
-                      <Button>
+                      <Button onClick={() => {}}>
                         <div className="flex items-center gap-2 justify-center">
                           <span>Go to the store</span>
                           <CgShoppingBag size="18" className="mt-1" />
                         </div>
                       </Button>
-                      <Button variant="dark">
+                      <Button onClick={() => {}} variant="dark">
                         <div className="flex items-center gap-2 justify-center">
                           <span>Start watching</span>
                           <IoPlayOutline size="18" className="mt-0.5" />

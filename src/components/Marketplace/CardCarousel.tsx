@@ -9,9 +9,8 @@ import "./CardCarousel.css"; // This will be your custom CSS file
 import ProductCard from "./ProductCard";
 import product1 from "../../assets/marketplace/product-01.png";
 import product2 from "../../assets/marketplace/product-02.png";
-type Props = {};
 
-const CardCarousel = (props: Props) => {
+const CardCarousel = () => {
   // Dummy data for the cards, replace with your actual data
   const cards = [
     {

@@ -1,11 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "..";
 import { Popover as MuiPopover, Typography } from "@mui/material";
 
-export function Popover({ ButtonText, PopoverContent }) {
-  const [anchorEl, setAnchorEl] = useState(null);
+interface PopoverProps {
+  ButtonText: string;
+  PopoverContent: React.ReactNode;
+}
 
-  const handleClick = (event) => {
+export function Popover({ ButtonText, PopoverContent }: PopoverProps) {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -32,7 +37,7 @@ export function Popover({ ButtonText, PopoverContent }) {
         }}
         classes={{ root: "mt-2" }}
       >
-        <div className="p-4 ">{PopoverContent}</div>
+        <div className="p-4">{PopoverContent}</div>
       </MuiPopover>
     </div>
   );

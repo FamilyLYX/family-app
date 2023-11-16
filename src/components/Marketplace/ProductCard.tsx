@@ -1,6 +1,15 @@
 import React from "react";
 
-const ProductCard = ({ data }) => {
+interface ProductCardProps {
+  data: {
+    image: string; // Assuming image is a URL or a file path
+    title: string;
+    price: string;
+    price_unit: string;
+  };
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   return (
     <div className="card rounded-xl overflow-hidden ">
       <img
