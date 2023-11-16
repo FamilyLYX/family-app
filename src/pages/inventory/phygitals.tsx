@@ -9,7 +9,7 @@ import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
 import 'swiper/css/navigation';
-import EmptyState from "./EmptyState";
+import EmptyState from "./emptyState";
 // import 'swiper/css/pagination';
 
 export default function Phygitals() {
