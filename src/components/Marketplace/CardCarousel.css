@@ -1,0 +1,43 @@
+/* CardCarousel.css */
+.mySwiper {
+  width: 100%;
+}
+
+.card {
+  min-width: 300px; /* Set a maximum width for each card */
+  /* width: auto;  */
+  /* Ensure the width of the card is auto so it can grow up to max-width */
+}
+
+/* Ensure Swiper doesn't have a fixed width on slides */
+.swiper-slide {
+  @apply w-auto;
+}
+
+.swiper-slide {
+  @apply mt-5;
+}
+
+.swiper-pagination-progressbar {
+  @apply bg-black/10;
+}
+
+.mySwiper .swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
+  @apply bg-black;
+}
+
+/* Change navigation buttons color */
+.mySwiper .swiper-button-next,
+.mySwiper .swiper-button-prev {
+  @apply text-white;
+}
+
+/* Additional styling for the navigation buttons if needed */
+.mySwiper .swiper-button-next:after,
+.mySwiper .swiper-button-prev:after {
+  @apply text-xl bg-black/10 px-5 py-3  shadow-sm transition-colors duration-200 hover:bg-black/40;
+}
+
+.mySwiper .swiper-button-disabled {
+  display: none;
+}
