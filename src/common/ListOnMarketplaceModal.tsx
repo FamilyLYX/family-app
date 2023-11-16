@@ -1,5 +1,7 @@
-import { Fragment, useState } from "react";
+import { ChangeEvent, Fragment, useState } from "react";
 import { Transition, Dialog } from "@headlessui/react";
+import { LSP4DigitalAssetMetadata } from "@lukso/lsp-factory.js";
+import ImageUploading from "react-images-uploading";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Button } from "./buttons";
@@ -9,6 +11,7 @@ import { getAuth } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { hooks } from "../connectors/default";
 import { Web3ReactHooks } from "@web3-react/core";
+import overlay1 from "../assets/overlays/Vector 13.png";
 import OtpInput from "react-otp-input";
 
 export function Loader() {
@@ -40,7 +43,14 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
   const [waiting, setWaiting] = useState<number>(0);
   const [code, setCode] = useState<string>();
   const provider = (hooks as Web3ReactHooks).useProvider();
-
+  const [formData, setForm] = useState<Record<any, any>>({});
+  const [images, setImages] = useState([]);
+  const maxNumber = 69;
+  const onChange = (imageList: any, addUpdateIndex: any) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
   async function register(tokenId: TokenId, code: string) {
     console.log(tokenId);
     const idToken = await getAuth().currentUser?.getIdToken();
@@ -66,6 +76,21 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
       }
     });
   }
+
+  const onFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const uploadToIPFS = async () => {
+    const res = await LSP4DigitalAssetMetadata.uploadMetadata({
+      description: formData?.description ?? "",
+      // assets: filteredAssets,
+      images: images,
+      ...formData,
+    });
+    return res.url;
+  };
 
   return (
     <Transition appear show={modal.visible} as={Fragment}>
@@ -94,11 +119,124 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-[80%] transform overflow-hidden rounded-2xl bg-transparent  text-left align-middle shadow-xl transition-all">
-                <div className="flex justify-between">
-                  <div className="w-1/2 px-6 py-8 rounded-2xl bg-white">
-                    Left
+                <div className="flex gap-2 justify-between">
+                  <div className="w-1/2 p-10 rounded-[42px] flex flex-col gap-8 bg-white">
+                    <div className="long-title text-6xl">
+                      Sell{" "}
+                      <span className="text-black/50 long-title ">Honft</span>
+                    </div>
+                    <div className="text-black/60">
+                      To sell nft please fill in all the fields below
+                    </div>
+                    <div className="flex flex-col gap-6">
+                      <input
+                        className="w-full border px-2 py-4 rounded-lg"
+                        placeholder="Loacation"
+                        type="text"
+                        onChange={onFormChange}
+                      />
+                      <input
+                        className="w-full border  px-2 py-4 rounded-lg"
+                        placeholder="Condition"
+                        type="text"
+                        onChange={onFormChange}
+                      />
+                      <div>
+                        <div className="text-black/25 mb-2">Pictures:</div>
+                        <div>
+                          <ImageUploading
+                            multiple
+                            value={images}
+                            onChange={onChange}
+                            maxNumber={maxNumber}
+                            dataURLKey="data_url"
+                            acceptType={["jpg", "png"]}
+                          >
+                            {({
+                              imageList,
+                              onImageUpload,
+                              onImageRemoveAll,
+                              onImageUpdate,
+                              onImageRemove,
+                              isDragging,
+                              dragProps,
+                            }) => (
+                              // write your building UI
+                              <div className="flex gap-2 items-center">
+                                <button
+                                  style={isDragging ? { color: "red" } : {}}
+                                  onClick={onImageUpload}
+                                  {...dragProps}
+                                  className="block w-[62px] h-[62px] border rounded-full"
+                                >
+                                  +
+                                </button>
+                                {imageList.map((image, index) => (
+                                  <div key={index} className="image-item">
+                                    <img
+                                      src={image.data_url}
+                                      alt=""
+                                      // width="100"
+                                      className="block w-[62px] h-[62px] rounded-xl"
+                                    />
+                                    {/* <div className="image-item__btn-wrapper">
+                                      <button
+                                        onClick={() => onImageUpdate(index)}
+                                      >
+                                        Update
+                                      </button>
+                                      <button
+                                        onClick={() => onImageRemove(index)}
+                                      >
+                                        Remove
+                                      </button>
+                                    </div> */}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </ImageUploading>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center w-full border justify-between  px-3 py-4 rounded-lg">
+                          <input
+                            className="block focus:border-black/100 focus:outline-none"
+                            placeholder="Price"
+                            type="text"
+                            onChange={onFormChange}
+                          />
+                          <div className="text-black/25 font-bold">LYX</div>
+                        </div>
+                        <div className="mt-5 flex gap-3">
+                          <input type="checkbox"></input>
+                          Accept Fiat Payment
+                        </div>
+                      </div>
+                      <Button
+                        variant="dark"
+                        // disabled={true}
+                        onClick={() =>
+                          register(
+                            modal.args?.tokenId as TokenId,
+                            code as string
+                          )
+                        }
+                      >
+                        Sell
+                      </Button>
+                    </div>
                   </div>
-                  <div>Right</div>
+                  <div className="w-1/2 rounded-[42px] relative">
+                    <img
+                      className="w-full aspect-square object-cover h-full rounded-[42px]"
+                      src="/item_1.png"
+                    />
+                    <img
+                      className=" block absolute z-10 top-0 left-0 w-10 h-full object-cover"
+                      src={overlay1}
+                    />
+                  </div>
                 </div>
                 {/* <Dialog.Title
                   as="h2"
