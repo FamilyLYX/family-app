@@ -4,6 +4,7 @@ import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
 import { Button } from "./buttons";
 import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
 import { useModal } from "@ebay/nice-modal-react";
+import useUser from "../hooks/useUser";
 
 export function ShortAddress ({ address }: { address: string }) {
   return <a className="cursor-pointer" onClick={() => navigator.clipboard.writeText(address)}>
@@ -12,6 +13,7 @@ export function ShortAddress ({ address }: { address: string }) {
 }
 
 export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, showActions?: boolean }) {
+  const { user } = useUser();
   const { getTokenMetadata } = usePhygitalCollection();
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
   const modal = useModal('family-marketplace-list');
@@ -21,7 +23,7 @@ export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, 
   }
 
   return <div className="w-full">
-    <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' />
+    <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} />
     { query.data && <>
         <p className="long-title text-2xl text-center py-2">{query.data.name}</p>
         <p className="text-center text-base text-gray-400 pb-2">{query.data.description}</p>
