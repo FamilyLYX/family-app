@@ -1,21 +1,25 @@
 import React, { useState } from "react";
-import { Button } from "../../components";
+import { Button } from "..";
 import YourComponent from "./ImageSwiper";
 import ChatMol from "./Chat/ChatMol";
 
-export default function ProductInfoMol() {
-  const [Trackinginfo, setTrackingInfo] = useState(
+interface ProductInfoMolProps {
+  setOpenChat: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ProductInfoMol: React.FC<ProductInfoMolProps> = ({ setOpenChat }) => {
+  const [Trackinginfo, setTrackingInfo] = useState<string>(
     "https://auspost.com.au/mypost/track/#/search"
   );
-  const [size, setSize] = useState("XXL");
-  const [time, setTime] = useState("2023-09-04 09:59:20");
-  const [price, setPrice] = useState("1,4525403543647");
-  const [openchat, setOpenChat] = useState(false);
+  const [size, setSize] = useState<string>("XXL");
+  const [time, setTime] = useState<string>("2023-09-04 09:59:20");
+  const [price, setPrice] = useState<string>("1,4525403543647");
+  const [openchat, setOpenChatState] = useState<boolean>(false);
 
-  const productStatus = "Confirm";
-  const result = checkProductStatus(productStatus);
+  const productStatus: string = "Confirm";
+  const result: string = checkProductStatus(productStatus);
 
-  function checkProductStatus(status) {
+  function checkProductStatus(status: string): string {
     if (status === "Confirm") {
       return "Confirm";
     } else if (status === "Processing") {
@@ -27,12 +31,12 @@ export default function ProductInfoMol() {
 
   return (
     <>
-      {openchat == true ? (
+      {openchat ? (
         <div className="w-full h-screen">
           <ChatMol setOpenChat={setOpenChat} />
         </div>
       ) : (
-        <div className="flex flex-col h-full   gap-[50px]">
+        <div className="flex flex-col h-full gap-[50px]">
           {/* First Content */}
           <div className="flex flex-col justify-center items-center gap-2">
             <h2 className="long-title text-start text-8xl">Honft</h2>
@@ -40,7 +44,7 @@ export default function ProductInfoMol() {
               001 — Black Forest»
             </span>
           </div>
-          {/* Image Sec */}
+          {/* Image Section */}
           <div className="items-center ">
             <YourComponent />
           </div>
@@ -66,7 +70,7 @@ export default function ProductInfoMol() {
               {Trackinginfo}
             </p>
           </div>
-          {/* Forth Content */}
+          {/* Fourth Content */}
           <div className="flex flex-col gap-2">
             <span className="text-black/30 text-[13px] font-medium">Size:</span>
             <p className="text-[14px] font-medium leading-[13.5px]  font-normal">
@@ -112,4 +116,6 @@ export default function ProductInfoMol() {
       )}
     </>
   );
-}
+};
+
+export default ProductInfoMol;

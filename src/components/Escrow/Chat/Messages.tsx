@@ -1,8 +1,18 @@
-// Messages.js
 import { Avatar } from "@mui/material";
 import React from "react";
 
-const Messages = ({ messages }) => {
+interface Message {
+  id: number;
+  message: string;
+  sender: string;
+  timestamp: Date;
+}
+
+interface MessagesProps {
+  messages: Message[];
+}
+
+const Messages: React.FC<MessagesProps> = ({ messages }) => {
   return (
     <div className="flex flex-col gap-4">
       {messages.map((message, index) => (
@@ -35,6 +45,7 @@ const Messages = ({ messages }) => {
                   message.sender === "user"
                     ? "12px 0px 12px 12px"
                     : "12px 12px 12px 0",
+
                 color: message.sender === "user" ? "black" : "white",
               }}
             >

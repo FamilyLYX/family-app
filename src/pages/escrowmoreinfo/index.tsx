@@ -5,8 +5,8 @@ import Gallery from "../../components/Escrow/Gallery";
 import Chat from "../../components/Escrow/Chat/Chat";
 
 export default function EscrowMoreInfo() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
-  const [imageWidth, setImageWidth] = useState(calculateImageWidth());
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1023);
+  const [imageWidth, setImageWidth] = useState<number>(calculateImageWidth());
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,7 +21,7 @@ export default function EscrowMoreInfo() {
     };
   }, []);
 
-  function calculateImageWidth() {
+  function calculateImageWidth(): number {
     const screenWidth = window.innerWidth;
 
     if (screenWidth >= 320 && screenWidth < 400) {
@@ -30,10 +30,11 @@ export default function EscrowMoreInfo() {
       return 400;
     }
   }
+
   return (
     <div>
       {isMobile ? (
-        <div className=" px-5">
+        <div className="px-5">
           <ProductInfoMol />
         </div>
       ) : (

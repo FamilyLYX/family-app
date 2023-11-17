@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import Messages from "./Messages";
-import { Button } from "../../common/Button/Button";
-import { GoArrowLeft } from "react-icons/go";
 
-export default function ChatMol({ setOpenChat }) {
+export default function Chat() {
   const [name, setName] = useState("Ninja and James");
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([
@@ -30,7 +28,7 @@ export default function ChatMol({ setOpenChat }) {
       timestamp: new Date(),
     },
     {
-      id: 2,
+      id: 5,
       message: "Ok",
       sender: "user",
       timestamp: new Date(),
@@ -80,22 +78,10 @@ export default function ChatMol({ setOpenChat }) {
   return (
     <div
       style={{ background: "rgba(0, 0, 0, 0.04)", position: "relative" }}
-      className="flex flex-col h-screen px-5 overflow-scroll w-full rounded-[28px]"
+      className="flex flex-col h-[690px] px-5 overflow-scroll w-[390px] rounded-[28px]"
     >
       <div className="flex flex-col gap-4">
         <div className="flex mt-10 flex-row gap-2">
-          <Button
-            style={{ width: "95px", height: "40px" }}
-            //   variant="dark"
-            children={undefined}
-            onClick={() => {
-              setOpenChat(false);
-            }}
-          >
-            <div className="flex flex-row gap-2">
-              <GoArrowLeft style={{ marginTop: "5px" }} /> <p>Back</p>
-            </div>
-          </Button>
           <Avatar imageUrl="src/assets/escrow/user.svg" initials={name} />
           <div className="flex flex-col gap-1">
             <span className="text-black/30 text-[13px] font-medium">

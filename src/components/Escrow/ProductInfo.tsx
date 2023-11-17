@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { Button } from "../../components";
+import { Button } from "..";
+import { Link } from "react-router-dom";
 
 export default function ProductInfo() {
-  const [Trackinginfo, setTrackingInfo] = useState(
+  const [Trackinginfo, setTrackingInfo] = useState<string>(
     "https://auspost.com.au/mypost/track/#/search"
   );
-  const [size, setSize] = useState("XXL");
-  const [time, setTime] = useState("2023-09-04 09:59:20");
-  const [price, setPrice] = useState("1,4525403543647");
+  const [size, setSize] = useState<string>("XXL");
+  const [time, setTime] = useState<string>("2023-09-04 09:59:20");
+  const [price, setPrice] = useState<string>("1,4525403543647");
 
-  const productStatus = "Confirm";
-  const result = checkProductStatus(productStatus);
+  const productStatus: string = "Confirm";
+  const result: string = checkProductStatus(productStatus);
 
-  function checkProductStatus(status) {
+  function checkProductStatus(status: string): string {
     if (status === "Confirm") {
       return "Confirm";
     } else if (status === "Processing") {
@@ -23,7 +24,7 @@ export default function ProductInfo() {
   }
 
   return (
-    <div className="flex flex-col h-full  gap-[50px]">
+    <div className="flex flex-col h-full gap-[50px]">
       {/* First Content */}
       <div className="flex flex-col gap-2">
         <h2 className="long-title text-start text-8xl">Honft</h2>
@@ -76,13 +77,15 @@ export default function ProductInfo() {
       </div>
 
       <div className="flex gap-2">
-        <Button
-          // variant="dark"
-          children={undefined}
-          onClick={undefined}
-        >
-          Back
-        </Button>
+        <Link to="/marketplace">
+          <Button
+            // variant="dark"
+            children={undefined}
+            onClick={undefined}
+          >
+            Back
+          </Button>
+        </Link>
 
         <Button
           style={{ width: "286px", height: "40px" }}

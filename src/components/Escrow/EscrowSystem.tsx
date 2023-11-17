@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "..";
 import styles from "./EscrowSystem.module.css";
+import { Link } from "react-router-dom";
 
-export default function EscrowSystem({ setInfo }) {
+interface EscrowSystemProps {
+  setInfo: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
   const [imageWidth, setImageWidth] = useState(calculateImageWidth());
 
@@ -28,13 +33,12 @@ export default function EscrowSystem({ setInfo }) {
       return 400;
     }
   }
+
   return (
     <div style={{ position: "relative", overflow: "hidden" }}>
       {isMobile ? (
         // Mobile Screen
-        <div
-          className={`flex  w-full justify-center items-center gap-3 h-full`}
-        >
+        <div className={`flex w-full justify-center items-center gap-3 h-full`}>
           <div className="flex flex-col gap-4 items-center justify-center">
             <div className="flex flex-col gap-4 items-cente flex-wrap justify-center">
               <div className="flex flex-wrap gap-4 justify-center">
@@ -71,14 +75,16 @@ export default function EscrowSystem({ setInfo }) {
                   Honft
                 </h5>
                 <p>001 — Black Forest»</p>
-                <Button
-                  children={undefined}
-                  style={{ minWidth: "289px", height: "40px" }}
-                  variant="dark"
-                  onClick={undefined}
-                >
-                  More info
-                </Button>
+                <Link to="/escrowmoreinfo">
+                  <Button
+                    children={undefined}
+                    style={{ minWidth: "289px", height: "40px" }}
+                    variant="dark"
+                    onClick={undefined}
+                  >
+                    More info
+                  </Button>
+                </Link>
               </div>
 
               <img
@@ -122,16 +128,18 @@ export default function EscrowSystem({ setInfo }) {
                   Honft
                 </h5>
                 <p>001 — Black Forest»</p>
-                <Button
-                  children={undefined}
-                  style={{ width: "550px", height: "40px" }}
-                  variant="dark"
-                  onClick={() => {
-                    setInfo(true);
-                  }}
-                >
-                  More info
-                </Button>
+                <Link to="/escrowmoreinfo">
+                  <Button
+                    children={undefined}
+                    style={{ width: "550px", height: "40px" }}
+                    variant="dark"
+                    onClick={() => {
+                      setInfo(true);
+                    }}
+                  >
+                    More info
+                  </Button>
+                </Link>
               </div>
               <img
                 src="./src/assets/escrow/smallrightRectangle.svg"

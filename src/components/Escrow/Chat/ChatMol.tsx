@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import Messages from "./Messages";
+import { Button } from "../../common/Button/Button";
+import { GoArrowLeft } from "react-icons/go";
 
-export default function Chat() {
+interface ChatMolProps {
+  setOpenChat: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ChatMol: React.FC<ChatMolProps> = ({ setOpenChat }) => {
   const [name, setName] = useState("Ninja and James");
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([
@@ -20,7 +26,6 @@ export default function Chat() {
       sender: "receiver",
       timestamp: new Date(),
     },
-
     {
       id: 4,
       message: "probably tomorrow",
@@ -35,8 +40,8 @@ export default function Chat() {
     },
   ]);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
-  const [imageWidth, setImageWidth] = useState(calculateImageWidth());
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1023);
+  const [imageWidth, setImageWidth] = useState<number>(calculateImageWidth());
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,7 +56,7 @@ export default function Chat() {
     };
   }, []);
 
-  function calculateImageWidth() {
+  function calculateImageWidth(): number {
     const screenWidth = window.innerWidth;
 
     if (screenWidth >= 320 && screenWidth < 400) {
@@ -78,10 +83,20 @@ export default function Chat() {
   return (
     <div
       style={{ background: "rgba(0, 0, 0, 0.04)", position: "relative" }}
-      className="flex flex-col h-[690px] px-5 overflow-scroll w-[390px] rounded-[28px]"
+      className="flex flex-col h-screen px-5 overflow-scroll w-full rounded-[28px]"
     >
       <div className="flex flex-col gap-4">
         <div className="flex mt-10 flex-row gap-2">
+          <Button
+            style={{ width: "95px", height: "40px" }}
+            onClick={() => {
+              setOpenChat(false);
+            }}
+          >
+            <div className="flex flex-row gap-2">
+              <GoArrowLeft style={{ marginTop: "5px" }} /> <p>Back</p>
+            </div>
+          </Button>
           <Avatar imageUrl="src/assets/escrow/user.svg" initials={name} />
           <div className="flex flex-col gap-1">
             <span className="text-black/30 text-[13px] font-medium">
@@ -116,7 +131,6 @@ export default function Chat() {
           alignSelf: "stretch",
           maxWidth: "380px",
           position: "sticky",
-
           top: messages.length > 0 ? "90%" : "0",
           bottom: messages.length > 0 ? "0" : "80%",
         }}
@@ -145,4 +159,6 @@ export default function Chat() {
       </div>
     </div>
   );
-}
+};
+
+export default ChatMol;

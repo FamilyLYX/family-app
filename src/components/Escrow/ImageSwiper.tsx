@@ -5,7 +5,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 
-const YourComponent = () => {
+const YourComponent: React.FC = () => {
   const imageArray = [
     "/src/assets/escrow/molslide.svg",
     "/src/assets/escrow/molslide.svg",
