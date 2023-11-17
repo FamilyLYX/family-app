@@ -13,6 +13,9 @@ import { hooks } from "../connectors/default";
 import { Web3ReactHooks } from "@web3-react/core";
 import overlay1 from "../assets/overlays/Vector 13.png";
 import OtpInput from "react-otp-input";
+import { useMarketplace } from "../hooks/useMarketplace";
+import { async } from "@firebase/util";
+import { IPFS_GATEWAY } from "../constants";
 
 export function Loader() {
   return (
@@ -51,6 +54,8 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
+  const { listToken } = useMarketplace();
+
   async function register(tokenId: TokenId, code: string) {
     console.log(tokenId);
     const idToken = await getAuth().currentUser?.getIdToken();
@@ -83,14 +88,27 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
   };
 
   const uploadToIPFS = async () => {
+    console.log(images);
     const res = await LSP4DigitalAssetMetadata.uploadMetadata({
       description: formData?.description ?? "",
       // assets: filteredAssets,
-      images: images,
+      // images: images,
       ...formData,
     });
-    return res.url;
+    return res.url.replace("ipfs://", IPFS_GATEWAY);
   };
+
+  async function list() {
+    const listingUrl = await uploadToIPFS();
+    console.log(listingUrl);
+    await listToken(
+      import.meta.env.VITE_ASSET_CONTRACT,
+      modal.args?.tokenId as TokenId,
+      Number(formData?.price ?? 0),
+      listingUrl,
+      false
+    );
+  }
 
   return (
     <Transition appear show={modal.visible} as={Fragment}>
@@ -204,6 +222,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                             className="block focus:border-black/100 focus:outline-none"
                             placeholder="Price"
                             type="text"
+                            name="price"
                             onChange={onFormChange}
                           />
                           <div className="text-black/25 font-bold">LYX</div>
@@ -216,12 +235,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                       <Button
                         variant="dark"
                         // disabled={true}
-                        onClick={() =>
-                          register(
-                            modal.args?.tokenId as TokenId,
-                            code as string
-                          )
-                        }
+                        onClick={() => list()}
                       >
                         Sell
                       </Button>

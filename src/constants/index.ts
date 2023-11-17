@@ -1,2 +1,3 @@
 export const marketplaceContractAddress =
-  "0x0A1F54CEA83Cc9348C549142692CF730491743DC";
+  "0x36C0D860f8a07f17702fa91E952EC546A24023b8";
+export const IPFS_GATEWAY = "https://2eff.lukso.dev/ipfs/";
