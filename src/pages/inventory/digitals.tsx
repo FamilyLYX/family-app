@@ -1,5 +1,5 @@
-import EmptyState from "./EmptyState";
+import EmptyState from "./emptyState";
 
-export default function Digitals () {
-  return <EmptyState />
+export default function Digitals() {
+  return <EmptyState />;
 }
