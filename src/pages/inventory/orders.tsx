@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAssetPlaceholder } from "../../hooks/useAssetPlaceholder";
 import { TokenId } from "../../common/objects";
 import { OrderCard } from "../../common/components";
-import EmptyState from "./EmptyState";
+import EmptyState from "./emptyState";
 import { Button } from "../../common/buttons";
 import { useModal } from "@ebay/nice-modal-react";
 import useUser from "../../hooks/useUser";
