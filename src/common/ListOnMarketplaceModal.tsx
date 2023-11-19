@@ -54,7 +54,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
-  const { listToken } = useMarketplace();
+  const { listToken, listToken1 } = useMarketplace();
 
   async function register(tokenId: TokenId, code: string) {
     console.log(tokenId);
@@ -101,6 +101,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
   async function list() {
     const listingUrl = await uploadToIPFS();
     console.log(listingUrl);
+
     await listToken(
       import.meta.env.VITE_ASSET_CONTRACT,
       modal.args?.tokenId as TokenId,
