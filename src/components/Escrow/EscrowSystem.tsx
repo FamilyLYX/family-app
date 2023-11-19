@@ -10,7 +10,7 @@ interface EscrowSystemProps {
 export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
   const [imageWidth, setImageWidth] = useState(calculateImageWidth());
-  const [productstatus, setProductStatus] = useState("confirm");
+  const [productstatus, setProductStatus] = useState("Confirm");
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,13 +48,25 @@ export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
                   className={styles.leftImage}
                   alt="rectangle"
                 />
+
                 <div
-                  className={`justify-center ${styles.imagesize} items-center flex h-full`}
+                  className={`justify-center ${styles.imagesize} items-center flex h-full relative`}
                 >
+                  {productstatus === "Confirm" && (
+                    <div className="absolute top-0 right-5 mt-5  inline-flex p-2 items-center gap-2 rounded-full bg-green-500">
+                      <img
+                        src="./src/assets/escrow/checkiconn.svg"
+                        // className="w-8 h-8 rounded-full"
+                        alt="check mark"
+                      />
+                      <p className="text-white"> {productstatus}</p>
+                    </div>
+                  )}
                   <img
-                    src="./src/assets/escrow/productmol.png"
+                    src="./src/assets/escrow/product2.png"
                     alt="product"
                     style={{ width: `${imageWidth}px ` }}
+                    className="rounded-[42px] w-[289px] h-[374px]"
                   />
                 </div>
                 <img
@@ -111,7 +123,7 @@ export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
               <div
                 className={`justify-center ${styles.wsmall} items-center flex h-full relative`}
               >
-                {productstatus === "confirm" && (
+                {productstatus === "Confirm" && (
                   <div className="absolute top-0 right-5 mt-5  inline-flex p-2 items-center gap-2 rounded-full bg-green-500">
                     <img
                       src="./src/assets/escrow/checkiconn.svg"
