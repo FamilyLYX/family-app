@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "..";
-import { Popover as MuiPopover, Typography } from "@mui/material";
+import { Popover as MuiPopover } from "@mui/material";
 
 interface PopoverProps {
   ButtonText: string;

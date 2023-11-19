@@ -5,8 +5,8 @@ const BASE_BTN_CLASSES =
 
 const LIGHT_BTN_CLASSES = `${BASE_BTN_CLASSES} text-gray-800`;
 const DARK_BTN_CLASSES = `${BASE_BTN_CLASSES} text-white bg-black`;
-const OUTLINE_BTN_CLASSES = `${BASE_BTN_CLASSES} border-gray-800 border-2 text-gray-800`;
-const OUTLINE_DISABLED_BTN_CLASSES = `${BASE_BTN_CLASSES} text-gray-400 border-gray-400`;
+// const OUTLINE_BTN_CLASSES = `${BASE_BTN_CLASSES} border-gray-800 border-2 text-gray-800`;
+// const OUTLINE_DISABLED_BTN_CLASSES = `${BASE_BTN_CLASSES} text-gray-400 border-gray-400`;
 
 export function Button({
   children = "",
