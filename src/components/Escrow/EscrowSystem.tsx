@@ -10,6 +10,7 @@ interface EscrowSystemProps {
 export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
   const [imageWidth, setImageWidth] = useState(calculateImageWidth());
+  const [productstatus, setProductStatus] = useState("confirm");
 
   useEffect(() => {
     const handleResize = () => {
@@ -108,14 +109,25 @@ export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
                 alt="rectangle"
               />
               <div
-                className={`justify-center ${styles.wsmall} items-center flex h-full`}
+                className={`justify-center ${styles.wsmall} items-center flex h-full relative`}
               >
+                {productstatus === "confirm" && (
+                  <div className="absolute top-0 right-5 mt-5  inline-flex p-2 items-center gap-2 rounded-full bg-green-500">
+                    <img
+                      src="./src/assets/escrow/checkiconn.svg"
+                      // className="w-8 h-8 rounded-full"
+                      alt="check mark"
+                    />
+                    <p className="text-white"> {productstatus}</p>
+                  </div>
+                )}
                 <img
-                  src="./src/assets/escrow/product1.png"
-                  className={` ${styles.wsmall}`}
+                  src="./src/assets/escrow/product2.png"
+                  className={`${styles.wsmall} rounded-[42px] w-[568px] h-[374px]`}
                   alt="product"
                 />
               </div>
+
               <img
                 src="./src/assets/escrow/rectangleright.svg"
                 alt="rectangle"
