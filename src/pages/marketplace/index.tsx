@@ -12,7 +12,7 @@ import { ColorSelectInput, Select } from "../../components";
 import productImg from "../../assets/marketplace/product-02.png";
 import marketplaceBg from "../../assets/marketplace/marketplace-bg.png";
 import marketplaceBgSmall from "../../assets/marketplace/marketplace-bg-mobile.png";
-import React, { useState } from "react";
+// import React from "react";
 import { CgShoppingBag } from "react-icons/cg";
 import { IoPlayOutline } from "react-icons/io5";
 
@@ -87,20 +87,20 @@ const ProductCards = [
   },
 ];
 export default function Marketplace() {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
-  );
+  // const [anchorEl] = React.useState<HTMLButtonElement | null>(
+  //   null
+  // );
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setAnchorEl(anchorEl ? null : event.currentTarget);
+  // };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
+  // const open = Boolean(anchorEl);
+  // const id = open ? "simple-popper" : undefined;
 
   return (
     <div className="mt-24 container mx-auto flex flex-col gap-4 mb-8">
@@ -146,7 +146,7 @@ export default function Marketplace() {
                   <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
                       <ChipSelect
-                        onChange={() => {}}
+                        onChange={console.log}
                         options={["1H", "1D", "7D", "30D"]}
                         selectedOption="1D"
                       />
@@ -155,33 +155,33 @@ export default function Marketplace() {
                       {/* filter */}
                       <Popover
                         ButtonText={
-                          <div className="flex gap-1 items-center justify-center">
+                          (<div className="flex gap-1 items-center justify-center">
                             <p>Filter</p>
                             <CiFilter size="20" />
-                          </div>
+                          </div>) as any
                         }
                         PopoverContent={
                           <div className="grid grid-cols-2 gap-3">
                             <Select
                               placeholder="Condition"
                               data={[]}
-                              onChange={() => {}}
+                              onChange={console.log}
                               value={""}
                             />
                             <Select
                               placeholder="Status"
                               data={[]}
-                              onChange={() => {}}
+                              onChange={console.log}
                               value={""}
                             />
                             <Select
                               data={[]}
                               placeholder="Size"
-                              onChange={() => {}}
+                              onChange={console.log}
                               value={""}
                             />
                             <ColorSelectInput
-                              onChange={() => {}}
+                              onChange={console.log}
                               value={""}
                               data={colors}
                             />
@@ -195,27 +195,27 @@ export default function Marketplace() {
                           placeholder="Condition"
                           data={[]}
                           value={""}
-                          onChange={() => {}}
+                          onChange={console.log}
                         />
                         <Select
                           placeholder="Status"
                           data={[]}
                           value={""}
-                          onChange={() => {}}
+                          onChange={console.log}
                         />
                         <Select
                           placeholder="Size"
                           data={[]}
                           value={""}
-                          onChange={() => {}}
+                          onChange={console.log}
                         />
                         <ColorSelectInput
-                          onChange={() => {}}
+                          onChange={console.log}
                           value={""}
                           data={colors}
                         />
                       </div>
-                      <Button onClick={() => {}}>Clear all</Button>
+                      <Button onClick={console.log}>Clear all</Button>
                     </div>
                   </div>
 
@@ -227,7 +227,7 @@ export default function Marketplace() {
 
                   <div className="mt-8 flex flex-col gap-4">
                     <p className="text-center mx-auto text-black/50">60/206</p>
-                    <Button onClick={() => {}}>Load More</Button>
+                    <Button onClick={console.log}>Load More</Button>
                   </div>
                 </section>
 
@@ -260,13 +260,13 @@ export default function Marketplace() {
                     />
 
                     <div className="flex w-full max-w-none md:max-w-lg gap-4 relative md:absolute bottom-0 md:bottom-5 right-0 md:right-8 mt-5">
-                      <Button onClick={() => {}}>
+                      <Button onClick={console.log}>
                         <div className="flex items-center gap-2 justify-center">
                           <span>Go to the store</span>
                           <CgShoppingBag size="18" className="mt-1" />
                         </div>
                       </Button>
-                      <Button onClick={() => {}} variant="dark">
+                      <Button onClick={console.log} variant="dark">
                         <div className="flex items-center gap-2 justify-center">
                           <span>Start watching</span>
                           <IoPlayOutline size="18" className="mt-0.5" />
