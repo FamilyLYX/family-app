@@ -21,7 +21,7 @@ function TargetOrders({ address }: { address: string }) {
   }
 
   if (!data || data.length === 0) {
-    return <EmptyState message="You don't have any pending orders" />;
+    return <div className="col-span-3"><EmptyState message="You don't have any pending orders" /></div>;
   }
 
   return (

@@ -95,8 +95,9 @@ const BuyModal = NiceModal.create(() => {
         value: BigInt(value),
         data: orderCalldata,
       })
-        .then((response) => {
-          return response.wait();
+        .then(() => {
+          // response.wait(1);
+          return new Promise((resolve) => setTimeout(resolve, 10000))
         })
         .then(() => {
           window.location.pathname = `/orders/${orderId}`;

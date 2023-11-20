@@ -25,7 +25,7 @@ function ProductCard({
   async function handleCheckout (product: ProductType) {
     buyModal.show({
       addressRequired: true,
-      collection: import.meta.env.VITE_ASSET_CONTRACT,
+      collection: product.metadata.contract,
       variant: '0x00000000000000000000001d',
       to: account as string,
       product: product
@@ -39,7 +39,8 @@ function ProductCard({
         src={product.images[0]}
       />
       {!mintStatus.isLoading && (
-        <div className="flex flex-row text-xs text-gray-400 justify-self-end my-8">
+        <div className="flex flex-row text-xs text-gray-400 justify-self-end mt-8">
+          { mintStatus.data?.capped ? <>
           <div className="w-44">Limited to</div>
           <div className="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700 mt-1">
             <div
@@ -53,9 +54,10 @@ function ProductCard({
             ></div>
           </div>
           <div className="w-44">{mintStatus.data?.minted}/{mintStatus.data?.supply} pcs</div>
+          </> : <p className="w-full text-center">Unlimited Supply {mintStatus.data?.minted && `(${mintStatus.data?.minted} minted)`}</p> }
         </div>
       )}
-      <p className="text-center text-xs text-gray-400">{product.description}</p>
+      <p className="text-center text-xs text-gray-400 mt-8">{product.description}</p>
       {!mintStatus.isLoading && (
         <Countdown
           date={new Date((mintStatus.data?.endAt as number) * 1000)}
