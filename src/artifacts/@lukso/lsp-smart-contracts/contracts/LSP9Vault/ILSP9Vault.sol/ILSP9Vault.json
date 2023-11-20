@@ -4,25 +4,6 @@
   "sourceName": "@lukso/lsp-smart-contracts/contracts/LSP9Vault/ILSP9Vault.sol",
   "abi": [
     {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "name": "ValueReceived",
-      "type": "event"
-    },
-    {
       "inputs": [
         {
           "internalType": "bytes[]",

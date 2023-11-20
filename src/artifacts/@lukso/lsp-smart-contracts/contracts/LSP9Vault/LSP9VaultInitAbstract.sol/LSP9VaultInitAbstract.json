@@ -5,11 +5,6 @@
   "abi": [
     {
       "inputs": [],
-      "name": "CannotTransferOwnershipToSelf",
-      "type": "error"
-    },
-    {
-      "inputs": [],
       "name": "ERC725X_ContractDeploymentFailed",
       "type": "error"
     },
@@ -76,8 +71,40 @@
       "type": "error"
     },
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        }
+      ],
+      "name": "LSP14CallerNotPendingOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "LSP14CannotTransferOwnershipToSelf",
+      "type": "error"
+    },
+    {
       "inputs": [],
       "name": "LSP14MustAcceptOwnershipInSeparateTransaction",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "renounceOwnershipStart",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "renounceOwnershipEnd",
+          "type": "uint256"
+        }
+      ],
+      "name": "LSP14NotInRenounceOwnershipInterval",
       "type": "error"
     },
     {
@@ -100,22 +127,6 @@
         }
       ],
       "name": "NoExtensionFoundForFunctionSelector",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "renounceOwnershipStart",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "renounceOwnershipEnd",
-          "type": "uint256"
-        }
-      ],
-      "name": "NotInRenounceOwnershipInterval",
       "type": "error"
     },
     {
@@ -297,25 +308,6 @@
         }
       ],
       "name": "UniversalReceiver",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "name": "ValueReceived",
       "type": "event"
     },
     {
