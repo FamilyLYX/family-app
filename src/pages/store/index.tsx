@@ -24,7 +24,7 @@ function ProductCard({
 
   async function handleCheckout (product: ProductType) {
     buyModal.show({
-      addressRequired: true,
+      addressRequired: !mintStatus.data?.digital,
       collection: product.metadata.contract,
       variant: '0x00000000000000000000001d',
       to: account as string,
