@@ -1,5 +1,6 @@
 import CardCarousel from "./Marketplace/CardCarousel";
 import ProductCard from "./Marketplace/ProductCard";
+import ProductCardListing from "./Marketplace/ProductCardListing";
 import {
   ChipSelect,
   ColorSelectInput,
@@ -15,4 +16,5 @@ export {
   ChipSelect,
   Button,
   Popover,
+  ProductCardListing,
 };
