@@ -5,11 +5,6 @@
   "abi": [
     {
       "inputs": [],
-      "name": "CannotTransferOwnershipToSelf",
-      "type": "error"
-    },
-    {
-      "inputs": [],
       "name": "ERC725X_ContractDeploymentFailed",
       "type": "error"
     },
@@ -72,12 +67,65 @@
     },
     {
       "inputs": [],
+      "name": "ERC725Y_DataKeysValuesEmptyArray",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "ERC725Y_DataKeysValuesLengthMismatch",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        }
+      ],
+      "name": "LSP14CallerNotPendingOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "LSP14CannotTransferOwnershipToSelf",
       "type": "error"
     },
     {
       "inputs": [],
       "name": "LSP14MustAcceptOwnershipInSeparateTransaction",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "renounceOwnershipStart",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "renounceOwnershipEnd",
+          "type": "uint256"
+        }
+      ],
+      "name": "LSP14NotInRenounceOwnershipInterval",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "postCall",
+          "type": "bool"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "returnedStatus",
+          "type": "bytes4"
+        }
+      ],
+      "name": "LSP20CallVerificationFailed",
       "type": "error"
     },
     {
@@ -94,17 +142,12 @@
     {
       "inputs": [
         {
-          "internalType": "bool",
-          "name": "postCall",
-          "type": "bool"
-        },
-        {
-          "internalType": "bytes",
-          "name": "returnedData",
-          "type": "bytes"
+          "internalType": "address",
+          "name": "logicVerifier",
+          "type": "address"
         }
       ],
-      "name": "LSP20InvalidMagicValue",
+      "name": "LSP20EOACannotVerifyCall",
       "type": "error"
     },
     {
@@ -116,22 +159,6 @@
         }
       ],
       "name": "NoExtensionFoundForFunctionSelector",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "renounceOwnershipStart",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "renounceOwnershipEnd",
-          "type": "uint256"
-        }
-      ],
-      "name": "NotInRenounceOwnershipInterval",
       "type": "error"
     },
     {
@@ -300,25 +327,6 @@
         }
       ],
       "name": "UniversalReceiver",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "name": "ValueReceived",
       "type": "event"
     },
     {
@@ -500,7 +508,7 @@
       "outputs": [
         {
           "internalType": "bytes4",
-          "name": "magicValue",
+          "name": "returnedStatus",
           "type": "bytes4"
         }
       ],

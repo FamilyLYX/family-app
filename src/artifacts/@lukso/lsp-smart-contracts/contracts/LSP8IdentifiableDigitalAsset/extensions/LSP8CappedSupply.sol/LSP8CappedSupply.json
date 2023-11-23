@@ -184,6 +184,16 @@
     },
     {
       "inputs": [],
+      "name": "LSP8TokenContractCannotHoldValue",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "LSP8TokenIdTypeNotEditable",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "LSP8TokenOwnerCannotBeOperator",
       "type": "error"
     },
@@ -290,6 +300,12 @@
         },
         {
           "indexed": false,
+          "internalType": "bool",
+          "name": "notified",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
           "internalType": "bytes",
           "name": "operatorNotificationData",
           "type": "bytes"
@@ -328,7 +344,7 @@
         {
           "indexed": false,
           "internalType": "bool",
-          "name": "allowNonLSP1Recipient",
+          "name": "force",
           "type": "bool"
         },
         {
@@ -501,6 +517,11 @@
           "type": "bytes32"
         },
         {
+          "internalType": "bool",
+          "name": "notify",
+          "type": "bool"
+        },
+        {
           "internalType": "bytes",
           "name": "operatorNotificationData",
           "type": "bytes"
@@ -649,7 +670,7 @@
         },
         {
           "internalType": "bool",
-          "name": "allowNonLSP1Recipient",
+          "name": "force",
           "type": "bool"
         },
         {
@@ -682,7 +703,7 @@
         },
         {
           "internalType": "bool[]",
-          "name": "allowNonLSP1Recipient",
+          "name": "force",
           "type": "bool[]"
         },
         {
@@ -708,6 +729,10 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
     }
   ],
   "bytecode": "0x",

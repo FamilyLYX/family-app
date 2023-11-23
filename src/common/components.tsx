@@ -12,8 +12,8 @@ export function ShortAddress ({ address }: { address: string }) {
   </a>
 }
 
-export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, showActions?: boolean }) {
-  const { getTokenMetadata } = usePhygitalCollection();
+export function TokenCard ({ tokenId, address, showActions = true }: { tokenId: TokenId, address: string, showActions?: boolean }) {
+  const { getTokenMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
   const modal = useModal('family-marketplace-list');
 
@@ -32,15 +32,15 @@ export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, 
       showActions && <>
         <div className="flex flex-row">
           <Button variant="dark" onClick={() => modal.show({ tokenId })}>Sell</Button>
-          <Button onClick={() => console.log('Info Clicked')}>Info</Button>
+          <Button onClick={() => window.alert(tokenId.toString())}>Info</Button>
         </div>
       </>
     }
   </div>
 }
 
-export function TokenMetadata ({ tokenId, children }: { tokenId: TokenId, children: (owner: string) => any }) {
-  const { getTokenMetadata } = usePhygitalCollection();
+export function TokenMetadata ({ address, tokenId, children }: { address: string, tokenId: TokenId, children: (owner: string) => any }) {
+  const { getTokenMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
 
   if (query.isLoading) {
@@ -68,7 +68,7 @@ export function OrderCard ({ tokenId }: { tokenId: TokenId }) {
 }
 
 export function CollectionCard ({ address }: { address: string }) {
-  const { getCollectionMetadata } = usePhygitalCollection();
+  const { getCollectionMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['collection', address], queryFn: () => getCollectionMetadata() });
 
   return <div className="max-w-xs">

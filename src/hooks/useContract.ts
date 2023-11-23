@@ -13,3 +13,5 @@ export const useContract = (
   abi: InterfaceAbi,
   provider: JsonRpcProvider | JsonRpcSigner = rpcProvider
 ) => new Contract(target, abi, provider);
+export const useContractFactory = (abi: InterfaceAbi) =>
+  new ContractFactory(abi, "0x", rpcProvider);

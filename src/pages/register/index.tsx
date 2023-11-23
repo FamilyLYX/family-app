@@ -153,8 +153,8 @@ export default function RegisterToken () {
 
   if (data.registered) {
     return <div className="p-8 max-w-sm mx-auto">
-      <TokenCard tokenId={data.tokenId} showActions={false} />
-      <TokenMetadata tokenId={data.tokenId}>
+      <TokenCard tokenId={data.tokenId} address={data.collection} showActions={false} />
+      <TokenMetadata tokenId={data.tokenId} address={data.collection}>
         {(owner) => <MarketplaceHandover uid={uid as string} owner={owner} user={tempUser} secret={signature() as string} />}
       </TokenMetadata>
     </div>
@@ -162,7 +162,7 @@ export default function RegisterToken () {
 
   return <div className="p-8 max-w-sm mx-auto">    
     <Handover uid={uid as string} user={tempUser} secret={signature() as string}>
-      <CollectionCard address={import.meta.env.VITE_ASSET_ADDRESS} />
+      <CollectionCard address={data.collection} />
     </Handover>
   </div>
 }
