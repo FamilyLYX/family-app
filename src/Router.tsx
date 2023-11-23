@@ -10,6 +10,7 @@ import NiceModal from "@ebay/nice-modal-react";
 
 import Layout from "./pages/Layout";
 import Marketplace from "./pages/marketplace";
+import EscrowMoreinfo from "./pages/escrowmoreinfo";
 import Inventory from "./pages/inventory";
 import Store from "./pages/store";
 import Trade from "./pages/trade";
@@ -41,6 +42,7 @@ const router = () =>
           <Route path="/orders/:id" element={<Order />} />
           <Route path="/store" element={<Store />} />
           <Route path="/trade" element={<Trade />} />
+          <Route path="/escrowmoreinfo" element={<EscrowMoreinfo />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/product-card" element={<ProductCard />} />
           <Route path="/admin-xyz" element={<Admin />} />

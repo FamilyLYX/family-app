@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Tab } from "@headlessui/react";
 
 import { CiFilter } from "react-icons/ci";
+import classes from "./marketplace.module.css";
+import styles from "/Users/macbook/family-app/src/components/Escrow/EscrowSystem.module.css";
 import {
   Button,
   CardCarousel,
@@ -15,6 +18,10 @@ import marketplaceBgSmall from "../../assets/marketplace/marketplace-bg-mobile.p
 // import React from "react";
 import { CgShoppingBag } from "react-icons/cg";
 import { IoPlayOutline } from "react-icons/io5";
+import EscrowSystem from "../../components/Escrow/EscrowSystem";
+import LoadingLine from "../../components/Escrow/LoadingLine";
+
+
 
 function classNames(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -86,7 +93,32 @@ const ProductCards = [
     price_unit: "ETH",
   },
 ];
+
+interface ContentMap {
+  [key: string]: {
+    title: string;
+    description: string;
+  };
+}
+
+const contentMap: ContentMap = {
+  Marketplace: {
+    title: "Marketplace",
+    description:
+      "Our revolutionary Decentralised Marketplace is a peer-to-peer platform designed to empower our vibrant community to trade both phygital and digital assets seamlessly. Embracing the power of blockchain technology, our marketplace ensures a safe and secure environment for all transactions, fostering trust and transparency among our valued users.",
+  },
+  Escrow: {
+    title: "Escrow System",
+    description:
+      "Here you can see in more detail everything that happens with your nft and the order. Statistics metrics, positions and statuses are all displayed here.",
+  },
+};
+
 export default function Marketplace() {
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [activeCategory, setActiveCategory] = useState("Marketplace");
+  const [info, setInfo] = useState(false);
   // const [anchorEl] = React.useState<HTMLButtonElement | null>(
   //   null
   // );
@@ -99,24 +131,40 @@ export default function Marketplace() {
   //   setAnchorEl(null);
   // };
 
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
   // const open = Boolean(anchorEl);
   // const id = open ? "simple-popper" : undefined;
 
   return (
     <div className="mt-24 container mx-auto flex flex-col gap-4 mb-8">
-      <h2 className="long-title text-center text-8xl">Marketplace</h2>
+      {activeCategory === "Escrow" && info === true ? (
+        <LoadingLine text="Executing Command..." />
+      ) : (
+        ""
+      )}
+
+      <h2
+        style={{
+          color:
+            activeCategory === "Escrow" && info === true ? "gray" : "black",
+        }}
+        className="long-title text-center text-8xl"
+      >
+        {contentMap[activeCategory].title}
+      </h2>
+
       <p className="text-center text-gray-400 py-2 max-w-2xl mx-auto">
-        Our revolutionary Decentralised Marketplace is a peer-to-peer platform
-        designed to empower our vibrant community to trade both phygital and
-        digital assets seamlessly. Embracing the power of blockchain technology,
-        our marketplace ensures a safe and secure environment for all
-        transactions, fostering trust and transparency among our valued users.
+        {contentMap[activeCategory].description}
       </p>
 
       <div>
         <Tab.Group>
           <Tab.List className="flex space-x-2 rounded-xl  p-1 max-w-xl mx-auto">
-            {["Marketplace", "Escrow"].map((category) => (
+            {Object.keys(contentMap).map((category) => (
               <Tab
                 key={category}
                 className={({ selected }) =>
@@ -127,6 +175,7 @@ export default function Marketplace() {
                       : "text-black hover:bg-gray-100"
                   )
                 }
+                onClick={() => handleCategoryChange(category)}
               >
                 {category}
               </Tab>
@@ -149,6 +198,9 @@ export default function Marketplace() {
                         onChange={console.log}
                         options={["1H", "1D", "7D", "30D"]}
                         selectedOption="1D"
+                        onChange={function (option: string): void {
+                          throw new Error("Function not implemented.");
+                        }}
                       />
                     </div>
                     <div className="flex xl:hidden  gap-6 z-50">
@@ -279,21 +331,7 @@ export default function Marketplace() {
             </Tab.Panel>
             <Tab.Panel className={"rounded-xl bg-white p-3"}>
               {/* Content for Escrow */}
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste,
-                ipsa corrupti labore eligendi reiciendis nihil! Atque provident
-                ratione esse inventore saepe nesciunt delectus! Ducimus commodi
-                quam incidunt enim possimus obcaecati! In dolor asperiores autem
-                dicta porro itaque ipsum doloribus exercitationem corporis optio
-                facere quis, sunt aliquid aperiam aut quos possimus laudantium
-                incidunt. Itaque facilis, consectetur, sit nesciunt delectus
-                dolorem autem non aperiam nobis harum, quas quaerat doloremque.
-                Aspernatur molestiae quia fugit, quidem jhnhjkkbcorrupti odit
-                maxime voluptate, cumque amet eum veniam incidunt doloribus
-                eligendi possimus consequatur harum voluptas! Totam rem
-                accusantium distinctio ullam nostrum ducimus, molestiae
-                assumenda reiciendis non in laborum.
-              </p>
+              <EscrowSystem setInfo={setInfo} />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
