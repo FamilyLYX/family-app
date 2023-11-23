@@ -9,7 +9,7 @@ import {
   CardCarousel,
   ChipSelect,
   Popover,
-  ProductCard,
+  ProductCardListing,
 } from "../../components";
 import { ColorSelectInput, Select } from "../../components";
 import productImg from "../../assets/marketplace/product-02.png";
@@ -19,9 +19,12 @@ import marketplaceBgSmall from "../../assets/marketplace/marketplace-bg-mobile.p
 import { CgShoppingBag } from "react-icons/cg";
 import { IoPlayOutline } from "react-icons/io5";
 import EscrowSystem from "../../components/Escrow/EscrowSystem";
-import LoadingLine from "../../components/Escrow/LoadingLine";
 
-
+import { INDEX_LISTINGS } from "../../queries/listing";
+import { useQuery } from "@apollo/client";
+import { Skeleton } from "@mui/material";
+import { useState } from "react";
+import LoadingLine from "../../components/Escrow/Loadingline";
 
 function classNames(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -32,66 +35,6 @@ const colors = [
   { hexCode: "#00FF00", title: "Green" },
   { hexCode: "#0000FF", title: "Blue" },
   // Add more colors as needed
-];
-
-const ProductCards = [
-  {
-    id: 1,
-    image: productImg,
-    title: "XXL",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
-  {
-    id: 2,
-    image: productImg,
-    title: "Honft",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
-  {
-    id: 3,
-    image: productImg,
-    title: "Honft",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
-
-  {
-    id: 4,
-    image: productImg,
-    title: "Honft",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
-  {
-    id: 5,
-    image: productImg,
-    title: "Honft",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
-  {
-    id: 6,
-    image: productImg,
-    title: "Honft",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
-  {
-    id: 7,
-    image: productImg,
-    title: "Honft",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
-  {
-    id: 8,
-    image: productImg,
-    title: "Honft",
-    price: "1,452540",
-    price_unit: "ETH",
-  },
 ];
 
 interface ContentMap {
@@ -115,10 +58,11 @@ const contentMap: ContentMap = {
 };
 
 export default function Marketplace() {
-
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [activeCategory, setActiveCategory] = useState("Marketplace");
   const [info, setInfo] = useState(false);
+  const { data, loading, fetchMore, error } = useQuery(INDEX_LISTINGS);
+  console.log(data, loading, error);
   // const [anchorEl] = React.useState<HTMLButtonElement | null>(
   //   null
   // );
@@ -198,19 +142,18 @@ export default function Marketplace() {
                         onChange={console.log}
                         options={["1H", "1D", "7D", "30D"]}
                         selectedOption="1D"
-                        onChange={function (option: string): void {
-                          throw new Error("Function not implemented.");
-                        }}
                       />
                     </div>
                     <div className="flex xl:hidden  gap-6 z-50">
                       {/* filter */}
                       <Popover
                         ButtonText={
-                          (<div className="flex gap-1 items-center justify-center">
-                            <p>Filter</p>
-                            <CiFilter size="20" />
-                          </div>) as any
+                          (
+                            <div className="flex gap-1 items-center justify-center">
+                              <p>Filter</p>
+                              <CiFilter size="20" />
+                            </div>
+                          ) as any
                         }
                         PopoverContent={
                           <div className="grid grid-cols-2 gap-3">
@@ -272,9 +215,13 @@ export default function Marketplace() {
                   </div>
 
                   <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
-                    {ProductCards.map((card) => (
-                      <ProductCard data={card} key={card.id} />
-                    ))}
+                    {!loading
+                      ? data.listings.map((card: any) => (
+                          <ProductCardListing data={card} key={card.id} />
+                        ))
+                      : [1, 2, 3, 4].map(() => (
+                          <Skeleton height={"35rem"} className="h-[28rem]" />
+                        ))}
                   </div>
 
                   <div className="mt-8 flex flex-col gap-4">

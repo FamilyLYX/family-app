@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from 'swiper/modules';
+import { Navigation } from "swiper/modules";
 
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
@@ -8,12 +8,10 @@ import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
 import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
-import 'swiper/css/navigation';
+import "swiper/css/navigation";
 import EmptyState from "./emptyState";
 
-const collections = [
-  import.meta.env.VITE_DIGITAL_ASSET
-];
+const collections = [import.meta.env.VITE_DIGITAL_ASSET];
 
 export default function Digitals() {
   const account = hooks.useAccount();
@@ -26,17 +24,23 @@ export default function Digitals() {
   });
 
   if (isLoading) {
-    return <p>Loading Digital Tokens</p>
+    return <p>Loading Digital Tokens</p>;
   }
 
   if (!data || data.length == 0) {
-    return <EmptyState />
+    return <EmptyState />;
   }
 
   return (
     <div className="w-full flex flex-row space-x-2">
       <div className="w-12 mt-24 cursor-pointer">
-        <a id="prev-page"><ArrowLeftIcon className="rounded-full border p-1" height={24} width={24}/></a>
+        <a id="prev-page">
+          <ArrowLeftIcon
+            className="rounded-full border p-1"
+            height={24}
+            width={24}
+          />
+        </a>
       </div>
       <Swiper
         className="w-full"
@@ -44,8 +48,8 @@ export default function Digitals() {
         slidesPerView={3}
         navigation={{
           enabled: true,
-          nextEl: '#next-page',
-          prevEl: '#prev-page'
+          nextEl: "#next-page",
+          prevEl: "#prev-page",
         }}
         breakpoints={{
           640: {
@@ -65,13 +69,22 @@ export default function Digitals() {
       >
         {!isLoading &&
           data?.map((token, idx) => (
-            <SwiperSlide key={`token:${token.id.toString()}`} virtualIndex={idx}>
+            <SwiperSlide
+              key={`token:${token.id.toString()}`}
+              virtualIndex={idx}
+            >
               <TokenCard tokenId={token.id} address={token.address} />
             </SwiperSlide>
           ))}
       </Swiper>
       <div className="w-12 mt-24 cursor-pointer">
-        <a id="next-page"><ArrowRightIcon className="rounded-full border p-1" height={24} width={24}/></a>
+        <a id="next-page">
+          <ArrowRightIcon
+            className="rounded-full border p-1"
+            height={24}
+            width={24}
+          />
+        </a>
       </div>
     </div>
   );

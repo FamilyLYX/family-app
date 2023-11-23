@@ -1,5 +1,7 @@
-import { Fragment, useState } from "react";
+import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { Transition, Dialog } from "@headlessui/react";
+import { LSP4DigitalAssetMetadata } from "@lukso/lsp-factory.js";
+import ImageUploading from "react-images-uploading";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Button } from "./buttons";
@@ -9,7 +11,13 @@ import { getAuth } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { hooks } from "../connectors/default";
 import { Web3ReactHooks } from "@web3-react/core";
-import OtpInput from 'react-otp-input';
+import overlay1 from "../assets/overlays/Vector 13.png";
+import OtpInput from "react-otp-input";
+import { useMarketplace } from "../hooks/useMarketplace";
+import { async } from "@firebase/util";
+import { IPFS_GATEWAY, marketplaceContractAddress } from "../constants";
+import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
+import { hexlify } from "ethers";
 
 export function Loader() {
   return (
@@ -40,29 +48,108 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
   const [waiting, setWaiting] = useState<number>(0);
   const [code, setCode] = useState<string>();
   const provider = (hooks as Web3ReactHooks).useProvider();
+  const [formData, setForm] = useState<Record<any, any>>({});
+  const [operator, setOperator] = useState(false);
+  const [images, setImages] = useState([]);
+  const maxNumber = 69;
+  const onChange = (imageList: any, addUpdateIndex: any) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
+  const { listToken, authorize, listPhygital } = useMarketplace();
+  const { phygital } = usePhygitalCollection();
+
+  const onFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const uploadToIPFS = async () => {
+    console.log(images);
+    const res = await LSP4DigitalAssetMetadata.uploadMetadata({
+      description: formData?.description ?? "",
+      images: images.map((image: any) => image.file),
+      ...formData,
+    });
+    return res.url.replace("ipfs://", IPFS_GATEWAY);
+  };
+
+  async function getIsOperator() {
+    const isOperator = await phygital.getFunction("isOperatorFor")(
+      marketplaceContractAddress,
+      hexlify((modal.args?.tokenId as TokenId).toString())
+    );
+    setOperator(isOperator);
+  }
+
+  // async function list() {
+  //   const listingUrl = await uploadToIPFS();
+  //   console.log(listingUrl);
+
+  //   await listToken(
+  //     import.meta.env.VITE_ASSET_CONTRACT,
+  //     modal.args?.tokenId as TokenId,
+  //     Number(formData?.price ?? 0),
+  //     listingUrl,
+  //     false
+  //   );
+  // }
+
+  async function list(uid: string, signature: string) {
+    const listingUrl = await uploadToIPFS();
+    console.log(listingUrl);
+
+    await listPhygital(
+      import.meta.env.VITE_ASSET_CONTRACT,
+      modal.args?.tokenId as TokenId,
+      Number(formData?.price ?? 0),
+      listingUrl,
+      false,
+      uid,
+      signature
+    );
+  }
 
   async function register(tokenId: TokenId, code: string) {
     console.log(tokenId);
     const idToken = await getAuth().currentUser?.getIdToken();
 
-    const handoverData = await requestToClaimHandover(idToken as string, code as string);
+    console.log("handling over");
+    const handoverData = await requestToClaimHandover(
+      idToken as string,
+      code as string
+    );
 
-    setWaiting(1);
+    console.log("handed over", handoverData);
+    setWaiting(2);
 
     onSnapshot(doc(getFirestore(), `handover/${handoverData.hash}`), (snap) => {
       const data: any = snap.data();
+      console.log(data);
 
-      if (data.status === 'completed' && data.signature) {
+      if (data.status === "completed" && data.signature) {
         if (!provider) {
-          return alert('Provider unavailable');
+          return alert("Provider unavailable");
         }
+        // list();
+        list(data.uid, data.signature);
 
-        setWaiting(2);
+        setWaiting(3);
 
-        alert('signature received');
+        alert("signature received");
       }
     });
   }
+
+  async function authorizeMarket() {
+    await authorize(modal.args?.tokenId as TokenId);
+    setOperator(true);
+  }
+
+  useEffect(() => {
+    getIsOperator();
+  }, []);
 
   return (
     <Transition appear show={modal.visible} as={Fragment}>
@@ -90,38 +177,193 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8  text-left align-middle shadow-xl transition-all">
-                <Dialog.Title
-                  as="h2"
-                  className="font-medium text-gray-900 text-center long-title text-5xl"
-                >
-                  List on marketplace
-                </Dialog.Title>
-                <Dialog.Description
-                  as="p"
-                  className="text-center px-8 mt-4 text-gray-400"
-                >
-                  { waiting === 0 && 'Enter your 6-digit code' }
-                  { waiting === 1 && 'Waiting for confirmation' }
-                  { waiting === 2 && 'Preparing and sending registration transaction' }
-                </Dialog.Description>
-                { waiting === 0 && <>
-                  <OtpInput
-                    containerStyle="justify-center my-4"
-                    inputStyle={{ width: '32px' }}
-                    value={code}
-                    onChange={setCode}
-                    numInputs={6}
-                    renderSeparator={<span></span>}
-                    inputType="number"
-                    renderInput={({ className, ...props }) => <input className="border mx-2 py-2" {...props} />}
-                  />
-                  <Button variant="dark" onClick={() => register(modal.args?.tokenId as TokenId, code as string)}>Continue</Button>
-                </>}
-                { waiting === 1 && <p className="text-xs text-center text-gray-400">Please accept the request on your mobile device to complete registration.</p> }
-                { waiting === 2 && <>
-                  <Loader />
-                </>}
+              <Dialog.Panel className="w-auto max-w-[80%] transform overflow-hidden rounded-2xl bg-transparent  text-left align-middle shadow-xl transition-all">
+                {waiting === 0 && (
+                  <div className="flex gap-2 justify-between ">
+                    <div className="w-1/2 max-h-[80vh] overflow-y-auto p-10 rounded-[42px] flex flex-col gap-8 bg-white">
+                      <div className="long-title text-6xl">
+                        Sell{" "}
+                        <span className="text-black/50 long-title ">Honft</span>
+                      </div>
+                      <div className="text-black/60">
+                        To sell nft please fill in all the fields below
+                      </div>
+                      <div className="flex flex-col gap-6">
+                        <input
+                          className="w-full border px-2 py-4 rounded-lg"
+                          placeholder="Loacation"
+                          name="location"
+                          type="text"
+                          onChange={onFormChange}
+                        />
+                        <input
+                          className="w-full border  px-2 py-4 rounded-lg"
+                          placeholder="Condition"
+                          name="condition"
+                          type="text"
+                          onChange={onFormChange}
+                        />
+                        <div>
+                          <div className="text-black/25 mb-2">Pictures:</div>
+                          <div>
+                            <ImageUploading
+                              multiple
+                              value={images}
+                              onChange={onChange}
+                              maxNumber={maxNumber}
+                              dataURLKey="data_url"
+                              acceptType={["jpg", "png"]}
+                            >
+                              {({
+                                imageList,
+                                onImageUpload,
+                                onImageRemoveAll,
+                                onImageUpdate,
+                                onImageRemove,
+                                isDragging,
+                                dragProps,
+                              }) => (
+                                // write your building UI
+                                <div className="flex gap-2 items-center">
+                                  <button
+                                    style={isDragging ? { color: "red" } : {}}
+                                    onClick={onImageUpload}
+                                    {...dragProps}
+                                    className="block w-[62px] h-[62px] border rounded-full"
+                                  >
+                                    +
+                                  </button>
+                                  {imageList.map((image, index) => (
+                                    <div key={index} className="image-item">
+                                      <img
+                                        src={image.data_url}
+                                        alt=""
+                                        // width="100"
+                                        className="block w-[62px] h-[62px] rounded-xl"
+                                      />
+                                      {/* <div className="image-item__btn-wrapper">
+                                      <button
+                                        onClick={() => onImageUpdate(index)}
+                                      >
+                                        Update
+                                      </button>
+                                      <button
+                                        onClick={() => onImageRemove(index)}
+                                      >
+                                        Remove
+                                      </button>
+                                    </div> */}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </ImageUploading>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex items-center w-full border justify-between  px-3 py-4 rounded-lg">
+                            <input
+                              className="block focus:border-black/100 focus:outline-none"
+                              placeholder="Price"
+                              type="text"
+                              name="price"
+                              onChange={onFormChange}
+                            />
+                            <div className="text-black/25 font-bold">LYX</div>
+                          </div>
+                          <div className="mt-5 flex gap-3">
+                            <input type="checkbox"></input>
+                            Accept Fiat Payment
+                          </div>
+                        </div>
+                        {operator ? (
+                          <Button
+                            variant="dark"
+                            // disabled={true}
+                            onClick={() => setWaiting(1)}
+                          >
+                            Sell
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="dark"
+                            // disabled={true}
+                            onClick={() => authorizeMarket()}
+                          >
+                            Approve
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-1/2 rounded-[42px] relative">
+                      <img
+                        className="w-full aspect-square object-cover h-full rounded-[42px]"
+                        src="/item_1.png"
+                      />
+                      <img
+                        className=" block absolute z-10 top-0 left-0 w-10 h-full object-cover"
+                        src={overlay1}
+                      />
+                    </div>
+                  </div>
+                )}
+                {waiting > 0 && (
+                  <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8  text-left align-middle shadow-xl transition-all">
+                    <Dialog.Title
+                      as="h2"
+                      className="font-medium text-gray-900 text-center long-title text-5xl"
+                    >
+                      List on marketplace
+                    </Dialog.Title>
+                    <Dialog.Description
+                      as="p"
+                      className="text-center px-8 mt-4 text-gray-400"
+                    >
+                      {waiting === 1 && "Enter your 6-digit code"}
+                      {waiting === 2 && "Waiting for confirmation"}
+                      {waiting === 3 &&
+                        "Preparing and sending registration transaction"}
+                    </Dialog.Description>
+                    {waiting === 1 && (
+                      <>
+                        <OtpInput
+                          containerStyle="justify-center my-4"
+                          inputStyle={{ width: "32px" }}
+                          value={code}
+                          onChange={setCode}
+                          numInputs={6}
+                          renderSeparator={<span></span>}
+                          inputType="number"
+                          renderInput={({ className, ...props }) => (
+                            <input className="border mx-2 py-2" {...props} />
+                          )}
+                        />
+                        <Button
+                          variant="dark"
+                          onClick={() =>
+                            register(
+                              modal.args?.tokenId as TokenId,
+                              code as string
+                            )
+                          }
+                        >
+                          Continue
+                        </Button>
+                      </>
+                    )}
+                    {waiting === 2 && (
+                      <p className="text-xs text-center text-gray-400">
+                        Please accept the request on your mobile device to
+                        complete registration.
+                      </p>
+                    )}
+                    {waiting === 3 && (
+                      <>
+                        <Loader />
+                      </>
+                    )}
+                  </div>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
