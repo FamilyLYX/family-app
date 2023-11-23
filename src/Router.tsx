@@ -25,6 +25,7 @@ import RegisterModal from "./common/RegisterModal";
 import { Order } from "./pages/order";
 import { Login } from "./pages/login";
 import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
+import ProductCard from "./pages/ProductCard/ProductCard";
 
 NiceModal.register("family-buy-modal", BuyModal);
 NiceModal.register("family-register-modal", RegisterModal);
@@ -43,6 +44,7 @@ const router = () =>
           <Route path="/trade" element={<Trade />} />
           <Route path="/escrowmoreinfo" element={<EscrowMoreinfo />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/product-card" element={<ProductCard />} />
           <Route path="/admin-xyz" element={<Admin />} />
           <Route path="/inventory" element={<Inventory />}>
             <Route

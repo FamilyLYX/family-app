@@ -4,8 +4,19 @@
   "sourceName": "@lukso/lsp-smart-contracts/contracts/LSP14Ownable2Step/LSP14Ownable2Step.sol",
   "abi": [
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        }
+      ],
+      "name": "LSP14CallerNotPendingOwner",
+      "type": "error"
+    },
+    {
       "inputs": [],
-      "name": "CannotTransferOwnershipToSelf",
+      "name": "LSP14CannotTransferOwnershipToSelf",
       "type": "error"
     },
     {
@@ -26,7 +37,7 @@
           "type": "uint256"
         }
       ],
-      "name": "NotInRenounceOwnershipInterval",
+      "name": "LSP14NotInRenounceOwnershipInterval",
       "type": "error"
     },
     {

@@ -5,7 +5,7 @@ import { abi as PlaceholderABI } from "../artifacts/contracts/AssetPlaceholder.s
 import { abi as AssetABI } from "../artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json";
 import { abi as ProfileABI } from "@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json";
 import { abi as KeyManagerABI } from "@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json";
-import { useToasts } from "react-toast-notifications";
+import toast from 'react-hot-toast';
 
 export const ExtensionInterface = new Interface(ExtensionABI);
 export const PlaceholderInterface = new Interface(PlaceholderABI);
@@ -55,7 +55,6 @@ function parseTransactionError(error: any) {
 
 export function useTransactionSender() {
   const provider = new BrowserProvider(window.ethereum);
-  const { addToast } = useToasts();
 
   async function sendTransaction(
     contract: Contract,
@@ -77,14 +76,16 @@ export function useTransactionSender() {
       throw new Error(`You do not have sufficient LYX balance for complete this order. Your balance is ${formatEther(balance)}`);
     }
 
-    addToast("sending transaction", { appearance: "info", autoDismiss: true });
-
     try {
-      const txnResponse = await signer.sendTransaction(transactionReq);
+      const txn = signer.sendTransaction(transactionReq);
 
-      addToast("sent transaction", { appearance: "info", autoDismiss: true });
+      toast.promise(txn, {
+        loading: "Sending transaction",
+        success: "Transaction sent",
+        error: "Unable to send transaction",
+      })
 
-      return txnResponse
+      return await txn;
     }
     catch (_err: any) {
       if (_err.code === 'ACTION_REJECTED') {
@@ -92,8 +93,6 @@ export function useTransactionSender() {
       }
 
       const error =  parseTransactionError(_err);
-
-      addToast(`transaction failed: ${error.name}`);
 
       throw error;
     }

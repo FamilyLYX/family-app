@@ -20,12 +20,17 @@
     },
     {
       "inputs": [],
-      "name": "CannotSendValueToSetData",
+      "name": "DelegateCallDisallowedViaKeyManager",
       "type": "error"
     },
     {
       "inputs": [],
-      "name": "DelegateCallDisallowedViaKeyManager",
+      "name": "ERC725X_ExecuteParametersEmptyArray",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ERC725X_ExecuteParametersLengthMismatch",
       "type": "error"
     },
     {
@@ -456,7 +461,7 @@
       "outputs": [
         {
           "internalType": "bytes4",
-          "name": "magicValue",
+          "name": "returnedStatus",
           "type": "bytes4"
         }
       ],
@@ -465,6 +470,16 @@
     },
     {
       "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "targetContract",
+          "type": "address"
+        },
         {
           "internalType": "address",
           "name": "caller",
@@ -477,7 +492,7 @@
         },
         {
           "internalType": "bytes",
-          "name": "data",
+          "name": "callData",
           "type": "bytes"
         }
       ],

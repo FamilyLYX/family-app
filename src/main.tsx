@@ -3,7 +3,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { ToastProvider } from 'react-toast-notifications';
 import NiceModal from '@ebay/nice-modal-react';
 
 import { initializeApp } from "firebase/app";
@@ -15,6 +14,7 @@ import {
 } from '@tanstack/react-query'
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Toaster } from 'react-hot-toast';
 
 import App from './App.tsx'
 import './index.css';
@@ -41,12 +41,11 @@ export const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ToastProvider placement='bottom-right'>
+        <Toaster position='bottom-right' />
         <NiceModal.Provider>
           <ReactQueryDevtools initialIsOpen={false} />
           <App />
         </NiceModal.Provider>
-      </ToastProvider>
     </QueryClientProvider>
   </React.StrictMode>
 )

@@ -4,6 +4,7 @@ import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
 import { Button } from "./buttons";
 import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
 import { useModal } from "@ebay/nice-modal-react";
+// import useUser from "../hooks/useUser";
 
 export function ShortAddress ({ address }: { address: string }) {
   return <a className="cursor-pointer" onClick={() => navigator.clipboard.writeText(address)}>
@@ -11,8 +12,8 @@ export function ShortAddress ({ address }: { address: string }) {
   </a>
 }
 
-export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, showActions?: boolean }) {
-  const { getTokenMetadata } = usePhygitalCollection();
+export function TokenCard ({ tokenId, address, showActions = true }: { tokenId: TokenId, address: string, showActions?: boolean }) {
+  const { getTokenMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
   const modal = useModal('family-marketplace-list');
 
@@ -21,7 +22,7 @@ export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, 
   }
 
   return <div className="w-full">
-    <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' />
+    <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} />
     { query.data && <>
         <p className="long-title text-2xl text-center py-2">{query.data.name}</p>
         <p className="text-center text-base text-gray-400 pb-2">{query.data.description}</p>
@@ -31,15 +32,15 @@ export function TokenCard ({ tokenId, showActions = true }: { tokenId: TokenId, 
       showActions && <>
         <div className="flex flex-row">
           <Button variant="dark" onClick={() => modal.show({ tokenId })}>Sell</Button>
-          <Button onClick={() => console.log('Info Clicked')}>Info</Button>
+          <Button onClick={() => window.alert(tokenId.toString())}>Info</Button>
         </div>
       </>
     }
   </div>
 }
 
-export function TokenMetadata ({ tokenId, children }: { tokenId: TokenId, children: (owner: string) => any }) {
-  const { getTokenMetadata } = usePhygitalCollection();
+export function TokenMetadata ({ address, tokenId, children }: { address: string, tokenId: TokenId, children: (owner: string) => any }) {
+  const { getTokenMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
 
   if (query.isLoading) {
@@ -67,7 +68,7 @@ export function OrderCard ({ tokenId }: { tokenId: TokenId }) {
 }
 
 export function CollectionCard ({ address }: { address: string }) {
-  const { getCollectionMetadata } = usePhygitalCollection();
+  const { getCollectionMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['collection', address], queryFn: () => getCollectionMetadata() });
 
   return <div className="max-w-xs">

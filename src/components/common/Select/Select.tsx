@@ -2,15 +2,16 @@ import React from "react";
 import {
   Select as MuiSelect,
   MenuItem,
-  InputLabel,
+  // InputLabel,
   FormControl,
+  SelectChangeEvent,
 } from "@mui/material";
 import { FaChevronDown } from "react-icons/fa";
 
 interface Select {
   data: { label: string; value: string }[];
   value: string;
-  onChange: (event: React.ChangeEvent<{ value: unknown }>) => void;
+  onChange: (event: SelectChangeEvent<string>) => void;
   placeholder: string;
 }
 

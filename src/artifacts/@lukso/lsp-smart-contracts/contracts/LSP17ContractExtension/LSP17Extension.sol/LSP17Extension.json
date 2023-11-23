@@ -4,6 +4,19 @@
   "sourceName": "@lukso/lsp-smart-contracts/contracts/LSP17ContractExtension/LSP17Extension.sol",
   "abi": [
     {
+      "inputs": [],
+      "name": "VERSION",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "bytes4",

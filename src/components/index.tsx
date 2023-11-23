@@ -6,6 +6,8 @@ import {
   Select,
   Button,
   Popover,
+  Breadcrumbs,
+  ViewMore,
 } from "./common";
 export {
   CardCarousel,
@@ -15,4 +17,6 @@ export {
   ChipSelect,
   Button,
   Popover,
+  Breadcrumbs,
+  ViewMore,
 };

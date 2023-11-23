@@ -7,6 +7,16 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "requestor",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "target",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
           "name": "caller",
           "type": "address"
         },
@@ -17,7 +27,7 @@
         },
         {
           "internalType": "bytes",
-          "name": "receivedCalldata",
+          "name": "callData",
           "type": "bytes"
         }
       ],
@@ -25,7 +35,7 @@
       "outputs": [
         {
           "internalType": "bytes4",
-          "name": "magicValue",
+          "name": "returnedStatus",
           "type": "bytes4"
         }
       ],
@@ -41,7 +51,7 @@
         },
         {
           "internalType": "bytes",
-          "name": "result",
+          "name": "callResult",
           "type": "bytes"
         }
       ],

@@ -4,20 +4,26 @@ import { Navigation } from 'swiper/modules';
 
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-import { usePhygitalCollection } from "../../hooks/usePhygitalCollection";
+import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
 import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
 import 'swiper/css/navigation';
-import EmptyState from "./EmptyState";
+import EmptyState from "./emptyState";
 // import 'swiper/css/pagination';
+
+const collections = [
+  '0x6CC952f6439Aa16058A10e51d22a85E8E19355a7',
+  '0xb9c434c174c15cD6594D6AC859987fD97608b05E'
+];
 
 export default function Phygitals() {
   const account = hooks.useAccount();
-  const { getTokens } = usePhygitalCollection();
+  const { fetchTokens } = usePhygitalRepo(collections);
   const { data, isLoading } = useQuery({
     queryKey: ["phygitals", account],
-    queryFn: () => getTokens(account as string),
+    enabled: !!account,
+    queryFn: () => fetchTokens(account as string),
   });
 
   if (isLoading) {
@@ -34,6 +40,7 @@ export default function Phygitals() {
         <a id="prev-page"><ArrowLeftIcon className="rounded-full border p-1" height={24} width={24}/></a>
       </div>
       <Swiper
+        className="w-full"
         spaceBetween={50}
         slidesPerView={3}
         navigation={{
@@ -58,9 +65,9 @@ export default function Phygitals() {
         modules={[Navigation]}
       >
         {!isLoading &&
-          data?.map((tokenId, idx) => (
-            <SwiperSlide key={`token:${tokenId.toString()}`} virtualIndex={idx}>
-              <TokenCard tokenId={tokenId} />
+          data?.map((token, idx) => (
+            <SwiperSlide key={`token:${token.id.toString()}`} virtualIndex={idx}>
+              <TokenCard tokenId={token.id} address={token.address} />
             </SwiperSlide>
           ))}
       </Swiper>
