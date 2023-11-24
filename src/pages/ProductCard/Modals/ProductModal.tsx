@@ -6,12 +6,14 @@ import { Select, TextInput } from "../../../components";
 import { Button } from "../../../common/buttons";
 import { IoClose } from "react-icons/io5";
 
-// Make sure you have initialized TailwindCSS by creating a tailwind.config.js and including the Tailwind base styles in your CSS.
-
-// Bind the modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement("#root");
 
-const ProductModal = ({ isOpen, handleClose }) => {
+interface ModalProps {
+  isOpen: boolean;
+  handleClose: () => void;
+}
+
+const ProductModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
   return (
     <Modal
       isOpen={isOpen}

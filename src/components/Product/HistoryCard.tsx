@@ -1,11 +1,8 @@
-import React from "react";
-
 import product1 from "../../assets/product/product-01.png";
 import product2 from "../../assets/product/product-02.png";
 import product3 from "../../assets/product/product-03.png";
-type Props = {};
 
-const HistoryCard = (props: Props) => {
+const HistoryCard = () => {
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-11 gap-4 p-4">

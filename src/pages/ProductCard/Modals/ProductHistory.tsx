@@ -1,9 +1,5 @@
 import React from "react";
 import Modal from "react-modal";
-import { useState } from "react";
-import productImg from "../../../assets/product/product-01.png";
-import { Select, TextInput } from "../../../components";
-import { Button } from "../../../common/buttons";
 import { IoClose } from "react-icons/io5";
 import HistoryCard from "../../../components/Product/HistoryCard";
 
@@ -12,7 +8,11 @@ import HistoryCard from "../../../components/Product/HistoryCard";
 // Bind the modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement("#root");
 
-const ProductHistory = ({ isOpen, handleClose }) => {
+interface ModalProps {
+  isOpen: boolean;
+  handleClose: () => void;
+}
+const ProductHistory: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
   return (
     <Modal
       isOpen={isOpen}
