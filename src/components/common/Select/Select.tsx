@@ -13,6 +13,7 @@ interface Select {
   value: string;
   onChange: (event: SelectChangeEvent<string>) => void;
   placeholder: string;
+  rounded: string;
 }
 
 const Select: React.FC<Select> = ({
@@ -20,6 +21,7 @@ const Select: React.FC<Select> = ({
   value = "",
   onChange,
   placeholder = "",
+  rounded = "50px",
 }) => {
   return (
     <FormControl
@@ -45,7 +47,7 @@ const Select: React.FC<Select> = ({
     >
       <MuiSelect
         displayEmpty
-        sx={{ borderRadius: "50px", padding: "0 15px", minWidth: "180px" }}
+        sx={{ borderRadius: rounded, padding: "0 10px", minWidth: "180px" }}
         classes={{ icon: "mr-4" }}
         value={value}
         onChange={onChange}
@@ -53,7 +55,7 @@ const Select: React.FC<Select> = ({
       >
         {placeholder !== "" && (
           <MenuItem value="" disabled>
-            <div className="font-semibold">{placeholder}</div>
+            <div className="font-semibold text-black/30">{placeholder}</div>
           </MenuItem>
         )}
         {data.map(({ label, value }) => (
