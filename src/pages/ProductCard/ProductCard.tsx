@@ -4,6 +4,8 @@ import product2 from "../../assets/product/product-02.png";
 import product3 from "../../assets/product/product-03.png";
 import { Breadcrumbs, Button, ViewMore } from "../../components";
 import ProductModal from "./Modals/ProductModal";
+import ProductHistory from "./Modals/ProductHistory";
+import Transparency from "./Modals/Transparency";
 
 type BreadcrumbItem = {
   title: string;
@@ -12,6 +14,10 @@ type BreadcrumbItem = {
 
 const ProductCard = () => {
   const [productModalOpen, setProductModalOpen] = useState(false);
+
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [transparencyModalOpen, setTransparencyModalOpen] = useState(false);
+
   const breadcrumbTitles: BreadcrumbItem[] = [
     { title: "Main", link: "/main" },
     { title: "Marketplace", link: "/marketplace" },
@@ -108,8 +114,12 @@ const ProductCard = () => {
 
             {/* actions */}
             <div className="lg:hidden flex flex-col gap-2">
-              <Button>History</Button>
-              <Button>Transparency</Button>
+              <Button onClick={() => setHistoryModalOpen((o) => !o)}>
+                History
+              </Button>
+              <Button onClick={() => setTransparencyModalOpen((o) => !o)}>
+                Transparency
+              </Button>
             </div>
             <div className="flex flex-col text-center gap-4">
               <p className="long-title text-5xl">
@@ -127,8 +137,12 @@ const ProductCard = () => {
                   Buy
                 </Button>
                 <div className="lg:flex hidden flex-col gap-2">
-                  <Button>History</Button>
-                  <Button>Transparency</Button>
+                  <Button onClick={() => setHistoryModalOpen((o) => !o)}>
+                    History
+                  </Button>
+                  <Button onClick={() => setTransparencyModalOpen((o) => !o)}>
+                    Transparency
+                  </Button>
                 </div>
               </div>
             </div>
@@ -139,6 +153,15 @@ const ProductCard = () => {
       <ProductModal
         isOpen={productModalOpen}
         handleClose={() => setProductModalOpen((o) => !o)}
+      />
+      <ProductHistory
+        isOpen={historyModalOpen}
+        handleClose={() => setHistoryModalOpen((o) => !o)}
+      />
+
+      <Transparency
+        isOpen={transparencyModalOpen}
+        handleClose={() => setTransparencyModalOpen((o) => !o)}
       />
     </>
   );
