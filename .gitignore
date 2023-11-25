@@ -27,3 +27,6 @@ dist-ssr
 .firebase
 .env
 .env
+package-lock.json
+yarn.lock
+package-lock.json
