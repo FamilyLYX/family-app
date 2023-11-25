@@ -4,7 +4,9 @@ import ChipSelect from "./ChipSelect/ChipSelect";
 import ColorSelectInput from "./ColorSelectInput/ColorSelectInput";
 import { Popover } from "./Popover/Popover";
 import Select from "./Select/Select";
+import TextInput from "./TextInput/TextInput";
 import ViewMore from "./ViewMore/ViewMore";
+
 export {
   ColorSelectInput,
   Select,
@@ -13,4 +15,5 @@ export {
   Popover,
   Breadcrumbs,
   ViewMore,
+  TextInput,
 };

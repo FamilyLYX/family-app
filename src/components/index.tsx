@@ -9,6 +9,7 @@ import {
   Popover,
   Breadcrumbs,
   ViewMore,
+  TextInput,
 } from "./common";
 export {
   CardCarousel,
@@ -21,4 +22,5 @@ export {
   ProductCardListing,
   Breadcrumbs,
   ViewMore,
+  TextInput,
 };
