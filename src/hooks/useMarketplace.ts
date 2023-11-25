@@ -18,7 +18,9 @@ export function useMarketplace() {
   const multicall = useContract(multicallContract, multicallAbi);
 
   const { sendTransaction, executeTransactionRequest } = useTransactionSender();
-  const { phygital } = usePhygitalCollection();
+  const { phygital } = usePhygitalCollection(
+    import.meta.env.VITE_ASSET_CONTRACT
+  );
   const provider = new BrowserProvider(window.ethereum);
 
   async function authorize(tokenId: TokenId) {
@@ -92,6 +94,13 @@ export function useMarketplace() {
       acceptFiat,
     ]);
   }
+  async function removeFromSale(LSP8Address: string, tokenId: TokenId) {
+    return sendTransaction(
+      marketplace,
+      "removeLSP8FromSale(address LSP8Address, bytes32 tokenId)",
+      [LSP8Address, hexlify(tokenId.toString())]
+    );
+  }
 
-  return { marketplace, listToken, authorize, listPhygital };
+  return { marketplace, listToken, authorize, listPhygital, removeFromSale };
 }

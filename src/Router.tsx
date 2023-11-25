@@ -44,6 +44,10 @@ const router = () =>
           <Route path="/trade" element={<Trade />} />
           <Route path="/escrowmoreinfo" element={<EscrowMoreinfo />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route
+            path="/marketplace/:collectionAddress/:tokenId"
+            element={<ProductCard />}
+          />
           <Route path="/product-card" element={<ProductCard />} />
           <Route path="/admin-xyz" element={<Admin />} />
           <Route path="/inventory" element={<Inventory />}>

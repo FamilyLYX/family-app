@@ -58,7 +58,9 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
     setImages(imageList);
   };
   const { listToken, authorize, listPhygital } = useMarketplace();
-  const { phygital } = usePhygitalCollection();
+  const { phygital } = usePhygitalCollection(
+    import.meta.env.VITE_ASSET_CONTRACT
+  );
 
   const onFormChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

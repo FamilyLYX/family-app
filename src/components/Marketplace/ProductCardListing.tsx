@@ -6,6 +6,7 @@ import { IPFS_GATEWAY } from "../../constants";
 import { TokenId } from "../../common/objects";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
   data: {
@@ -59,7 +60,10 @@ const ProductCardListing: React.FC<ProductCardProps> = ({ data }) => {
   console.log("response", response, error);
 
   return (
-    <div className="card rounded-xl overflow-hidden ">
+    <Link
+      to={`${data.collection}/${data.tokenId}`}
+      className="card block rounded-xl overflow-hidden "
+    >
       {isLoading ? (
         <Skeleton
           height={"28rem"}
@@ -86,7 +90,7 @@ const ProductCardListing: React.FC<ProductCardProps> = ({ data }) => {
           <span className="text-black/30 font-medium">{"LYX"}</span>
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
