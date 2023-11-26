@@ -1,3 +1,20 @@
+| Name        | Description   |
+|-------------|---------------|
+| Project     | Family - The Home of Phygitals     |
+| Description | A Luxury-Tech Clothing Brand |
+| Team        | James Albarracin, Azeez Mumeen, Shashank Singh Solanki |
+| Contact     | support@familylyx.com |
+| App         | [familylyx.web.app](https://familylyx.web.app/) |
+| Source      | [browse here](http://github.com/source) |
+| Demo        | [Walkthrough video](http://youtube.com/demo) |
+
+![Family Banner]([https://user-images.githubusercontent.com/yourbanner.jpg](https://drive.google.com/file/d/1edDhQz7uGiohsqwq1I7HGp9_1fPuj2Oz/view?usp=sharing))
+
+
+
+
+
+
 **Family - The Home of Phygitals**
 
 Embracing the power of LUKSO's innovative standards, our brand is pioneering a seamless integration of physical garments with their digital identities. Each meticulously crafted physical piece in our collection is embedded with an NFC chip, forming a tangible link to a corresponding digital asset. This subtle yet profound fusion is our gateway to introduce consumers to the Web3 experience without imposing the complexities of blockchain technology upon them. Our approach is designed with the consumer's comfort in mind: the blockchain remains an invisible backbone, supporting a future where transitioning into Web3 is as simple as wearing your favourite hoodie. With this, we're not just selling fashion; we're offering a passport to an emergent digital realm, with the promise of further exploration at the wearer's discretion.
