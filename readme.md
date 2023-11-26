@@ -8,7 +8,7 @@
 | Source      | [browse here](http://github.com/source) |
 | Demo        | [Walkthrough video](http://youtube.com/demo) |
 
-![Family Banner]([https://user-images.githubusercontent.com/yourbanner.jpg](https://drive.google.com/file/d/1edDhQz7uGiohsqwq1I7HGp9_1fPuj2Oz/view?usp=sharing))
+![Family Banner](https://imgur.com/eYU3PFE)
 
 
 
