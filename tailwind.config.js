@@ -1,14 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        custom: "#1DCE00",
+      },
+    },
   },
-  plugins: [
-    require('@headlessui/tailwindcss')
-  ],
-}
-
+  plugins: [require("@headlessui/tailwindcss")],
+};

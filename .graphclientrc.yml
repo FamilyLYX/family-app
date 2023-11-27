@@ -1,0 +1,8 @@
+sources:
+  - name: Marketplace
+    handler:
+      graphql:
+        endpoint: ${VITE_GRAPH_ENDPOINT}
+
+documents:
+  - ./src/queries/*.graphql

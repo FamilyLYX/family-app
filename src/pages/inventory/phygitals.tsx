@@ -1,21 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from 'swiper/modules';
+import { Navigation } from "swiper/modules";
 
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
 import { TokenCard } from "../../common/components";
 
-import 'swiper/css/navigation';
+import "swiper/css/navigation";
 import EmptyState from "./emptyState";
 import { getAddress, isAddress } from "ethers";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 
 const collections = [
-  '0x6CC952f6439Aa16058A10e51d22a85E8E19355a7',
-  '0xb9c434c174c15cD6594D6AC859987fD97608b05E'
+  "0x6CC952f6439Aa16058A10e51d22a85E8E19355a7",
+  "0xb9c434c174c15cD6594D6AC859987fD97608b05E",
 ];
 
 function TargetPhygitals({ target, showEmptyState }: { target: string, showEmptyState: boolean }) {
@@ -27,17 +27,23 @@ function TargetPhygitals({ target, showEmptyState }: { target: string, showEmpty
   });
 
   if (isLoading) {
-    return showEmptyState ? <p>Loading Phygital Tokens</p> : <></>
+    return <EmptyState message="Loading Phygital Tokens" isLoading={true} />;
   }
 
   if (!data || data.length == 0) {
-    return showEmptyState ? <EmptyState /> : <></>
+    return showEmptyState ? <EmptyState /> : <></>;
   }
 
   return (
     <div className="w-full flex flex-row space-x-2">
       <div className="w-12 mt-24 cursor-pointer">
-        <a id="prev-page"><ArrowLeftIcon className="rounded-full border p-1" height={24} width={24}/></a>
+        <a id="prev-page">
+          <ArrowLeftIcon
+            className="rounded-full border p-1"
+            height={24}
+            width={24}
+          />
+        </a>
       </div>
       <Swiper
         className="w-full"
@@ -45,8 +51,8 @@ function TargetPhygitals({ target, showEmptyState }: { target: string, showEmpty
         slidesPerView={3}
         navigation={{
           enabled: true,
-          nextEl: '#next-page',
-          prevEl: '#prev-page'
+          nextEl: "#next-page",
+          prevEl: "#prev-page",
         }}
         breakpoints={{
           640: {
@@ -65,14 +71,23 @@ function TargetPhygitals({ target, showEmptyState }: { target: string, showEmpty
         modules={[Navigation]}
       >
         {!isLoading &&
-          data?.map((token, idx) => (
-            <SwiperSlide key={`token:${token.id.toString()}`} virtualIndex={idx}>
+          data?.map((token: any, idx: any) => (
+            <SwiperSlide
+              key={`token:${token.id.toString()}`}
+              virtualIndex={idx}
+            >
               <TokenCard tokenId={token.id} address={token.address} />
             </SwiperSlide>
           ))}
       </Swiper>
       <div className="w-12 mt-24 cursor-pointer">
-        <a id="next-page"><ArrowRightIcon className="rounded-full border p-1" height={24} width={24}/></a>
+        <a id="next-page">
+          <ArrowRightIcon
+            className="rounded-full border p-1"
+            height={24}
+            width={24}
+          />
+        </a>
       </div>
     </div>
   );

@@ -25,3 +25,5 @@ dist-ssr
 
 .env.local
 .firebase
+.env
+.env
