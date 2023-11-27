@@ -14,7 +14,7 @@
 | Subgraph (Marketplace)     | [Repo](https://github.com/FamilyLYX/subgraph) |
 | Collection Management        | [Repo](https://github.com/FamilyLYX/collection-management-UI) |
 
-![Family Banner](https://imgur.com/eYU3PFE)
+![Family Banner](https://imgur.com/Ih7KfpJ)
 
 # Family - The Home of Phygitals
 
