@@ -82,7 +82,7 @@ LSP20: Used to verify the registration of NFC Chip with NFT
 
 ## Registration
 1. If you purchased a **Phygital**, check your **Orders** tab under Inventory.
-   - You will need to **Register** the asset with a NFC Chip here:
+   - You will need to **Register** the asset with a NFC Chip here: [NFC Chip Links](public/NFC.txt)
    - If you're using an **Email Login** you will need to create an UP to **Register**
   
 2. If you purchased a **Digital**, check your **Digitals** tab under Inventory.
