@@ -5,23 +5,25 @@ import { OrderCard } from "../../common/components";
 import EmptyState from "./emptyState";
 import { Button } from "../../common/buttons";
 import { useModal } from "@ebay/nice-modal-react";
-import useUser from "../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+import { getAddress, isAddress } from "ethers";
 
-function TargetOrders({ address }: { address: string }) {
+function TargetOrders({ target, canRegister = false, showEmptyState }: { target: string, canRegister: boolean, showEmptyState: boolean }) {
   const { getOrders } = useAssetPlaceholder();
   const { isLoading, data } = useQuery({
-    queryKey: ["orders", address],
-    queryFn: () => getOrders(address),
+    queryKey: ["orders", target],
+    queryFn: () => getOrders(target),
   });
   const modal = useModal("family-register-modal");
 
   if (isLoading) {
-    return <p>Loading Orders</p>;
+    return showEmptyState ? <p>Loading Orders</p> : <></>;
   }
 
   if (!data || data.length === 0) {
-    return <div className="col-span-3"><EmptyState message="You don't have any pending orders" /></div>;
+    return showEmptyState ? <div className="col-span-3"><EmptyState message="You don't have any pending orders" /></div> : <></>;
   }
 
   return (
@@ -29,7 +31,7 @@ function TargetOrders({ address }: { address: string }) {
       {(data as TokenId[]).map((tokenId, index) => (
         <div className="mb-4 px-2" key={`order-${index}`}>
           <OrderCard tokenId={tokenId} />
-          {(window as any).lukso && (
+          {(window as any).lukso && canRegister && (
             <div className="flex flex-row">
               <Button
                 variant="dark"
@@ -46,7 +48,7 @@ function TargetOrders({ address }: { address: string }) {
 }
 
 export default function Orders() {
-  const { target, user, loading } = useUser();
+  const { vault, user, loading } = useContext(UserContext);
   const navigate = useNavigate();
 
   if (loading) {
@@ -59,23 +61,16 @@ export default function Orders() {
     return <p></p>;
   }
 
-  if (user && !target) {
-    return <EmptyState message="You don't have any pending orders" />;
-  }
-
-  return (
-    <div>
-      {/* {!isAddress(user.uid) && (
-        <div className="mb-4">
-          <p className="p-4 w-full text-center">
-            Connect wallet to register these items and get an NFT
-          </p>
-          <div className="max-w-xs mx-auto"><ConnectWallet /></div>
-        </div>
-      )} */}
-      <div className="w-full grid grid-flow-row grid-cols-3">
-        <TargetOrders address={target as string} />
+  return <div className="space-y-4">
+    { isAddress(user?.uid) && <div>
+      <div className="grid grid-flow-row grid-cols-3 w-full">
+        <TargetOrders target={getAddress(user?.uid)} canRegister={true} showEmptyState={true} />
       </div>
-    </div>
-  );
+    </div> }
+    { vault && <div>
+      <div className="grid grid-flow-row grid-cols-3 w-full">
+        <TargetOrders target={vault} canRegister={false} showEmptyState={!isAddress(user?.uid)}/>
+      </div>
+    </div> }
+  </div>
 }

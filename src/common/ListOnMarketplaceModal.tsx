@@ -42,7 +42,6 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
   const provider = (hooks as Web3ReactHooks).useProvider();
 
   async function register(tokenId: TokenId, code: string) {
-    console.log(tokenId);
     const idToken = await getAuth().currentUser?.getIdToken();
 
     const handoverData = await requestToClaimHandover(idToken as string, code as string);

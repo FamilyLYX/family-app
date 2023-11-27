@@ -5,33 +5,33 @@ import { Navigation } from 'swiper/modules';
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
-import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
 import 'swiper/css/navigation';
 import EmptyState from "./emptyState";
-// import 'swiper/css/pagination';
+import { getAddress, isAddress } from "ethers";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
 const collections = [
   '0x6CC952f6439Aa16058A10e51d22a85E8E19355a7',
   '0xb9c434c174c15cD6594D6AC859987fD97608b05E'
 ];
 
-export default function Phygitals() {
-  const account = hooks.useAccount();
+function TargetPhygitals({ target, showEmptyState }: { target: string, showEmptyState: boolean }) {
   const { fetchTokens } = usePhygitalRepo(collections);
   const { data, isLoading } = useQuery({
-    queryKey: ["phygitals", account],
-    enabled: !!account,
-    queryFn: () => fetchTokens(account as string),
+    queryKey: ["phygitals", target],
+    enabled: !!target,
+    queryFn: () => fetchTokens(target as string),
   });
 
   if (isLoading) {
-    return <p>Loading Phygital Tokens</p>
+    return showEmptyState ? <p>Loading Phygital Tokens</p> : <></>
   }
 
   if (!data || data.length == 0) {
-    return <EmptyState />
+    return showEmptyState ? <EmptyState /> : <></>
   }
 
   return (
@@ -76,4 +76,17 @@ export default function Phygitals() {
       </div>
     </div>
   );
+}
+
+export default function Phygitals () {
+  const { user, vault } = useContext(UserContext);
+  
+  return <div className="space-y-4">
+    { isAddress(user?.uid) && <div>
+      <TargetPhygitals target={getAddress(user?.uid)} showEmptyState={true} />
+    </div> }
+    { vault && <div>
+      <TargetPhygitals target={vault} showEmptyState={!isAddress(user?.uid)} />
+    </div> }
+  </div>
 }

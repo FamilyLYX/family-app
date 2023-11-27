@@ -34,3 +34,18 @@ export async function authenticate (account: string, provider: any) {
     console.log(error);
   }
 }
+
+export async function authenticateAndTransfer (account: string, provider: any, idToken: string) {
+  const message = createSiweMessage(account);
+  const signature = await provider.send('eth_sign', [account, message])
+
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_API_HOST}/siwe/verify?transfer=true`, { signature, message, idToken });
+
+    const { token } = response.data;
+
+    return signInWithCustomToken(getAuth(), token);
+  } catch (error) {
+    console.log(error);
+  }
+}

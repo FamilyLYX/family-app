@@ -5,32 +5,32 @@ import { Navigation } from 'swiper/modules';
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
-import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
 import 'swiper/css/navigation';
 import EmptyState from "./emptyState";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+import { getAddress, isAddress } from "ethers";
 
 const collections = [
   import.meta.env.VITE_DIGITAL_ASSET
 ];
 
-export default function Digitals() {
-  const account = hooks.useAccount();
-  // const { getTokens } = usePhygitalCollection();
+function TargetDigitals({ target, showEmptyState }: { target: string, showEmptyState: boolean }) {
   const { fetchTokens } = usePhygitalRepo(collections);
   const { data, isLoading } = useQuery({
-    queryKey: ["digitals", account],
-    enabled: !!account,
-    queryFn: () => fetchTokens(account as string),
+    queryKey: ["digitals", target],
+    enabled: !!target,
+    queryFn: () => fetchTokens(target as string),
   });
 
-  if (isLoading) {
-    return <p>Loading Digital Tokens</p>
+  if (target && isLoading) {
+    return showEmptyState ? <p>Loading Digital Tokens</p> : <></>
   }
 
   if (!data || data.length == 0) {
-    return <EmptyState />
+    return showEmptyState ? <EmptyState /> : <></>
   }
 
   return (
@@ -75,4 +75,17 @@ export default function Digitals() {
       </div>
     </div>
   );
+}
+
+export default function Digitals() {
+  const { user, vault } = useContext(UserContext);
+  
+  return <div className="space-y-4">
+    { isAddress(user?.uid) && <div>
+      <TargetDigitals target={getAddress(user?.uid)} showEmptyState={true} />
+    </div> }
+    { vault && <div>
+      <TargetDigitals target={vault} showEmptyState={!isAddress(user?.uid)} />
+    </div> }
+  </div>
 }
