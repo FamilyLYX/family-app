@@ -4,9 +4,15 @@
 | Description | A Luxury-Tech Clothing Brand |
 | Team        | James Albarracin, Azeez Mumeen, Shashank Singh Solanki |
 | Contact     | support@familylyx.com |
-| App         | [familylyx.web.app](https://familylyx.web.app/) |
-| Source      | [browse here](http://github.com/source) |
-| Demo        | [Walkthrough video](http://youtube.com/demo) |
+| App         | [Website](https://familylyx.web.app/) |
+| Source      | [FamilyLYX](https://github.com/FamilyLYX) |
+| Demo        | [Walkthrough Video](http://youtube.com/demo) |
+| LSP Smart Contracts | [Repo](https://github.com/FamilyLYX/family-contracts) |
+| Marketplace Backend     | [Repo](https://github.com/FamilyLYX/marketplace-backend) |
+| Marketplace Contracts        | [Repo](https://github.com/FamilyLYX/New-Marketplace-Contract) |
+| Graph Node (Marketplace)        | [Repo](https://github.com/FamilyLYX/graph-node) |
+| Subgraph (Marketplace)     | [Repo](https://github.com/FamilyLYX/subgraph) |
+| Collection Management        | [Repo](https://github.com/FamilyLYX/collection-management-UI) |
 
 ![Family Banner](https://imgur.com/eYU3PFE)
 
