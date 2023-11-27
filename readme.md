@@ -6,7 +6,7 @@
 | Contact     | support@familylyx.com |
 | App         | [Website](https://familylyx.web.app/) |
 | Source      | [FamilyLYX](https://github.com/FamilyLYX) |
-| Demo        | [Walkthrough Video](http://youtube.com/demo) |
+| Demo        | [Hackathon Video](https://youtu.be/3SyE-rMjrvA?si=MFtjSoszQl4ZZNQn) |
 | LSP Smart Contracts | [Repo](https://github.com/FamilyLYX/family-contracts) |
 | Marketplace Backend     | [Repo](https://github.com/FamilyLYX/marketplace-backend) |
 | Marketplace Contracts        | [Repo](https://github.com/FamilyLYX/New-Marketplace-Contract) |
