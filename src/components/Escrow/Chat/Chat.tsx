@@ -1,39 +1,87 @@
 import React, { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import Messages from "./Messages";
+import sendImg from "../../../assets/escrow/send.svg";
+import {
+  DocumentData,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+} from "firebase/firestore";
+import { useQuery } from "@tanstack/react-query";
+import { hooks } from "../../../connectors/default";
+// import { orderBy } from "lodash";
 
-export default function Chat() {
+export default function Chat({ data }: { data: any }) {
+  const account = hooks.useAccount();
   const [name, setName] = useState("Ninja and James");
+  const [messages, setMessages] = useState<DocumentData[]>([]);
   const [inputMessage, setInputMessage] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      message:
-        "Hi, would it be possible to wait for the transfer to be completed?",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: 2,
-      message:
-        "hi, just sent, it will take from 1 to 3 business days to arrive",
-      sender: "receiver",
-      timestamp: new Date(),
-    },
+  const docRef = doc(getFirestore(), `chat`, data?.id ?? "id");
+  const collectionRef = collection(getFirestore(), `chat`);
+  const chatRef = doc(collectionRef, data?.id ?? "id");
+  const chatCollection = collection(chatRef, "messages");
+  const sortedQuery = query(chatCollection, orderBy("timestamp", "asc"));
+  const fetchDocument = async () => {
+    const docSnap = await getDoc(doc(collectionRef, data?.id));
+    if ((docSnap as any).exists()) {
+      console.log("Document data:", docSnap?.data?.());
+    } else {
+      // docSnap.data() will be undefined in this case
+      setDoc(chatRef, {
+        seller: data?.seller,
+        buyer: data?.buyer,
+        // messages: [],
+      });
+      setDoc(chatRef, chatCollection);
+    }
+    return docSnap; // or return { docSnap }; if you want to keep the full snapshot
+  };
+  const fetchMessages = async () => {
+    const docSnap = await getDocs(sortedQuery);
+    console.log(docSnap);
+    if (docSnap.empty || !docSnap) {
+      return [];
+    } else {
+      const result = docSnap.docs?.map((doc) => doc.data());
+      setMessages(result);
+      return result;
+    }
+    // then((querySnapshot) => {
+    //   console.log
+    //   if (querySnapshot.empty) {
+    //     return [];
+    //   } else {
+    //     return querySnapshot.forEach((doc) => doc.data());
+    //   }
+    // });
+    // return docSnap; // or return { docSnap }; if you want to keep the full snapshot
+  };
 
-    {
-      id: 4,
-      message: "probably tomorrow",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: 5,
-      message: "Ok",
-      sender: "user",
-      timestamp: new Date(),
-    },
-  ]);
+  const { data: docSnap } = useQuery({
+    queryKey: ["document", "id"],
+    queryFn: fetchDocument,
+  });
+
+  const { data: messages1 } = useQuery({
+    queryKey: ["messages", "id"],
+    queryFn: fetchMessages,
+  });
+
+  useEffect(() => {
+    onSnapshot(sortedQuery, (snap) => {
+      const data: any = snap.docs?.map((doc) => doc.data());
+      console.log(data);
+      setMessages(data);
+    });
+  }, []);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
   const [imageWidth, setImageWidth] = useState(calculateImageWidth());
@@ -61,16 +109,23 @@ export default function Chat() {
     }
   }
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputMessage.trim() !== "") {
+      // const docSnap = await getDoc(doc(collectionRef, data?.id))
+      await addDoc(chatCollection, {
+        message: inputMessage,
+        sender: account,
+        timestamp: new Date(),
+      });
       const newMessage = {
-        id: messages.length + 1,
+        id: messages?.length + 1,
         message: inputMessage,
         sender: "user",
         timestamp: new Date(),
       };
 
-      setMessages([...messages, newMessage]);
+      // setMessages([...messages, newMessage]);
+      console.log("clicked");
       setInputMessage("");
     }
   };
@@ -117,10 +172,10 @@ export default function Chat() {
           maxWidth: "380px",
           position: "sticky",
 
-          top: messages.length > 0 ? "90%" : "0",
-          bottom: messages.length > 0 ? "0" : "80%",
+          top: messages?.length > 0 ? "90%" : "0",
+          bottom: messages?.length > 0 ? "0" : "80%",
         }}
-        className="p-4"
+        className="p-4 mt-5"
       >
         <input
           type="text"
@@ -140,7 +195,7 @@ export default function Chat() {
           style={{ height: "100%", borderRadius: "100px", marginLeft: "-1px" }}
           className="text-white px-4 rounded-r w-16"
         >
-          <img src="src/assets/escrow/send.svg" alt="send" />
+          <img src={sendImg} alt="send" />
         </button>
       </div>
     </div>

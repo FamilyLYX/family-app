@@ -24,10 +24,12 @@ export function TokenCard({
   tokenId,
   address,
   showActions = true,
+  tokenType = "phygital",
 }: {
   tokenId: TokenId;
   address: string;
   showActions?: boolean;
+  tokenType?: string;
 }) {
   const { getTokenMetadata } = usePhygitalCollection(address);
   const { removeFromSale } = useMarketplace();
@@ -46,7 +48,11 @@ export function TokenCard({
     },
   });
   console.log(loading, data, address, tokenId.toString(), listingError);
-  const modal = useModal("family-marketplace-list");
+  const modal = useModal(
+    tokenType === "digital"
+      ? "family-marketplace-digital-list"
+      : "family-marketplace-list"
+  );
 
   if (query.isLoading || loading) {
     return (

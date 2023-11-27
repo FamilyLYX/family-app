@@ -43,7 +43,7 @@ export function Loader() {
   );
 }
 
-const ListOnMarketplaceModal = NiceModal.create(() => {
+const ListDigital = NiceModal.create(() => {
   const modal = useModal();
   const [waiting, setWaiting] = useState<number>(0);
   const [code, setCode] = useState<string>();
@@ -188,77 +188,6 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                         To sell nft please fill in all the fields below
                       </div>
                       <div className="flex flex-col gap-6">
-                        <input
-                          className="w-full border px-2 py-4 rounded-lg"
-                          placeholder="Loacation"
-                          name="location"
-                          type="text"
-                          onChange={onFormChange}
-                        />
-                        <input
-                          className="w-full border  px-2 py-4 rounded-lg"
-                          placeholder="Condition"
-                          name="condition"
-                          type="text"
-                          onChange={onFormChange}
-                        />
-                        <div>
-                          <div className="text-black/25 mb-2">Pictures:</div>
-                          <div>
-                            <ImageUploading
-                              multiple
-                              value={images}
-                              onChange={onChange}
-                              maxNumber={maxNumber}
-                              dataURLKey="data_url"
-                              acceptType={["jpg", "png"]}
-                            >
-                              {({
-                                imageList,
-                                onImageUpload,
-                                onImageRemoveAll,
-                                onImageUpdate,
-                                onImageRemove,
-                                isDragging,
-                                dragProps,
-                              }) => (
-                                // write your building UI
-                                <div className="flex gap-2 items-center">
-                                  <button
-                                    style={isDragging ? { color: "red" } : {}}
-                                    onClick={onImageUpload}
-                                    {...dragProps}
-                                    className="block w-[62px] h-[62px] border rounded-full"
-                                  >
-                                    +
-                                  </button>
-                                  {imageList.map((image, index) => (
-                                    <div key={index} className="image-item">
-                                      <img
-                                        src={image.data_url}
-                                        alt=""
-                                        // width="100"
-                                        className="block w-[62px] h-[62px] rounded-xl"
-                                      />
-                                      {/* <div className="image-item__btn-wrapper">
-                                      <button
-                                        onClick={() => onImageUpdate(index)}
-                                      >
-                                        Update
-                                      </button>
-                                      <button
-                                        onClick={() => onImageRemove(index)}
-                                      >
-                                        Remove
-                                      </button>
-                                    </div> */}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </ImageUploading>
-                          </div>
-                        </div>
                         <div>
                           <div className="flex items-center w-full border justify-between  px-3 py-4 rounded-lg">
                             <input
@@ -372,4 +301,4 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
   );
 });
 
-export default ListOnMarketplaceModal;
+export default ListDigital;

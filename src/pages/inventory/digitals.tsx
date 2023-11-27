@@ -73,7 +73,11 @@ export default function Digitals() {
               key={`token:${token.id.toString()}`}
               virtualIndex={idx}
             >
-              <TokenCard tokenId={token.id} address={token.address} />
+              <TokenCard
+                tokenId={token.id}
+                address={token.address}
+                tokenType="digital"
+              />
             </SwiperSlide>
           ))}
       </Swiper>

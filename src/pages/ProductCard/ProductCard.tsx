@@ -198,7 +198,7 @@ const ProductCard = () => {
             <div className="flex flex-col text-center gap-4">
               <p className="long-title text-5xl">
                 <span className="long-title text-5xl">
-                  {data.listing.price / 10 ** 18}
+                  {(data.listing.price ?? 0) / 10 ** 18}
                 </span>
                 <span className="long-title text-5xl text-black/30 ml-3">
                   LYX
@@ -228,6 +228,7 @@ const ProductCard = () => {
 
       <ProductModal
         isOpen={productModalOpen}
+        data={data.listing}
         handleClose={() => setProductModalOpen((o) => !o)}
       />
       <ProductHistory

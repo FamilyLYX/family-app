@@ -5,15 +5,21 @@ import productImg from "../../../assets/product/product-01.png";
 import { Select, TextInput } from "../../../components";
 import { Button } from "../../../common/buttons";
 import { IoClose } from "react-icons/io5";
+import AddressInput from "../../../common/AddressInput";
+import { useMarketplace } from "../../../hooks/useMarketplace";
+import { TokenId } from "../../../common/objects";
 
 Modal.setAppElement("#root");
 
 interface ModalProps {
   isOpen: boolean;
   handleClose: () => void;
+  data?: any;
 }
 
-const ProductModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
+const ProductModal: React.FC<ModalProps> = ({ isOpen, handleClose, data }) => {
+  const [formData, setForm] = useState<Record<any, any>>({});
+  const { buyWithLYX } = useMarketplace();
   return (
     <Modal
       isOpen={isOpen}
@@ -32,19 +38,32 @@ const ProductModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
               To buy nft, please fill in all fields below
             </p>
             <div className="flex flex-col gap-3">
-              <TextInput placeholder="Name*" />
-              <Select rounded="12px" data={[]} placeholder="Country*" />{" "}
-              <TextInput placeholder="Email*" />
+              {/* <TextInput placeholder="Name*" /> */}
+              {/* <Select rounded="12px" data={[]} placeholder="Country*" />{" "} */}
+              <AddressInput onChange={setForm} />
+              {/* <TextInput placeholder="Email*" />
               <TextInput placeholder="Phone Number*" />
-              <TextInput placeholder="Address*" />
+              <TextInput placeholder="Address*" /> */}
               <div>
                 <p className="text-black/25">Price</p>
                 <div className="flex justify-between font-semibold mt-0.5">
-                  <span>1,452540354367</span>
-                  <span className="text-black/25">ETH</span>
+                  <span>{(data?.price ?? 0) / 10 ** 18}</span>
+                  <span className="text-black/25">LYX</span>
                 </div>
               </div>
-              <Button variant="dark">Buy</Button>
+              <Button
+                onClick={() =>
+                  buyWithLYX(
+                    data.collection,
+                    TokenId.parseTokenId(data.tokenId),
+                    formData,
+                    data.price
+                  )
+                }
+                variant="dark"
+              >
+                Buy
+              </Button>
             </div>
           </div>
         </div>

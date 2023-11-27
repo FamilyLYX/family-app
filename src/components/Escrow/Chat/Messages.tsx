@@ -1,5 +1,6 @@
 import { Avatar } from "@mui/material";
 import React from "react";
+import { hooks } from "../../../connectors/default";
 
 interface Message {
   id: number;
@@ -13,18 +14,19 @@ interface MessagesProps {
 }
 
 const Messages: React.FC<MessagesProps> = ({ messages }) => {
+  const account = hooks.useAccount();
   return (
     <div className="flex flex-col gap-4">
-      {messages.map((message, index) => (
+      {messages?.map((message, index) => (
         <div
-          key={message.id}
+          key={message?.id}
           className={`${
-            message.sender === "user" ? "self-end" : "self-start"
+            message?.sender === account ? "self-end" : "self-start"
           } max-w-[70%]`}
         >
           <div className="flex items-center justify-center">
             <span className="text-xs font-bold text-gray-500">
-              {message.timestamp.toLocaleString()}
+              {new Date(message?.timestamp?.seconds * 1000).toUTCString()}
             </span>
           </div>
 
@@ -40,25 +42,25 @@ const Messages: React.FC<MessagesProps> = ({ messages }) => {
               className="p-3"
               style={{
                 background:
-                  message.sender === "user" ? "black" : "rgba(0, 0, 0, 0.07)",
+                  message?.sender === account ? "black" : "rgba(0, 0, 0, 0.07)",
                 borderRadius:
-                  message.sender === "user"
+                  message?.sender === account
                     ? "12px 0px 12px 12px"
                     : "12px 12px 12px 0",
 
-                color: message.sender === "user" ? "black" : "white",
+                color: message?.sender === account ? "black" : "white",
               }}
             >
               <div className="flex flex-row gap-2">
                 <p
                   style={{
-                    color: message.sender === "user" ? "white" : "black",
+                    color: message?.sender === account ? "white" : "black",
                     whiteSpace: "pre-wrap", // Allow text to wrap
                     overflowX: "auto", // Enable horizontal scrollbar if needed
                     maxHeight: "100%", // Set a maximum height if needed
                   }}
                 >
-                  {message.message}
+                  {message?.message}
                 </p>
               </div>
             </div>
