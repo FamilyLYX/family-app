@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
@@ -9,26 +9,39 @@ import { TokenCard } from "../../common/components";
 
 import "swiper/css/navigation";
 import EmptyState from "./emptyState";
-import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { getAddress, isAddress } from "ethers";
+import { useOutletContext } from "react-router-dom";
 
 const collections = [import.meta.env.VITE_DIGITAL_ASSET];
 
-function TargetDigitals({ target, showEmptyState }: { target: string, showEmptyState: boolean }) {
+function TargetDigitals({ targets }: { targets: string[] }) {
   const { fetchTokens } = usePhygitalRepo(collections);
-  const { data, isLoading } = useQuery({
-    queryKey: ["digitals", target],
-    enabled: !!target,
-    queryFn: () => fetchTokens(target as string),
+  const queries = useQueries({
+    queries: targets.map((target) => ({
+      queryKey: ["digitals", target],
+      queryFn: () => fetchTokens(target),
+    })),
   });
+  const isLoading = !!queries.find((q) => q.isLoading);
+  const tokens = !isLoading
+    ? queries.reduce((acc: any[], query, idx) => {
+        if (query.isLoading || query.isError) {
+          console.log(query.isLoading ? 'loading' : 'error');
+
+          return acc;
+        }
+
+        return acc.concat(
+          query.data ? query.data.map((token) => Object.assign({ owner: targets[idx] }, token)) : []
+        );
+      }, [])
+    : [];
 
   if (isLoading) {
     return <EmptyState message="Loading Digital Tokens" isLoading={true} />;
   }
 
-  if (!data || data.length == 0) {
-    return showEmptyState ? <EmptyState /> : <></>;
+  if (!tokens || tokens.length == 0) {
+    return <EmptyState />;
   }
 
   return (
@@ -68,7 +81,7 @@ function TargetDigitals({ target, showEmptyState }: { target: string, showEmptyS
         modules={[Navigation]}
       >
         {!isLoading &&
-          data?.map((token: any, idx: any) => (
+          tokens?.map((token: any, idx: any) => (
             <SwiperSlide
               key={`token:${token.id.toString()}`}
               virtualIndex={idx}
@@ -91,14 +104,9 @@ function TargetDigitals({ target, showEmptyState }: { target: string, showEmptyS
 }
 
 export default function Digitals() {
-  const { user, vault } = useContext(UserContext);
+  const targets = useOutletContext<string[]>();
   
   return <div className="space-y-4">
-    { isAddress(user?.uid) && <div>
-      <TargetDigitals target={getAddress(user?.uid)} showEmptyState={true} />
-    </div> }
-    { vault && <div>
-      <TargetDigitals target={vault} showEmptyState={!isAddress(user?.uid)} />
-    </div> }
+    <TargetDigitals targets={targets} />
   </div>
 }

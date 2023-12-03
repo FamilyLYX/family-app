@@ -26,10 +26,12 @@ import { Order } from "./pages/order";
 import { Login } from "./pages/login";
 import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
 import ProductCard from "./pages/ProductCard/ProductCard";
+import TransferModal from "./common/TransferModal";
 
 NiceModal.register("family-buy-modal", BuyModal);
 NiceModal.register("family-register-modal", RegisterModal);
 NiceModal.register("family-marketplace-list", ListOnMarketplaceModal);
+NiceModal.register('family-transfer-modal', TransferModal);
 
 const router = () =>
   createBrowserRouter(

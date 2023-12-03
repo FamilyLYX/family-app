@@ -13,12 +13,12 @@ const LIST_FUNCTION_NAME =
 const LIST_PHYGITAL_FUNCTION_NAME =
   "putLSP8OnSale(address LSP8Address, bytes32 tokenId, uint256 LYXAmount, string memory uid, bytes memory signature, string memory listingURl, bool _acceptFiat)";
 const AGGREGATE_FUNCTION_NAME = "aggregate";
-export function useMarketplace() {
+export function useMarketplace(address: string) {
   const marketplace = useContract(marketplaceContractAddress, abi);
   const multicall = useContract(multicallContract, multicallAbi);
 
   const { sendTransaction, executeTransactionRequest } = useTransactionSender();
-  const { phygital } = usePhygitalCollection();
+  const { phygital } = usePhygitalCollection(address);
   const provider = new BrowserProvider(window.ethereum);
 
   async function authorize(tokenId: TokenId) {

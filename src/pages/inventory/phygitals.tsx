@@ -10,15 +10,18 @@ import { TokenCard } from "../../common/components";
 
 import "swiper/css/navigation";
 import EmptyState from "./emptyState";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
 
 const collections = import.meta.env.VITE_COLLECTIONS?.split(',') as string[];
 
 function TargetPhygitals({ targets }: { targets: string[] }) {
+  const { vault } = useContext(UserContext);
   const { fetchTokens } = usePhygitalRepo(collections);
   const queries = useQueries({
     queries: targets.map((target) => ({
-      queryKey: ["orders", target],
+      queryKey: ["phygitals", target],
       queryFn: () => fetchTokens(target),
     })),
   });
@@ -85,7 +88,7 @@ function TargetPhygitals({ targets }: { targets: string[] }) {
               key={`token:${token.id.toString()}`}
               virtualIndex={idx}
             >
-              <TokenCard tokenId={token.id} address={token.address} />
+              <TokenCard tokenId={token.id} address={token.address} transfer={token.owner === vault} />
             </SwiperSlide>
           ))}
       </Swiper>

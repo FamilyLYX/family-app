@@ -6,6 +6,8 @@ import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
 import { useModal } from "@ebay/nice-modal-react";
 import { useTransactionSender } from "../hooks/transactions";
 import { getAddress } from "ethers";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 // import useUser from "../hooks/useUser";
 
 export function ShortAddress ({ address }: { address: string }) {
@@ -14,17 +16,19 @@ export function ShortAddress ({ address }: { address: string }) {
   </a>
 }
 
-export function TokenCard ({ tokenId, address, showActions = true }: { tokenId: TokenId, address: string, showActions?: boolean }) {
+export function TokenCard ({ tokenId, address, transfer, showActions = true }: { tokenId: TokenId, address: string, showActions?: boolean, transfer?: boolean }) {
+  const { vault, user } = useContext(UserContext);
   const { phygital, getTokenMetadata } = usePhygitalCollection(address);
   const { sendTransaction } = useTransactionSender();
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
   const modal = useModal('family-marketplace-list');
+  const transferModal = useModal('family-transfer-modal');
 
   if (query.isLoading) {
     return <div className="w-full aspect-square animate-pulse p-5 bg-slate-200 rounded-3xl"></div>
   }
 
-  function transfer() {
+  function internalTransfer() {
     const address = window.prompt('Address:');
 
     if (!address) { return; }
@@ -47,8 +51,9 @@ export function TokenCard ({ tokenId, address, showActions = true }: { tokenId: 
     { 
       showActions && <>
         <div className="flex flex-row">
-          <Button variant="dark" onClick={() => modal.show({ tokenId })}>Sell</Button>
-          <Button onClick={() => transfer()}>Info</Button>
+          { !transfer &&  <Button variant="dark" onClick={() => modal.show({ tokenId, address })}>Sell</Button> }
+          { transfer &&  <Button variant="dark" onClick={() => transferModal.show({ from: vault, to: user?.uid, tokenId, address })}>Transfer</Button> }
+          <Button onClick={() => internalTransfer()}>Info</Button>
         </div>
       </>
     }

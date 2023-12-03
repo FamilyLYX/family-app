@@ -9,12 +9,9 @@ import { requestToClaimHandover } from "../utils/api";
 import { TokenId } from "./objects";
 import { getAuth } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-import { hooks } from "../connectors/default";
-import { Web3ReactHooks } from "@web3-react/core";
 import overlay1 from "../assets/overlays/Vector 13.png";
 import OtpInput from "react-otp-input";
 import { useMarketplace } from "../hooks/useMarketplace";
-import { async } from "@firebase/util";
 import { IPFS_GATEWAY, marketplaceContractAddress } from "../constants";
 import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
 import { hexlify } from "ethers";
@@ -45,9 +42,9 @@ export function Loader() {
 
 const ListOnMarketplaceModal = NiceModal.create(() => {
   const modal = useModal();
+  const assetAddress = modal.args?.address as string;
   const [waiting, setWaiting] = useState<number>(0);
   const [code, setCode] = useState<string>();
-  const provider = (hooks as Web3ReactHooks).useProvider();
   const [formData, setForm] = useState<Record<any, any>>({});
   const [operator, setOperator] = useState(false);
   const [images, setImages] = useState([]);
@@ -57,8 +54,8 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
-  const { listToken, authorize, listPhygital } = useMarketplace();
-  const { phygital } = usePhygitalCollection();
+  const { listToken, authorize, listPhygital } = useMarketplace(assetAddress);
+  const { phygital } = usePhygitalCollection(assetAddress);
 
   const onFormChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -101,7 +98,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
     console.log(listingUrl);
 
     await listPhygital(
-      import.meta.env.VITE_ASSET_CONTRACT,
+      assetAddress,
       modal.args?.tokenId as TokenId,
       Number(formData?.price ?? 0),
       listingUrl,
@@ -128,9 +125,6 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
       console.log(data);
 
       if (data.status === "completed" && data.signature) {
-        if (!provider) {
-          return alert("Provider unavailable");
-        }
         // list();
         list(data.uid, data.signature);
 
