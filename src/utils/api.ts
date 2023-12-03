@@ -88,3 +88,27 @@ export async function getCryptoOrderQuote (profile: string, collection: string, 
     console.log(error);
   }
 }
+
+export async function claimVault(idToken: string) {
+  try {
+    const response = await axios({
+      baseURL: `${import.meta.env.VITE_API_HOST}/claim-vault`,
+      method: 'post',
+      headers: {
+        'Authorization': `${idToken}`
+      },
+      data: {
+        x: 'y'
+      }
+    });
+
+    console.log(response.status);
+    console.log(response.data);
+
+    const { txn } = response.data;
+
+    return { txn };
+  } catch (error) {
+    console.log(error);
+  }
+}

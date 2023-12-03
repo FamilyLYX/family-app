@@ -1,10 +1,9 @@
 import {
   Contract,
+  ContractFactory,
   InterfaceAbi,
   JsonRpcProvider,
   JsonRpcSigner,
-  Provider,
-  Signer,
 } from "ethers";
 const rpcProvider = new JsonRpcProvider("https://rpc.testnet.lukso.network");
 

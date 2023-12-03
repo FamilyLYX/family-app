@@ -23,6 +23,8 @@ export default function ConnectWallet() {
         (user as User).getIdToken(true).then(idToken => {
           return authenticateAndTransfer(address, provider, idToken)
         });
+
+        return;
       }
 
       return authenticate(address, provider).then(

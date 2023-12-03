@@ -1,16 +1,29 @@
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Button } from "./buttons";
-import { requestToClaimHandover } from "../utils/api";
+import { claimVault, requestToClaimHandover } from "../utils/api";
 import { TokenId } from "./objects";
 import { getAuth } from "firebase/auth";
 import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-import { hooks } from "../connectors/default";
-import { Web3ReactHooks } from "@web3-react/core";
-import OtpInput from 'react-otp-input';
+import OtpInput from "react-otp-input";
+import { UserContext } from "../contexts/UserContext";
+import { getAddress, hexlify, isAddress, keccak256 } from "ethers";
+import { useQuery } from "@tanstack/react-query";
+import { useVault } from "../hooks/useVault";
+import { useTransactionSender } from "../hooks/transactions";
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const collections = (import.meta.env.VITE_COLLECTIONS?.split(',') as string[]).map(getAddress);
+const collectionsMap = collections.reduce((acc: Record<string, any>, collection: string) => {
+  const hash = keccak256(hexlify(collection));
+
+  acc[hash.slice(0, 14)] = { address: collection };
+
+  return acc;
+}, {});
 
 export function Loader() {
   return (
@@ -36,48 +49,19 @@ export function Loader() {
   );
 }
 
-const RegisterModal = NiceModal.create(() => {
-  const modal = useModal();
-  const { registerToken } = useAssetPlaceholder();
-  const [waiting, setWaiting] = useState<number>(0);
-  const [code, setCode] = useState<string>();
-  const provider = (hooks as Web3ReactHooks).useProvider();
-
-  async function register(tokenId: TokenId, code: string) {
-    const idToken = await getAuth().currentUser?.getIdToken();
-
-    const handoverData = await requestToClaimHandover(idToken as string, code as string);
-
-    setWaiting(1);
-
-    onSnapshot(doc(getFirestore(), `handover/${handoverData.hash}`), (snap) => {
-      const data: any = snap.data();
-
-      if (data.status === 'completed' && data.signature) {
-        if (!provider) {
-          return alert('Provider unavailable');
-        }
-
-        setWaiting(2);
-
-        registerToken(data.uid, data.signature, tokenId)
-          .then(console.log)
-          .catch(console.error)
-          .finally(() => {
-            setTimeout(() => {
-              modal.hide();
-              window.location.reload();
-            }, 10000)
-          })
-      }
-    });
-  }
-
+function ModalWrapper({
+  children,
+  visible,
+  remove,
+}: {
+  children: any;
+  visible: boolean;
+  remove: any;
+}) {
   return (
-    <Transition appear show={modal.visible} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={modal.remove}>
+    <Transition appear show={visible}>
+      <Dialog as="div" className="relative z-10" onClose={remove}>
         <Transition.Child
-          as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -91,52 +75,219 @@ const RegisterModal = NiceModal.create(() => {
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-8 text-center">
             <Transition.Child
-              as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
               enterTo="opacity-100 scale-100"
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8  text-left align-middle shadow-xl transition-all">
-                <Dialog.Title
-                  as="h2"
-                  className="font-medium text-gray-900 text-center long-title text-5xl"
-                >
-                  Register
-                </Dialog.Title>
-                <Dialog.Description
-                  as="p"
-                  className="text-center px-8 mt-4 text-gray-400"
-                >
-                  { waiting === 0 && 'Enter your 6-digit code' }
-                  { waiting === 1 && 'Waiting for confirmation' }
-                  { waiting === 2 && 'Preparing and sending registration transaction' }
-                </Dialog.Description>
-                { waiting === 0 && <>
-                  <OtpInput
-                    containerStyle="justify-center my-4"
-                    inputStyle={{ width: '32px' }}
-                    value={code}
-                    onChange={setCode}
-                    numInputs={6}
-                    renderSeparator={<span></span>}
-                    inputType="number"
-                    renderInput={({ className, ...props }) => <input className="border mx-2 py-2" {...props} />}
-                  />
-                  <Button variant="dark" onClick={() => register(modal.args?.tokenId as TokenId, code as string)}>Continue</Button>
-                </>}
-                { waiting === 1 && <p className="text-xs text-center text-gray-400">Please accept the request on your mobile device to complete registration.</p> }
-                { waiting === 2 && <>
-                  <Loader />
-                </>}
-              </Dialog.Panel>
-            </Transition.Child>
+            ></Transition.Child>
+            {children}
           </div>
         </div>
       </Dialog>
     </Transition>
+  );
+}
+
+function ModalContent({ title, description, children }: any) {
+  return (
+    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8  text-left align-middle shadow-xl transition-all">
+      <Dialog.Title
+        as="h2"
+        className="font-medium text-gray-900 text-center long-title text-5xl"
+      >
+        {title}
+      </Dialog.Title>
+      {description && (
+        <Dialog.Description
+          as="p"
+          className="text-center px-8 mt-4 text-gray-400"
+        >
+          {description}
+        </Dialog.Description>
+      )}
+      {children}
+    </Dialog.Panel>
+  );
+}
+
+function ClaimVault({ vault }: { vault: string }) {
+  const { user } = useContext(UserContext);
+  const { vault: contract } = useVault(vault);
+  const { sendTransaction } = useTransactionSender();
+  const query = useQuery({
+    queryKey: ['vault-state', vault],
+    queryFn: async () => {
+      const [pendingOwner, owner] = await Promise.all([
+        contract.pendingOwner(),
+        contract.owner()
+      ]);
+
+      return { owner, pendingOwner };
+    }
+  })
+
+  async function claim() {
+    if (!user) { return; }
+
+    const idToken = await user.getIdToken();
+
+    await claimVault(idToken);
+
+    query.refetch();
+  }
+
+  async function acceptVault() {
+    return sendTransaction(contract, 'acceptOwnership', []);
+  }
+
+  if (query.isLoading) {
+    return <Loader />
+  }
+
+  if (query.data && query.data.pendingOwner === user?.uid) {
+    return <Button onClick={acceptVault}>Accept Vault</Button>  
+  }
+
+  return <Button onClick={claim}>Request access to Vault</Button>
+}
+
+const RegisterModal = NiceModal.create(() => {
+  const modal = useModal();
+  const tokenId = (modal.args?.order as any)?.id as TokenId;
+  const { vault, user, loading: userLoading } = useContext(UserContext);
+  const { placeholder, registerToken } = useAssetPlaceholder();
+  const [waiting, setWaiting] = useState<number>(0);
+  const [code, setCode] = useState<string>();
+  const { vault: vaultContract } = useVault(isAddress(vault) ? vault : ZERO_ADDRESS);
+  const query = useQuery({
+    queryKey: ['orders', tokenId.toString],
+    queryFn: async () => {
+      const collection = collectionsMap[tokenId.collectionId];
+      const data: Record<string, any> = {
+        collection
+      }
+      const owner = await placeholder.tokenOwnerOf(tokenId.toString());
+
+      data.owner = owner;
+
+      if (owner === vault) {
+        data.inVault = true;
+        data.isVaultOwner = getAddress(user?.uid) === getAddress(await vaultContract.owner());
+      }
+
+      return data;
+    }
+  });
+
+  async function register(tokenId: TokenId, code: string) {
+    const idToken = await getAuth().currentUser?.getIdToken();
+
+    const handoverData = await requestToClaimHandover(
+      idToken as string,
+      code as string
+    );
+
+    setWaiting(1);
+
+
+    onSnapshot(doc(getFirestore(), `handover/${handoverData.hash}`), (snap) => {
+      const data: any = snap.data();
+
+      if (data.status === "completed" && data.signature) {
+        setWaiting(2);
+
+        console.log(vault);
+        registerToken(data.uid, data.signature, tokenId, query.data?.inVault ? vault : null)
+          .then(console.log)
+          .catch(console.error)
+          .finally(() => {
+            setTimeout(() => {
+              modal.hide();
+              window.location.reload();
+            }, 10000);
+          });
+      }
+    });
+  }
+
+  if (userLoading || query.isLoading) {
+    return (
+      <ModalWrapper remove={modal.remove} visible={modal.visible}>
+        <ModalContent
+          title="Register"
+          description="Please wait while we fetch registration info"
+        >
+          <Loader />
+        </ModalContent>
+      </ModalWrapper>
+    );
+  }
+
+  if (!query.isLoading && query.data && query.data.inVault && !query.data.isVaultOwner) {
+    return (
+      <ModalWrapper remove={modal.remove} visible={modal.visible}>
+        <ModalContent title="Claim Vault" description="Your asset is in a vault that is owned by family.">
+          <ClaimVault vault={vault} />
+        </ModalContent>
+      </ModalWrapper>
+    );
+  }
+
+  if (waiting === 1) {
+    return (
+      <ModalWrapper remove={modal.remove} visible={modal.visible}>
+        <ModalContent title="Register" description="Enter your 6-digit code">
+          <p className="text-xs text-center text-gray-400">
+            Please accept the request on your mobile device to complete
+            registration.
+          </p>
+        </ModalContent>
+      </ModalWrapper>
+    );
+  }
+
+  if (waiting === 2) {
+    return (
+      <ModalWrapper remove={modal.remove} visible={modal.visible}>
+        <ModalContent
+          title="Register"
+          description="Preparing and sending registration transaction"
+        >
+          <Loader />
+        </ModalContent>
+      </ModalWrapper>
+    );
+  }
+
+  return (
+    <ModalWrapper remove={modal.remove} visible={modal.visible}>
+      <ModalContent title="Register" description="Enter your 6-digit code">
+        <>
+          <OtpInput
+            containerStyle="justify-center my-4"
+            inputStyle={{ width: "32px" }}
+            value={code}
+            onChange={setCode}
+            numInputs={6}
+            renderSeparator={<span></span>}
+            inputType="number"
+            renderInput={({ className, ...props }) => (
+              <input className="border mx-2 py-2" {...props} />
+            )}
+          />
+          <Button
+            variant="dark"
+            onClick={() =>
+              register(tokenId, code as string)
+            }
+          >
+            Continue
+          </Button>
+        </>
+      </ModalContent>
+    </ModalWrapper>
   );
 });
 

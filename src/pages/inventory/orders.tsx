@@ -1,46 +1,65 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { useAssetPlaceholder } from "../../hooks/useAssetPlaceholder";
-import { TokenId } from "../../common/objects";
 import { OrderCard } from "../../common/components";
 import EmptyState from "./emptyState";
 import { Button } from "../../common/buttons";
 import { useModal } from "@ebay/nice-modal-react";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { getAddress, isAddress } from "ethers";
+import { useOutletContext } from "react-router-dom";
+import { Loader } from "../../common/BuyModal";
 
-function TargetOrders({ target, canRegister = false, showEmptyState }: { target: string, canRegister: boolean, showEmptyState: boolean }) {
+function TargetOrders({ targets }: { targets: string[] }) {
   const { getOrders } = useAssetPlaceholder();
-  const { isLoading, data } = useQuery({
-    queryKey: ["orders", target],
-    queryFn: () => getOrders(target),
+  const queries = useQueries({
+    queries: targets.map((target) => ({
+      queryKey: ["orders", target],
+      queryFn: () => getOrders(target),
+    })),
   });
   const modal = useModal("family-register-modal");
 
+  const isLoading = !!queries.find((q) => q.isLoading);
+  const orders = !isLoading
+    ? queries.reduce((acc: any[], query, idx) => {
+        if (query.isLoading || query.isError) {
+          return acc;
+        }
+
+        return acc.concat(
+          query.data.map((tokenId) => ({
+            id: tokenId,
+            owner: targets[idx],
+          }))
+        );
+      }, [])
+    : [];
+
   if (isLoading) {
-    return showEmptyState ? <p>Loading Orders</p> : <></>;
+    return <Loader />;
   }
 
-  if (!data || data.length === 0) {
-    return showEmptyState ? <div className="col-span-3"><EmptyState message="You don't have any pending orders" /></div> : <></>;
+  if (!orders || orders.length === 0) {
+    return (
+      <div className="col-span-3">
+        <EmptyState message="You don't have any pending orders" />
+      </div>
+    );
   }
 
   return (
     <>
-      {(data as TokenId[]).map((tokenId, index) => (
+      {(orders as any[]).map((order, index) => (
         <div className="mb-4 px-2" key={`order-${index}`}>
-          <OrderCard tokenId={tokenId} />
-          {(window as any).lukso && canRegister && (
-            <div className="flex flex-row">
+          <OrderCard tokenId={order.id} />
+          <div className="flex flex-row">
+            {(window as any).lukso && (
               <Button
                 variant="dark"
-                onClick={() => modal.show({ tokenId: tokenId })}
+                onClick={() => modal.show({ order })}
               >
                 Register
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       ))}
     </>
@@ -48,29 +67,13 @@ function TargetOrders({ target, canRegister = false, showEmptyState }: { target:
 }
 
 export default function Orders() {
-  const { vault, user, loading } = useContext(UserContext);
-  const navigate = useNavigate();
+  const targets = useOutletContext<string[]>();
 
-  if (loading) {
-    return <p>Loading user info</p>;
-  }
-
-  if (!user) {
-    navigate("/login");
-
-    return <p></p>;
-  }
-
-  return <div className="space-y-4">
-    { isAddress(user?.uid) && <div>
+  return (
+    <div className="space-y-4">  
       <div className="grid grid-flow-row grid-cols-3 w-full">
-        <TargetOrders target={getAddress(user?.uid)} canRegister={true} showEmptyState={true} />
+        <TargetOrders targets={targets} />
       </div>
-    </div> }
-    { vault && <div>
-      <div className="grid grid-flow-row grid-cols-3 w-full">
-        <TargetOrders target={vault} canRegister={false} showEmptyState={!isAddress(user?.uid)}/>
-      </div>
-    </div> }
-  </div>
+    </div>
+  );
 }

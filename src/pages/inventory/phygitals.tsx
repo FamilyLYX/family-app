@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import { useOutletContext } from "react-router-dom";
 
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
@@ -9,29 +10,37 @@ import { TokenCard } from "../../common/components";
 
 import "swiper/css/navigation";
 import EmptyState from "./emptyState";
-import { getAddress, isAddress } from "ethers";
-import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
 
-const collections = [
-  "0x6CC952f6439Aa16058A10e51d22a85E8E19355a7",
-  "0xb9c434c174c15cD6594D6AC859987fD97608b05E",
-];
 
-function TargetPhygitals({ target, showEmptyState }: { target: string, showEmptyState: boolean }) {
+const collections = import.meta.env.VITE_COLLECTIONS?.split(',') as string[];
+
+function TargetPhygitals({ targets }: { targets: string[] }) {
   const { fetchTokens } = usePhygitalRepo(collections);
-  const { data, isLoading } = useQuery({
-    queryKey: ["phygitals", target],
-    enabled: !!target,
-    queryFn: () => fetchTokens(target as string),
+  const queries = useQueries({
+    queries: targets.map((target) => ({
+      queryKey: ["orders", target],
+      queryFn: () => fetchTokens(target),
+    })),
   });
+  const isLoading = !!queries.find((q) => q.isLoading);
+  const tokens = !isLoading
+    ? queries.reduce((acc: any[], query, idx) => {
+        if (query.isLoading || query.isError) {
+          return acc;
+        }
+
+        return acc.concat(
+          query.data ? query.data.map((token) => Object.assign({ owner: targets[idx] }, token)) : []
+        );
+      }, [])
+    : [];
 
   if (isLoading) {
     return <EmptyState message="Loading Phygital Tokens" isLoading={true} />;
   }
 
-  if (!data || data.length == 0) {
-    return showEmptyState ? <EmptyState /> : <></>;
+  if (!tokens || tokens.length == 0) {
+    return <EmptyState />;
   }
 
   return (
@@ -71,7 +80,7 @@ function TargetPhygitals({ target, showEmptyState }: { target: string, showEmpty
         modules={[Navigation]}
       >
         {!isLoading &&
-          data?.map((token: any, idx: any) => (
+          tokens?.map((token: any, idx: any) => (
             <SwiperSlide
               key={`token:${token.id.toString()}`}
               virtualIndex={idx}
@@ -94,14 +103,9 @@ function TargetPhygitals({ target, showEmptyState }: { target: string, showEmpty
 }
 
 export default function Phygitals () {
-  const { user, vault } = useContext(UserContext);
+  const targets = useOutletContext<string[]>();
   
   return <div className="space-y-4">
-    { isAddress(user?.uid) && <div>
-      <TargetPhygitals target={getAddress(user?.uid)} showEmptyState={true} />
-    </div> }
-    { vault && <div>
-      <TargetPhygitals target={vault} showEmptyState={!isAddress(user?.uid)} />
-    </div> }
+    <TargetPhygitals targets={targets}  />
   </div>
 }
