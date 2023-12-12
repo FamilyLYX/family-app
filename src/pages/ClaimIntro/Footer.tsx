@@ -1,8 +1,8 @@
-export default function Footer() {
+const Footer = () => {
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 absolute bottom-0 left-0 right-0 text-gray-400">
-      <div className="flex items-center justify-between h-16">
-        <div className="hidden md:block">
+    <div>
+      <div className="flex items-center justify-between flex-col md:flex-row gap-4">
+        <div className="block">
           <div className="ml-4 flex items-center md:ml-6 space-x-4">
             <a>© Family, Inc.</a>
             <a>Terms</a>
@@ -10,7 +10,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="grow"></div>
-        <div className="hidden md:block">
+        <div className="block">
           <div className="ml-4 flex items-center md:ml-6 space-x-3">
             <a>
               <svg
@@ -62,4 +62,6 @@ export default function Footer() {
       </div>
     </div>
   );
-}
+};
+
+export default Footer;
