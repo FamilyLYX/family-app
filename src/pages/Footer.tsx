@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 absolute bottom-0 left-0 right-0 text-gray-400 -z-10">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 absolute bottom-0 left-0 right-0 text-gray-400">
       <div className="flex items-center justify-between h-16">
         <div className="hidden md:block">
           <div className="ml-4 flex items-center md:ml-6 space-x-4">

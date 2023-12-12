@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from 'swiper/modules';
+import { Navigation } from "swiper/modules";
 
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
@@ -8,13 +8,13 @@ import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
 import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
-import 'swiper/css/navigation';
+import "swiper/css/navigation";
 import EmptyState from "./emptyState";
 // import 'swiper/css/pagination';
 
 const collections = [
-  '0x6CC952f6439Aa16058A10e51d22a85E8E19355a7',
-  '0xb9c434c174c15cD6594D6AC859987fD97608b05E'
+  "0x6CC952f6439Aa16058A10e51d22a85E8E19355a7",
+  "0xb9c434c174c15cD6594D6AC859987fD97608b05E",
 ];
 
 export default function Phygitals() {
@@ -27,17 +27,23 @@ export default function Phygitals() {
   });
 
   if (isLoading) {
-    return <p>Loading Phygital Tokens</p>
+    return <EmptyState message="Loading Phygital Tokens" isLoading={true} />;
   }
 
   if (!data || data.length == 0) {
-    return <EmptyState />
+    return <EmptyState />;
   }
 
   return (
     <div className="w-full flex flex-row space-x-2">
       <div className="w-12 mt-24 cursor-pointer">
-        <a id="prev-page"><ArrowLeftIcon className="rounded-full border p-1" height={24} width={24}/></a>
+        <a id="prev-page">
+          <ArrowLeftIcon
+            className="rounded-full border p-1"
+            height={24}
+            width={24}
+          />
+        </a>
       </div>
       <Swiper
         className="w-full"
@@ -45,8 +51,8 @@ export default function Phygitals() {
         slidesPerView={3}
         navigation={{
           enabled: true,
-          nextEl: '#next-page',
-          prevEl: '#prev-page'
+          nextEl: "#next-page",
+          prevEl: "#prev-page",
         }}
         breakpoints={{
           640: {
@@ -66,13 +72,22 @@ export default function Phygitals() {
       >
         {!isLoading &&
           data?.map((token, idx) => (
-            <SwiperSlide key={`token:${token.id.toString()}`} virtualIndex={idx}>
+            <SwiperSlide
+              key={`token:${token.id.toString()}`}
+              virtualIndex={idx}
+            >
               <TokenCard tokenId={token.id} address={token.address} />
             </SwiperSlide>
           ))}
       </Swiper>
       <div className="w-12 mt-24 cursor-pointer">
-        <a id="next-page"><ArrowRightIcon className="rounded-full border p-1" height={24} width={24}/></a>
+        <a id="next-page">
+          <ArrowRightIcon
+            className="rounded-full border p-1"
+            height={24}
+            width={24}
+          />
+        </a>
       </div>
     </div>
   );

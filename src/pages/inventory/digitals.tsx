@@ -24,7 +24,7 @@ export default function Digitals() {
   });
 
   if (isLoading) {
-    return <p>Loading Digital Tokens</p>;
+    return <EmptyState message="Loading Digital Tokens" isLoading={true} />;
   }
 
   if (!data || data.length == 0) {

@@ -1,3 +1,4 @@
+import Accordion from "./Accordion/Accordion";
 import Breadcrumbs from "./Breadcrumbs/Breadcrumbs";
 import { Button } from "./Button/Button";
 import ChipSelect from "./ChipSelect/ChipSelect";
@@ -16,4 +17,5 @@ export {
   Breadcrumbs,
   ViewMore,
   TextInput,
+  Accordion,
 };

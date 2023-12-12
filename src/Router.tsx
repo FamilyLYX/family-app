@@ -26,6 +26,7 @@ import { Order } from "./pages/order";
 import { Login } from "./pages/login";
 import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
 import ProductCard from "./pages/ProductCard/ProductCard";
+import ClaimIntro from "./pages/ClaimIntro/ClaimIntro";
 
 NiceModal.register("family-buy-modal", BuyModal);
 NiceModal.register("family-register-modal", RegisterModal);
@@ -56,6 +57,8 @@ const router = () =>
             <Route path="/inventory/orders" element={<Orders />} />
           </Route>
         </Route>
+
+        <Route path="/claim" element={<ClaimIntro />} />
       </>
     )
   );
