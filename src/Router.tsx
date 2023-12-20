@@ -1,5 +1,4 @@
 import {
-  BrowserRouter,
   createBrowserRouter,
   createRoutesFromElements,
   Route,
@@ -34,6 +33,7 @@ const router = (queryClient: QueryClient) =>
   createBrowserRouter(
     createRoutesFromElements(
       <>
+
         <Route path="/store-landing-page" element={<StoreLandingPage />} />
         <Route path="/landing-page" element={<LandingPage />} />
 
