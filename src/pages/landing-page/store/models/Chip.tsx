@@ -50,9 +50,7 @@ export default function Chip(props: JSX.IntrinsicElements["group"]) {
           position={[0, -0.02, 0]}
           scale={[1, 0.5, 1]}
         />
-        <Float 
-          floatIntensity={0.1}
-        >
+        <Float floatIntensity={0.1}>
           <mesh
             ref={topRef}
             geometry={nodes.nfc2.geometry}
@@ -80,4 +78,4 @@ export default function Chip(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-useGLTF.preload("/chip-transformed.glb");
+useGLTF.preload("/models/nfcChip.glb");

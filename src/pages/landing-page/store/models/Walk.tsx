@@ -16,7 +16,7 @@ type GLTFResult = GLTF & {
 export default function Walk(props: JSX.IntrinsicElements["group"]) {
   const group = useRef<THREE.Group>(null);
   const { nodes, materials, animations } = useGLTF(
-    "/walk-transformed.glb"
+    "/asset3d/walk.glb"
   ) as GLTFResult;
   const { actions } = useAnimations(animations, group);
 
@@ -66,4 +66,4 @@ export default function Walk(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-useGLTF.preload("/walk-transformed.glb");
+useGLTF.preload("/asset3d/walk.glb");
