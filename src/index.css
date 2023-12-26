@@ -16,12 +16,6 @@
     url("/fonts/TuskerGrotesk-3600Semibold.ttf") format("truetype");
 }
 
-/* body,
-html,
-#root {
-  overflow: hidden;
-} */
-
 body {
   min-height: 100vh;
   position: relative;
@@ -34,4 +28,8 @@ body {
 
 .long-title {
   font-family: "TuskerGrotesk";
+}
+
+canvas {
+  touch-action: none;
 }

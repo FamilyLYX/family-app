@@ -1,4 +1,3 @@
-import Walk from "../models/Walk";
 import { MeshPortalMaterial } from "@react-three/drei";
 import { geometry } from "maath";
 import { extend } from "@react-three/fiber";
@@ -19,9 +18,12 @@ const Portal = () => {
       <roundedPlaneGeometry args={[4, 5]} />
       <MeshPortalMaterial>
         <color attach="background" args={["#000"]} />
+        <mesh>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshBasicMaterial color="#fff" />
+        </mesh>
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
-        <Walk scale={3} position={[0, -4, 0]} />
       </MeshPortalMaterial>
     </mesh>
   );

@@ -102,7 +102,7 @@ const HtmlSection = () => {
 
       <section
         className="min-h-screen bg-center bg-cover flex items-center justify-center md:hidden"
-        style={{ backgroundImage: `url(${nfcBadgeHoodie})` }}
+        // style={{ backgroundImage: `url(${nfcBadgeHoodie})` }}
       >
         <div className="flex gap-2 items  flex-col items-center">
           <img src={nfcTagIcon} alt="" className="w-[9rem]" />
@@ -139,7 +139,7 @@ const HtmlSection = () => {
         </div>
       </section>
 
-      <section className="min-h-[20rem] md:min-h-screen flex flex-col ">
+      <section className="min-h-[20rem] md:min-h-screen flex flex-col pointer-events-none select-none ">
         <div
           className=" flex-grow flex  justify-start bg-cover bg-center min-h-screen"
           // style={{ backgroundImage: `url(${sizeChartMan})` }}
@@ -166,7 +166,7 @@ const HtmlSection = () => {
         </div>
       </section>
 
-      <section className="container mx-auto flex ">
+      <section className="container mx-auto flex text-white">
         <div className="">
           {/* left */}
           <div>

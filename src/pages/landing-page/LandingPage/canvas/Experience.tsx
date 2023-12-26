@@ -1,16 +1,18 @@
+import { useMobileStore } from "../../store/zustandStore/configStore";
 import Hoodie from "../models/Hoodie";
-import Wall from "../models/Wall";
 import Lights from "./Lights";
 import Video from "./Video";
 
 const Experience = () => {
+  const isMobile = useMobileStore((state) => state.isMobile);
   return (
     <>
       <Lights />
-      <Hoodie />
+      <Hoodie
+        scale={5}
+        position={isMobile ? [0, -14, 0] : [3.5, -14, 0]}
+      />
       <Video />
-      <Wall position={[5, -19, -2]} scale={0.02} />
-      <Wall position={[-6, -19, -1]} scale={0.02} />
     </>
   );
 };
