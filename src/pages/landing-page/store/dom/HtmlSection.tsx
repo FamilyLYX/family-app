@@ -1,4 +1,4 @@
-import { useModelStore } from "../zustandStore/configStore";
+import { useHoveredChip } from "../zustandStore/configStore";
 import storeImage from "../../assets/store-hero.png";
 import storeImage2 from "../../assets/store-screen-2.png";
 import hangerIcon from "../../assets/icons/hanger.svg";
@@ -11,11 +11,11 @@ import SizeChart from "../../common/SizeChart";
 import phygicalOrange from "../../assets/phygital-01.png";
 
 const HtmlSection = () => {
-  const setModelOpen = useModelStore((state) => state.setModelOpen);
+  const setChipHovered = useHoveredChip((state) => state.setChipHovered);
   return (
     <>
       {/* section 1 */}
-      <section className="min-h-screen flex flex-col -z-[1]">
+      <section className="h-screen w-screen flex flex-col">
         {/* <Header /> */}
         <div className=" flex-grow flex items-center justify-center px-4 bg-black">
           <div
@@ -33,10 +33,10 @@ const HtmlSection = () => {
       ></section>
 
       {/* section 3 */}
-      <section className="min-h-screen p-8 flex items-center justify-center ">
-        <div className="flex container mx-auto flex-col-reverse md:flex-row">
+      <section className="h-screen p-8 flex items-center justify-center">
+        <div className="flex container mx-auto flex-col-reverse md:flex-row pt-10 md:pt-0">
           {/* Left Content */}
-          <div className="flex-1 flex flex-col justify-center md:p-16 space-y-16">
+          <div className="flex-1 flex flex-col justify-center md:p-16 md:space-y-16">
             <div className="hidden md:block">
               <h1 className="text-6xl font-bold long-title ">Honft</h1>
               <p className="leading-9 font-light text-sm">
@@ -66,7 +66,7 @@ const HtmlSection = () => {
             </div>
           </div>
 
-          {/* Right Content */}
+          {/* right Content */}
           <div className="flex-1 relative flex items-center justify-center flex-col text-centers">
             <div className="block md:hidden">
               <h1 className="text-6xl font-bold long-title text-center">
@@ -77,24 +77,40 @@ const HtmlSection = () => {
               </p>
             </div>
             {/* <img src={honftImage} alt="" className="w-full max-w-xl" /> */}
+            <video
+              className="w-full max-w-xl rounded-xl mt-0"
+              autoPlay
+              loop
+              muted
+              playsInline
+            >
+              <source src="/asset3d/hood.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </section>
 
       <section className="min-h-screen max-h-[800px]  items-center justify-center  text-white hidden md:flex">
         <div className="flex container mx-auto ">
-          {/* Left Content */}
-
+          {/* Right Content */}
           <div className="flex-1 relative flex items-center justify-center">
-            {/* <img src={nfcBadgeHoodie} alt="" className="w-full max-w-xl" /> */}
+            {/* image on hover as trigger for the nfc */}
+            <img
+              onPointerEnter={() => setChipHovered(true)}
+              onPointerLeave={() => setChipHovered(false)}
+              src={nfcBadgeHoodie}
+              alt=""
+              className="w-full max-w-xl"
+            />
           </div>
 
           {/* Right Content */}
-
           <div className="flex-1 flex flex-col justify-center p-16 space-y-16">
             <div className="flex gap-2 items-center">
-              <img src={nfcTagIcon} alt="" className="w-[9rem]" />
-              <h1 className="text-8xl font-bold long-title ">NFC Badge</h1>
+              <img src={nfcTagIcon} alt="" className="w-[9rem] select-none" />
+              <h1 className="text-8xl font-bold long-title select-none">
+                NFC Badge
+              </h1>
             </div>
           </div>
         </div>
@@ -152,14 +168,8 @@ const HtmlSection = () => {
             <div className="p-8">
               <div className=" w-[25rem] rounded-xl h-60  bg-gray-100"></div>
               <div className="flex justify-between gap-4 mt-4 pointer-events-auto">
-                <div
-                  onClick={() => setModelOpen(false)}
-                  className=" w-full rounded-xl h-20  bg-red-300"
-                ></div>
-                <div
-                  onClick={() => setModelOpen(true)}
-                  className=" w-full rounded-xl h-20  bg-gray-100"
-                ></div>
+                <div className=" w-full rounded-xl h-20  bg-red-300"></div>
+                <div className=" w-full rounded-xl h-20  bg-gray-100"></div>
               </div>
             </div>
           </div>

@@ -33,7 +33,7 @@ const router = (queryClient: QueryClient) =>
   createBrowserRouter(
     createRoutesFromElements(
       <>
-
+        {/* change the react router dom into wouter, then the header will works */}
         <Route path="/store-landing-page" element={<StoreLandingPage />} />
         <Route path="/landing-page" element={<LandingPage />} />
 

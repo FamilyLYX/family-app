@@ -1,31 +1,15 @@
 import { create } from "zustand";
 
-interface iModelStore {
-  isModelOpen: boolean;
-  setModelOpen: (isOpen: boolean) => void;
-}
-
 interface iHoveredChip {
   isChipHovered: boolean;
   setChipHovered: (isHovered: boolean) => void;
 }
 
-interface iMobileStore {
-  isMobile: boolean;
-  setIsMobile: (isMobile: boolean) => void;
-}
-
-export const useModelStore = create<iModelStore>((set) => ({
-  isModelOpen: false,
-  setModelOpen: (isOpen: boolean) => set({ isModelOpen: isOpen }),
-}));
 
 export const useHoveredChip = create<iHoveredChip>((set) => ({
   isChipHovered: false,
   setChipHovered: (isHovered: boolean) => set({ isChipHovered: isHovered }),
 }));
 
-export const useMobileStore = create<iMobileStore>((set) => ({
-  isMobile: false,
-  setIsMobile: (isMobile: boolean) => set({ isMobile }),
-}));
+export const isMobile = window.innerWidth < 768;
+

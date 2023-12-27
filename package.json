@@ -43,6 +43,7 @@
     "family-contracts": "file:../family-contracts",
     "firebase": "^9.21.0",
     "gsap": "^3.12.4",
+    "leva": "^0.9.35",
     "lodash": "^4.17.21",
     "maath": "^0.10.4",
     "masonic": "^3.7.0",

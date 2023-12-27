@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Float, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useEffect, useRef } from "react";
 import { useHoveredChip } from "../zustandStore/configStore";
@@ -39,10 +39,6 @@ export default function Chip(props: JSX.IntrinsicElements["group"]) {
         { y: 0, x: 0, z: 0 },
         { y: 7, x: 7, z: 7, duration: 0.65, ease: "power2.inOut" }
       )
-      .to(groupRef.current!.rotation, {
-        z: -Math.PI / 2.9,
-        duration: 1,
-      })
       .to(textRef.current!.position, { y: 1.5, duration: 1, delay: 1 }, "<")
       .to(
         botRef.current!.position,
@@ -61,7 +57,6 @@ export default function Chip(props: JSX.IntrinsicElements["group"]) {
   return (
     <group ref={groupRef} {...props} dispose={null}>
       <group position={[0, 0.04, 0]}>
-        <Float floatIntensity={isChipHovered ? 0.1 : 0.0}>
           <mesh
             ref={secondNfcRef}
             geometry={nodes.nfc1.geometry}
@@ -76,7 +71,6 @@ export default function Chip(props: JSX.IntrinsicElements["group"]) {
             position={[0, -0.04, 0]}
             scale={[1, 0.5, 1]}
           />
-        </Float>
       </group>
       <group position={[0, 0.01, 0]} scale={0.1}>
         <mesh
