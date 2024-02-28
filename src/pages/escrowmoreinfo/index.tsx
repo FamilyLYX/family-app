@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ProductInfoMol from "../../components/Escrow/ProductInfoMol";
 import ProductInfo from "../../components/Escrow/ProductInfo";
 import Gallery from "../../components/Escrow/Gallery";
@@ -6,7 +6,7 @@ import Chat from "../../components/Escrow/Chat/Chat";
 
 export default function EscrowMoreInfo() {
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1023);
-  const [imageWidth, setImageWidth] = useState<number>(calculateImageWidth());
+  const [, setImageWidth] = useState<number>(calculateImageWidth());
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,7 +35,7 @@ export default function EscrowMoreInfo() {
     <div>
       {isMobile ? (
         <div className="px-5">
-          <ProductInfoMol />
+          <ProductInfoMol setOpenChat={console.log}/>
         </div>
       ) : (
         <div className="flex px-20 flex-row justify-around w-full mt-10 h-screen">

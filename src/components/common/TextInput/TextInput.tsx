@@ -1,6 +1,4 @@
 import React from "react";
-import { Input, FormControl, InputAdornment, InputLabel } from "@mui/material";
-import { FaChevronDown } from "react-icons/fa";
 
 interface InputProps {
   value: string;

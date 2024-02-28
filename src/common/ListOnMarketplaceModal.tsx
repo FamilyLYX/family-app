@@ -54,7 +54,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
-  const { listToken, authorize, listPhygital } = useMarketplace(assetAddress);
+  const { authorize, listPhygital } = useMarketplace(assetAddress);
   const { phygital } = usePhygitalCollection(assetAddress);
 
   const onFormChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +109,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
   }
 
   async function register(tokenId: TokenId, code: string) {
+    tokenId;
     const idToken = await getAuth().currentUser?.getIdToken();
 
     console.log("handling over");
@@ -210,9 +211,6 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                               {({
                                 imageList,
                                 onImageUpload,
-                                onImageRemoveAll,
-                                onImageUpdate,
-                                onImageRemove,
                                 isDragging,
                                 dragProps,
                               }) => (

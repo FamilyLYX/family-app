@@ -1,10 +1,9 @@
 import { abi } from "../artifacts/contracts/LSP8Marketplace.sol/LSP8Marketplace.json";
-import { abi as multicallAbi } from "../artifacts/contracts/multicall/multicall.json";
 import { useContract } from "./useContract";
 import { TokenId } from "../common/objects";
-import { BrowserProvider, ethers, hexlify, parseEther } from "ethers";
+import { hexlify, parseEther } from "ethers";
 import { useTransactionSender } from "./transactions";
-import { marketplaceContractAddress, multicallContract } from "../constants";
+import { marketplaceContractAddress } from "../constants";
 import { usePhygitalCollection } from "./usePhygitalCollection";
 
 const LIST_FUNCTION_NAME =
@@ -12,14 +11,11 @@ const LIST_FUNCTION_NAME =
 
 const LIST_PHYGITAL_FUNCTION_NAME =
   "putLSP8OnSale(address LSP8Address, bytes32 tokenId, uint256 LYXAmount, string memory uid, bytes memory signature, string memory listingURl, bool _acceptFiat)";
-const AGGREGATE_FUNCTION_NAME = "aggregate";
 export function useMarketplace(address: string) {
   const marketplace = useContract(marketplaceContractAddress, abi);
-  const multicall = useContract(multicallContract, multicallAbi);
 
-  const { sendTransaction, executeTransactionRequest } = useTransactionSender();
+  const { sendTransaction } = useTransactionSender();
   const { phygital } = usePhygitalCollection(address);
-  const provider = new BrowserProvider(window.ethereum);
 
   async function authorize(tokenId: TokenId) {
     return await sendTransaction(

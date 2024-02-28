@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";

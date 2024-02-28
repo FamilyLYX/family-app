@@ -1,7 +1,6 @@
-import React from "react";
 // import classes from "./src/pages/escrowmoreinfo/EscrowMore.module.css";
 
-const Avatar = ({ imageUrl, initials }) => {
+const Avatar = ({ imageUrl, initials }: any) => {
   return (
     <div className={``}>
       {imageUrl ? (

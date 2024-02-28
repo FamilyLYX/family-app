@@ -13,7 +13,7 @@ interface Select {
   value: string;
   onChange: (event: SelectChangeEvent<string>) => void;
   placeholder: string;
-  rounded: string;
+  rounded?: string;
 }
 
 const Select: React.FC<Select> = ({

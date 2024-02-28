@@ -1,35 +1,14 @@
-import { Fragment, useContext, useState } from "react";
+import { useContext } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Button } from "./buttons";
-import { claimVault, requestToClaimHandover } from "../utils/api";
 import { TokenId } from "./objects";
-import { getAuth } from "firebase/auth";
-import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
-import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-import OtpInput from "react-otp-input";
 import { UserContext } from "../contexts/UserContext";
-import { Contract, getAddress, hexlify, isAddress, keccak256 } from "ethers";
-import { useQuery } from "@tanstack/react-query";
-import { useVault, useVaultFactory } from "../hooks/useVault";
+import { Contract } from "ethers";
+import { useVaultFactory } from "../hooks/useVault";
 import { useTransactionSender } from "../hooks/transactions";
 import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
-
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-const collections = (
-  import.meta.env.VITE_COLLECTIONS?.split(",") as string[]
-).map(getAddress);
-const collectionsMap = collections.reduce(
-  (acc: Record<string, any>, collection: string) => {
-    const hash = keccak256(hexlify(collection));
-
-    acc[hash.slice(0, 14)] = { address: collection };
-
-    return acc;
-  },
-  {}
-);
 
 export function Loader() {
   return (
@@ -116,49 +95,6 @@ function ModalContent({ title, description, children }: any) {
       {children}
     </Dialog.Panel>
   );
-}
-
-function ClaimVault({ vault }: { vault: string }) {
-  const { user } = useContext(UserContext);
-  const { vault: contract } = useVault(vault);
-  const { sendTransaction } = useTransactionSender();
-  const query = useQuery({
-    queryKey: ["vault-state", vault],
-    queryFn: async () => {
-      const [pendingOwner, owner] = await Promise.all([
-        contract.pendingOwner(),
-        contract.owner(),
-      ]);
-
-      return { owner, pendingOwner };
-    },
-  });
-
-  async function claim() {
-    if (!user) {
-      return;
-    }
-
-    const idToken = await user.getIdToken();
-
-    await claimVault(idToken);
-
-    query.refetch();
-  }
-
-  async function acceptVault() {
-    return sendTransaction(contract, "acceptOwnership", []);
-  }
-
-  if (query.isLoading) {
-    return <Loader />;
-  }
-
-  if (query.data && query.data.pendingOwner === user?.uid) {
-    return <Button onClick={acceptVault}>Accept Vault</Button>;
-  }
-
-  return <Button onClick={claim}>Request access to Vault</Button>;
 }
 
 const TransferModal = NiceModal.create(() => {

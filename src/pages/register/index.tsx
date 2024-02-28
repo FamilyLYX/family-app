@@ -71,7 +71,7 @@ function Handover ({ uid, secret, user, children }: { uid: string, secret: strin
   </div>
 }
 
-function MarketplaceHandover ({ uid, secret, user, owner }: { uid: string, secret: string, user: User, owner: string }) {
+function MarketplaceHandover ({ uid, secret, user }: { uid: string, secret: string, user: User, owner: string }) {
   const [handover, setHandover] = useState<HandoverObj | null>(null);
   const [code, setCode] = useState<number|null>(null);
   

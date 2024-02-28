@@ -2,8 +2,6 @@
 import { Tab } from "@headlessui/react";
 
 import { CiFilter } from "react-icons/ci";
-import classes from "./marketplace.module.css";
-import styles from "/Users/macbook/family-app/src/components/Escrow/EscrowSystem.module.css";
 import {
   Button,
   CardCarousel,
@@ -12,7 +10,6 @@ import {
   ProductCardListing,
 } from "../../components";
 import { ColorSelectInput, Select } from "../../components";
-import productImg from "../../assets/marketplace/product-02.png";
 import marketplaceBg from "../../assets/marketplace/marketplace-bg.png";
 import marketplaceBgSmall from "../../assets/marketplace/marketplace-bg-mobile.png";
 // import React from "react";
@@ -58,10 +55,9 @@ const contentMap: ContentMap = {
 };
 
 export default function Marketplace() {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [activeCategory, setActiveCategory] = useState("Marketplace");
   const [info, setInfo] = useState(false);
-  const { data, loading, fetchMore, error } = useQuery(INDEX_LISTINGS);
+  const { data, loading, error } = useQuery(INDEX_LISTINGS);
   console.log(data, loading, error);
   // const [anchorEl] = React.useState<HTMLButtonElement | null>(
   //   null
@@ -78,8 +74,6 @@ export default function Marketplace() {
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
   };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
   // const open = Boolean(anchorEl);
   // const id = open ? "simple-popper" : undefined;
 
