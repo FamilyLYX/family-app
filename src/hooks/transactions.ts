@@ -1,11 +1,18 @@
-import { Contract, BrowserProvider, FunctionFragment, TransactionRequest, Interface, formatEther } from 'ethers';
+import {
+  Contract,
+  BrowserProvider,
+  FunctionFragment,
+  TransactionRequest,
+  Interface,
+  formatEther,
+} from "ethers";
 
 import { abi as ExtensionABI } from "../artifacts/contracts/OrderExtension.sol/OrderExtension.json";
 import { abi as PlaceholderABI } from "../artifacts/contracts/AssetPlaceholder.sol/AssetPlaceholder.json";
 import { abi as AssetABI } from "../artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json";
 import { abi as ProfileABI } from "@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json";
 import { abi as KeyManagerABI } from "@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 export const ExtensionInterface = new Interface(ExtensionABI);
 export const PlaceholderInterface = new Interface(PlaceholderABI);
@@ -69,11 +76,14 @@ export function useTransactionSender() {
   async function executeTransactionRequest(transactionReq: TransactionRequest) {
     const signer = await provider.getSigner();
     const valueRequired = transactionReq.value;
-    const address = localStorage.getItem('family:connected:wallet');
+    const address = localStorage.getItem("family:connected:wallet");
     const balance = await provider.getBalance(address as string);
-
     if (Number(balance) < Number(valueRequired)) {
-      throw new Error(`You do not have sufficient LYX balance for complete this order. Your balance is ${formatEther(balance)}`);
+      throw new Error(
+        `You do not have sufficient LYX balance for complete this order. Your balance is ${formatEther(
+          balance
+        )}`
+      );
     }
 
     try {
@@ -83,16 +93,15 @@ export function useTransactionSender() {
         loading: "Sending transaction",
         success: "Transaction sent",
         error: "Unable to send transaction",
-      })
+      });
 
       return await txn;
-    }
-    catch (_err: any) {
-      if (_err.code === 'ACTION_REJECTED') {
-        throw new Error('Transaction rejected by user');
+    } catch (_err: any) {
+      if (_err.code === "ACTION_REJECTED") {
+        throw new Error("Transaction rejected by user");
       }
 
-      const error =  parseTransactionError(_err);
+      const error = parseTransactionError(_err);
 
       throw error;
     }

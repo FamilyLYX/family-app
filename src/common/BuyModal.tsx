@@ -119,17 +119,17 @@ const BuyModal = NiceModal.create(() => {
   function buyWithCrypto() {
     if (typeof modal.args?.to !== "string") {
       window.alert("wallet not connected");
-
       return;
     }
 
     const profile = modal.args?.to;
     const collection = modal.args?.collection as string;
     const variantId = modal.args?.variant as string;
+    const priceId = product.price.id as string;
 
     setLoading({ status: 1, message: "Fetching quotes for the order" });
 
-    getCryptoOrderQuote(profile, collection, variantId, address).then(
+    getCryptoOrderQuote(profile, collection, variantId, address, priceId).then(
       (quote) => {
         const [placeholder, value, maxBlockNumber, nonce, data, signature] =
           quote?.params as any[];
@@ -165,11 +165,9 @@ const BuyModal = NiceModal.create(() => {
   async function payWithFiat() {
     const collection = import.meta.env.VITE_ASSET_CONTRACT;
     const variantId = "0x00000000000000000000001d";
-
+    const priceId = product.price.id as string;
     setLoading({ status: 1, message: "Fetching quotes for the order" });
-
-    const url = await checkout(collection, variantId, address);
-
+    const url = await checkout(collection, variantId, address, priceId);
     window.location = url;
   }
 
