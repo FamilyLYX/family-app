@@ -163,11 +163,14 @@ const BuyModal = NiceModal.create(() => {
   }
 
   async function payWithFiat() {
-    const collection = import.meta.env.VITE_ASSET_CONTRACT;
+    const collection = product.metadata.contract;
     const variantId = "0x00000000000000000000001d";
-    const priceId = product.price.id as string;
-    setLoading({ status: 1, message: "Fetching quotes for the order" });
+    const priceId = product.price.id;
+
+    setLoading({ status: 1, message: 'Fetching quotes for the order' });
+
     const url = await checkout(collection, variantId, address, priceId);
+    
     window.location = url;
   }
 
