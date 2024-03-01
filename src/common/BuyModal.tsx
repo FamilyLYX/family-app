@@ -3,11 +3,17 @@ import { Fragment, useState } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import AddressInput from "./AddressInput";
 import { Button } from "./buttons";
 import { getCryptoOrderQuote } from "../utils/api";
-import { ExtensionInterface, useTransactionSender } from "../hooks/transactions";
+import {
+  ExtensionInterface,
+  useTransactionSender,
+} from "../hooks/transactions";
 import { checkout } from "../utils/payment";
+import { Elements, AddressElement, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
 const ORDER_FUNCTION_NAME =
   "placeOrder(address collection, uint256 value, uint256 maxBlockNumber, bytes32 nonce, bytes data, bytes signature)";
@@ -36,28 +42,73 @@ export function Loader() {
   );
 }
 
-function AddressForm({ update }: { update: (address: any) => void }) {
-  const [address, setAddress] = useState<any>();
+function AddressInput(props: any) {
+  const elements = useElements();
+
+  async function validateAddress() {
+    if (!elements) {
+      return;
+    }
+
+    const addrEl = elements.getElement("address");
+
+    if (!addrEl) {
+      return;
+    }
+
+    const address = await addrEl.getValue();
+
+    if (!address.complete) {
+      return;
+    }
+
+    props.save(address.value);
+  }
 
   return (
-    <div className="space-y-2">
-      <AddressInput onChange={setAddress} />
-      {address && (
-        <Button variant="dark" onClick={() => update(address)}>
-          Add Address
-        </Button>
-      )}
-    </div>
+    <>
+      <AddressElement
+        options={{
+          mode: "shipping",
+          blockPoBox: true,
+          autocomplete: { mode: "disabled" },
+          fields: { name: "always" },
+          validation: { name: { required: "always" } },
+          defaultValues: {
+            address: { state: "CA", country: "US" },
+          },
+        }}
+      />
+      <Button variant="dark" onClick={validateAddress}>
+        Add Address
+      </Button>
+    </>
+  );
+}
+
+function AddressForm({ update }: { update: (address: any) => void }) {
+  const options = {
+    // Fully customizable with appearance API.
+    autocomplete: "disabled",
+    appearance: {
+      /*...*/
+    },
+  };
+
+  return (
+    <Elements stripe={stripe} options={options}>
+      <AddressInput save={(address: any) => update(address)} />
+    </Elements>
   );
 }
 
 const BuyModal = NiceModal.create(() => {
   const modal = useModal();
   const { executeTransactionRequest } = useTransactionSender();
-  const [loading, setLoading] = useState({ status: 0, message: 'Not Loading' });
-  const [error, setError] = useState<null|string>(null);
+  const [loading, setLoading] = useState({ status: 0, message: "Not Loading" });
+  const [error, setError] = useState<null | string>(null);
   const [address, setAddress] = useState<any>(
-    modal.args?.addressRequired ?  null : { status: "not_required" }
+    modal.args?.addressRequired ? null : { status: "not_required" }
   );
   const product = modal.args?.product as ProductType;
 
@@ -68,55 +119,55 @@ const BuyModal = NiceModal.create(() => {
   function buyWithCrypto() {
     if (typeof modal.args?.to !== "string") {
       window.alert("wallet not connected");
-
       return;
     }
 
-    const profile = modal.args?.to ;
+    const profile = modal.args?.to;
     const collection = modal.args?.collection as string;
     const variantId = modal.args?.variant as string;
+    const priceId = product.price.id as string;
 
-    setLoading({ status: 1, message: 'Fetching quotes for the order' });
+    setLoading({ status: 1, message: "Fetching quotes for the order" });
 
-    getCryptoOrderQuote(profile, collection, variantId, address).then((quote) => {
-      const [placeholder, value, maxBlockNumber, nonce, data, signature] =
-        quote?.params as any[];
-      const orderId = quote?.order.id;
+    getCryptoOrderQuote(profile, collection, variantId, address, priceId).then(
+      (quote) => {
+        const [placeholder, value, maxBlockNumber, nonce, data, signature] =
+          quote?.params as any[];
+        const orderId = quote?.order.id;
 
-      setLoading({ status: 2, message: 'Preparing mint transaction' });
+        setLoading({ status: 2, message: "Preparing mint transaction" });
 
-      const orderCalldata = ExtensionInterface.encodeFunctionData(
-        ORDER_FUNCTION_NAME,
-        [placeholder, value, maxBlockNumber, nonce, data, signature]
-      );
+        const orderCalldata = ExtensionInterface.encodeFunctionData(
+          ORDER_FUNCTION_NAME,
+          [placeholder, value, maxBlockNumber, nonce, data, signature]
+        );
 
-      executeTransactionRequest({
-        to: import.meta.env.VITE_FAMILY_PROFILE,
-        value: BigInt(value),
-        data: orderCalldata,
-      })
-        .then(() => {
-          // response.wait(1);
-          return new Promise((resolve) => setTimeout(resolve, 10000))
+        executeTransactionRequest({
+          to: import.meta.env.VITE_FAMILY_PROFILE,
+          value: BigInt(value),
+          data: orderCalldata,
         })
-        .then(() => {
-          window.location.pathname = `/orders/${orderId}`;
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading({ status: 0, message: 'Not Loading' });
-        });
-    });
+          .then(() => {
+            // response.wait(1);
+            return new Promise((resolve) => setTimeout(resolve, 10000));
+          })
+          .then(() => {
+            window.location.pathname = `/orders/${orderId}`;
+          })
+          .catch((error) => {
+            setError(error.message);
+            setLoading({ status: 0, message: "Not Loading" });
+          });
+      }
+    );
   }
 
   async function payWithFiat() {
     const collection = import.meta.env.VITE_ASSET_CONTRACT;
     const variantId = "0x00000000000000000000001d";
-
-    setLoading({ status: 1, message: 'Fetching quotes for the order' });
-
-    const url = await checkout(collection, variantId, address);
-
+    const priceId = product.price.id as string;
+    setLoading({ status: 1, message: "Fetching quotes for the order" });
+    const url = await checkout(collection, variantId, address, priceId);
     window.location = url;
   }
 
@@ -151,25 +202,38 @@ const BuyModal = NiceModal.create(() => {
                   as="h2"
                   className="text-2xl pl-4 font-medium leading-6 text-gray-900 text-center"
                 >
-                  { modal.args?.addressRequired && !isAddressSet() ? 'Add shipping address' : 'Choose payment method' }
+                  {modal.args?.addressRequired && !isAddressSet()
+                    ? "Add shipping address"
+                    : "Choose payment method"}
                 </Dialog.Title>
                 <Dialog.Description
                   as="p"
                   className="text-center px-8 mt-4 text-gray-400"
-                >
-                </Dialog.Description>
+                ></Dialog.Description>
                 {modal.args?.addressRequired && !isAddressSet() ? (
                   <AddressForm update={setAddress} />
                 ) : (
                   <div className="space-y-2">
-                    { error && <p className="p-4 bg-red-100 text-red-900 w-full rounded-md text-center">{error}</p> }
-                    {!loading.status && <Button variant="dark" onClick={() => buyWithCrypto()}>
-                      Pay with LYX ({(modal.args?.product as ProductType).lyxPrice} LYX)
-                    </Button>}
-                    {!loading.status && <Button onClick={() => payWithFiat()}>
-                      Continue without LYX ({product.price.unit_amount / 100} {product.price.currency.toUpperCase()})
-                    </Button>}
-                    {loading.status > 0 && <p className="text-center">{loading.message}</p>}
+                    {error && (
+                      <p className="p-4 bg-red-100 text-red-900 w-full rounded-md text-center">
+                        {error}
+                      </p>
+                    )}
+                    {!loading.status && (
+                      <Button variant="dark" onClick={() => buyWithCrypto()}>
+                        Pay with LYX (
+                        {(modal.args?.product as ProductType).lyxPrice} LYX)
+                      </Button>
+                    )}
+                    {!loading.status && (
+                      <Button onClick={() => payWithFiat()}>
+                        Continue without LYX ({product.price.unit_amount / 100}{" "}
+                        {product.price.currency.toUpperCase()})
+                      </Button>
+                    )}
+                    {loading.status > 0 && (
+                      <p className="text-center">{loading.message}</p>
+                    )}
                   </div>
                 )}
               </Dialog.Panel>

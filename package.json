@@ -42,6 +42,7 @@
     "axios": "^1.5.0",
     "base64url": "^3.0.1",
     "caniuse-lite": "^1.0.30001551",
+    "decimal.js": "^10.4.3",
     "ethers": "^6.8.0",
     "firebase": "^9.21.0",
     "graphql": "^16.8.1",

@@ -3,7 +3,10 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 export async function getAllProducts () {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_HOST}/products`, {});
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_HOST}/products`,
+      {}
+    );
 
     const { products } = response.data;
 
@@ -66,7 +69,13 @@ export async function updateHandover (codeHash: string, signature: string) {
   );
 }
 
-export async function getCryptoOrderQuote (profile: string, collection: string, variant: string, address: any) {
+export async function getCryptoOrderQuote (
+  profile: string,
+  collection: string,
+  variant: string,
+  address: any,
+  priceId: string
+) {
   try {
     const response = await axios({
       baseURL: `${import.meta.env.VITE_API_HOST}/order-quote`,
@@ -75,8 +84,9 @@ export async function getCryptoOrderQuote (profile: string, collection: string, 
         profile,
         variant,
         collection,
-        address
-      }
+        address,
+        priceId
+      },
     });
 
     const { order, params: data } = response.data;
