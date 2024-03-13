@@ -131,7 +131,7 @@ export default function Store() {
         <QueryResultView
           query={productQuery}
           element={(data) =>
-            (data as ProductType[]).map((product, index) => (
+            (data as ProductType[]).filter(product => product.metadata && product.metadata.contract).map((product, index) => (
               <ProductCard product={product} key={index} />
             ))
           }
