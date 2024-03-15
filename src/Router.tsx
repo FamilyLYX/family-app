@@ -27,6 +27,9 @@ import { Login } from "./pages/login";
 import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
 import ProductCard from "./pages/ProductCard/ProductCard";
 import TransferModal from "./common/TransferModal";
+import LoginWithPassword from "./pages/login/loginWithPassword";
+import SignUp from "./pages/login/signUp";
+import ResetPassword from "./pages/login/resetPassword";
 
 NiceModal.register("family-buy-modal", BuyModal);
 NiceModal.register("family-register-modal", RegisterModal);
@@ -41,6 +44,21 @@ const router = () =>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Store />} />
           <Route path="/login" element={<Login />} />
+            <Route
+              index={true}
+              path="/login/password"
+              element={<LoginWithPassword />}
+            />
+            <Route
+              index={true}
+              path="/sign-up"
+              element={<SignUp />}
+            />
+            <Route
+              index={true}
+              path="/reset-password"
+              element={<ResetPassword />}
+            />
           <Route path="/orders/:id" element={<Order />} />
           <Route path="/store" element={<Store />} />
           <Route path="/trade" element={<Trade />} />

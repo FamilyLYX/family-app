@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "../../common/buttons";
 import { useEffect, useState } from "react";
 import {
@@ -89,6 +89,9 @@ export function Login() {
           <Button variant="dark" onClick={authenticate}>
             Login
           </Button>
+          <p>
+            <Link to="/login/password">Login With Password</Link>
+          </p>
         </div>
         <div className="max-w-md mx-auto text-center space-y-4 mt-4 pb-4 pt-4 border-t-2">
           <ConnectWallet />
