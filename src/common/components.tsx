@@ -16,14 +16,15 @@ export function ShortAddress ({ address }: { address: string }) {
   </a>
 }
 
-export function TokenCard ({ tokenId, address, transfer, showActions = true }: { tokenId: TokenId, address: string, showActions?: boolean, transfer?: boolean }) {
+export function TokenCard ({ tokenId, owner, address, transfer, showActions = true }: { tokenId: TokenId,owner:string, address: string, showActions?: boolean, transfer?: boolean }) {
   const { vault, user } = useContext(UserContext);
   const { phygital, getTokenMetadata } = usePhygitalCollection(address);
   const { sendTransaction } = useTransactionSender();
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
   const modal = useModal('family-marketplace-list');
   const transferModal = useModal('family-transfer-modal');
-
+  const registerModal = useModal("family-register-modal");
+  const order = {id:tokenId,owner:owner};
   if (query.isLoading) {
     return <div className="w-full aspect-square animate-pulse p-5 bg-slate-200 rounded-3xl"></div>
   }
@@ -42,14 +43,24 @@ export function TokenCard ({ tokenId, address, transfer, showActions = true }: {
   }
 
   return <div className="w-full">
-    <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} />
+    {/* <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} /> */}
+    <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' />
     { query.data && <>
         <p className="long-title text-2xl text-center py-2">{query.data.name}</p>
         <p className="text-center text-base text-gray-400 pb-2">{query.data.description}</p>
       </>
     }
     { 
-      showActions && <>
+      (address === import.meta.env.VITE_ASSET_PLACEHOLDER && showActions) ? <><div className="flex flex-row">
+      {(window as any).lukso && (
+        <Button
+          variant="dark"
+          onClick={() => registerModal.show({order})}
+        >
+          Register
+        </Button>
+      )}
+    </div></> : <>
         <div className="flex flex-row">
           { !transfer &&  <Button variant="dark" onClick={() => modal.show({ tokenId, address })}>Sell</Button> }
           { transfer &&  <Button variant="dark" onClick={() => transferModal.show({ from: vault, to: user?.uid, tokenId, address })}>Transfer</Button> }

@@ -88,7 +88,7 @@ function TargetPhygitals({ targets }: { targets: string[] }) {
               key={`token:${token.id.toString()}`}
               virtualIndex={idx}
             >
-              <TokenCard tokenId={token.id} address={token.address} transfer={token.owner === vault} />
+              <TokenCard tokenId={token.id} owner={token.owner} address={token.address} transfer={token.owner === vault} />
             </SwiperSlide>
           ))}
       </Swiper>

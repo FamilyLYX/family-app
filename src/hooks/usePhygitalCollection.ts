@@ -56,13 +56,15 @@ export function usePhygitalCollection(address: string) {
     );
 
     const { url } = decodeKeyValue('JSONURL', 'bytes', dataValue, 'metadata');
-    const data = await fetch(url.replace('ipfs://', IPFS_GATEWAY)).then(res => res.json());
+   // const data = await fetch(url.replace('ipfs://', IPFS_GATEWAY)).then(res => res.json());
 
-    return {
-      ...data.LSP4Metadata,
-      image: data.LSP4Metadata.images[0][0].url.replace('ipfs://', IPFS_GATEWAY),
-      owner: owner,
-    };
+    // return {
+    //   ...data.LSP4Metadata,
+    //   image: data.LSP4Metadata.images[0][0].url.replace('ipfs://', IPFS_GATEWAY),
+    //   owner: owner,
+    // };
+
+    return {owner:owner}
   }
 
   async function getMintStatus() {
