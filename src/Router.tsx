@@ -27,11 +27,15 @@ import { Login } from "./pages/login";
 import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
 import ProductCard from "./pages/ProductCard/ProductCard";
 import TransferModal from "./common/TransferModal";
+import Landing from "./pages/landing";
+import OrderModal from "./common/OrderModal";
+import OrderScreen from "./common/OrderScreen";
 
 NiceModal.register("family-buy-modal", BuyModal);
 NiceModal.register("family-register-modal", RegisterModal);
 NiceModal.register("family-marketplace-list", ListOnMarketplaceModal);
 NiceModal.register('family-transfer-modal', TransferModal);
+NiceModal.register("family-order-modal", OrderModal);
 
 const router = () =>
   createBrowserRouter(
@@ -57,6 +61,8 @@ const router = () =>
             <Route path="/inventory/digitals" element={<Digitals />} />
             <Route path="/inventory/orders" element={<Orders />} />
           </Route>
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/mob-order" element={<OrderScreen />} />
         </Route>
       </>
     )

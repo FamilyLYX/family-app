@@ -17,6 +17,7 @@ function LeftActions() {
     <>
       <LinkButton to="/marketplace">Marketplace</LinkButton>
       <LinkButton to="/trade">Trade</LinkButton>
+      <LinkButton to="/landing">Landing</LinkButton>
     </>
   );
 }
