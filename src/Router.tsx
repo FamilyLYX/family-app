@@ -27,7 +27,7 @@ import { Login } from "./pages/login";
 import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
 import ProductCard from "./pages/ProductCard/ProductCard";
 import TransferModal from "./common/TransferModal";
-import Landing from "./pages/landing";
+import Landing from "./pages/landing/Landing";
 import OrderModal from "./common/OrderModal";
 import OrderScreen from "./common/OrderScreen";
 

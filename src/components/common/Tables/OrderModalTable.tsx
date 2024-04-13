@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 function OrderModalTable(props:any) {
-    console.log(props.data);
     const [size, setSize] = useState("cm");
 
     return (

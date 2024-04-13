@@ -122,3 +122,20 @@ export async function claimVault(idToken: string) {
     console.log(error);
   }
 }
+
+export async function getShippingCost(code: string){
+  try {
+    const response = await axios({
+      baseURL: `${import.meta.env.VITE_API_HOST}/shipping-cost`,
+      method: 'post',
+      data: {
+        countryCode: code
+      }
+    });
+    const { shippingCost } = response.data;
+
+    return  shippingCost ;
+  } catch (error) {
+    console.log(error);
+  }
+}
