@@ -2,7 +2,6 @@ import Header from "./common/Header";
 
 function Manifesto() {
   return (
-    // I add placeholder div for bg color
     <>
     <Header />
     <div className="w-screen xl:h-screen  bg-white pointer-events-none">

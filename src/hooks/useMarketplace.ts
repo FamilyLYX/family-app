@@ -1,4 +1,4 @@
-import { abi } from "../artifacts/contracts/LSP8Marketplace.sol/LSP8Marketplace.json";
+import { abi } from "../artifacts/@lukso/lsp8-contracts/contracts/LSP8IdentifiableDigitalAsset.sol/LSP8IdentifiableDigitalAsset.json";
 import { useContract } from "./useContract";
 import { TokenId } from "../common/objects";
 import { hexlify, parseEther } from "ethers";

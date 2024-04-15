@@ -40,7 +40,7 @@ function NavActions() {
   if (!user) {
     return (
       <>
-        <LinkButton to="/store">Store</LinkButton>
+        {/* <LinkButton to="/store">Store</LinkButton> */}
         <LinkButton to="/login">Login</LinkButton>
       </>
     );
@@ -48,7 +48,7 @@ function NavActions() {
 
   return (
     <>
-      <LinkButton to="/store">Store</LinkButton>
+      {/* <LinkButton to="/store">Store</LinkButton> */}
       <LinkButton to="/inventory/phygitals">Inventory</LinkButton>
       <Button onClick={disconnect}>
         <span className="sr-only">Sign Out</span>
@@ -76,19 +76,19 @@ export default function Header() {
     <Disclosure as="nav" className="bg-white">
       {({ open }) => (
         <>
-          <div className="mx-auto px-1 relative">
+          <div className="mx-auto px-1 relative border-b">
             <div className="flex items-center justify-between h-16">
-              <div className="hidden lg:block">
+              {/* <div className="hidden lg:block">
                 <div className="ml-4 flex items-center">
                   <LeftActions />
                 </div>
-              </div>
-              <div className="grow"></div>
-              <div className="flex items-center absolute left-1/2 -ml-[40px]">
-                <Link to="/" className="flex-shrink-0">
+              </div> */}
+              {/* <div className="grow"></div> */}
+              {/* <div className="flex items-center absolute left-1/2 -ml-[40px]"> */}
+                <Link to="/" className="flex-shrink-0 pl-6">
                   <img src={logo} alt="Family" />
                 </Link>
-              </div>
+              {/* </div> */}
               <div className="grow"></div>
               <div className="hidden lg:block">
                 <div className="ml-4 flex items-center lg:ml-6">

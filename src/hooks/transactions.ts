@@ -29,8 +29,6 @@ class FamilyError extends Error {
 }
 
 function parseTransactionError(error: any) {
-  console.error(error);
-
   if (!error.data) {
     return error;
   }
@@ -78,6 +76,7 @@ export function useTransactionSender() {
     const valueRequired = transactionReq.value;
     const address = localStorage.getItem("family:connected:wallet");
     const balance = await provider.getBalance(address as string);
+
     if (Number(balance) < Number(valueRequired)) {
       throw new Error(
         `You do not have sufficient LYX balance for complete this order. Your balance is ${formatEther(
@@ -101,7 +100,9 @@ export function useTransactionSender() {
         throw new Error("Transaction rejected by user");
       }
 
+      console.log(_err);
       const error = parseTransactionError(_err);
+      console.log(error);
 
       throw error;
     }

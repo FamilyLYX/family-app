@@ -26,7 +26,7 @@ export default function Scene() {
           onDecline={() => setDpr(1)}
         />
         <View.Port />
-        <Preload all />
+        <Preload all/>
       </Canvas>
     </>
   );

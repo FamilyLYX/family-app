@@ -16,6 +16,21 @@ export async function getAllProducts () {
   }
 }
 
+export async function getProductByLabel (label: string) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_HOST}/product-price/${label}`,
+      {}
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    return null;
+  }
+}
+
 export async function initiateHandover (idToken: string, uid: string) {
   try {
     const response = await axios({
@@ -74,7 +89,11 @@ export async function getCryptoOrderQuote (
   collection: string,
   variant: string,
   address: any,
-  priceId: string
+  productId: string,
+  pass: {
+    address: string,
+    id: string
+  } | null
 ) {
   try {
     const response = await axios({
@@ -85,7 +104,8 @@ export async function getCryptoOrderQuote (
         variant,
         collection,
         address,
-        priceId
+        productId,
+        pass
       },
     });
 

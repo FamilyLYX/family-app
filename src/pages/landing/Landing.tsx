@@ -50,8 +50,7 @@ const Landing = () => {
     };
 
     fetchVideo();
-  }, ['/fam-3.mp4']); // Runs only once, assuming `src` doesn't change
-
+  }, []);
 
   return (
     <>

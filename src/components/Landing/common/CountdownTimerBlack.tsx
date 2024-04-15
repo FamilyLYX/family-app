@@ -2,18 +2,20 @@ import Countdown from "react-countdown";
 
 function CountdownTimerBlack() {
   // Calculate the target date for the 4th of April 2024, 00:00 local time
-  const targetDate = new Date('2024-04-15T00:00:00').getTime();
+  const targetDate = Date.UTC(2024, 3, 16, 17, 0, 0);
 
   // Function to calculate total hours, minutes, and seconds from milliseconds
   const calculateTimeLeft = (totalMilliseconds: any) => {
     let totalSeconds = Math.floor(totalMilliseconds / 1000);
     let totalMinutes = Math.floor(totalSeconds / 60);
-    let totalHours = Math.floor(totalMinutes / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+
     totalSeconds = totalSeconds % 60;
     totalMinutes = totalMinutes % 60;
 
     return { totalHours, totalMinutes, totalSeconds };
   };
+
   return (
     <Countdown
     date={targetDate}

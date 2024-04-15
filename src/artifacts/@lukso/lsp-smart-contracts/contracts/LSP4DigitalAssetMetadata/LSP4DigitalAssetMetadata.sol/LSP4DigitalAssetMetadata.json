@@ -29,6 +29,11 @@
       "type": "error"
     },
     {
+      "inputs": [],
+      "name": "LSP4TokenTypeNotEditable",
+      "type": "error"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {

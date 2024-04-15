@@ -1,18 +1,29 @@
+import { Contract } from "ethers";
+import { abi as LSP8 } from '../artifacts/@lukso/lsp8-contracts/contracts/LSP8IdentifiableDigitalAsset.sol/LSP8IdentifiableDigitalAsset.json'
+import { readerRpcProvider } from "../hooks/useContract";
+
 export type DiscountPass = {
     address: string,
-    tokenId: string,
+    tokenIds: string[],
     discount: number,
-    type: string,
     label: string
 };
 
-export function fetchPasses(): Promise<DiscountPass[]>{
-    return new Promise((resolve) => {
-        const passes = [
-            { label:'honft', type: 'honft', tokenId: 'token1', address: 'address1', discount: 50 },
-            { label:'giveaway', type: 'giveaway', tokenId: 'token3', address: 'address3', discount: 10 },
-            { label:'genesis', type: 'genesis', tokenId: 'token5', address: 'address5', discount: 10 },
-        ];
-        resolve(passes);
-    });
+const passes = [
+    { label:'honft pass', address: import.meta.env.VITE_HONFT_PASS_ADDRESS, discount: 50 },
+    { label:'giveaway pass', address: import.meta.env.VITE_GIVEAWAY_PASS_ADDRESS, discount: 100 },
+    { label:'genesis perk', address: import.meta.env.VITE_GENESIS_PERK_ADDRESS, discount: 100 },
+];
+
+export async function fetchPasses(address: string): Promise<DiscountPass[]> {
+    const userPasses = await Promise.all(passes.map(async (pass) => {
+        const contract = new Contract(pass.address, LSP8, readerRpcProvider);
+
+        const balance = await contract.getFunction("balanceOf")(address);
+        const tokenIds = Number(balance) > 0 ? await contract.getFunction("tokenIdsOf")(address) : [];
+
+        return Object.assign({ tokenIds: tokenIds.map((id: string) => id.toString()) }, pass);
+    }));
+
+    return userPasses;
 }

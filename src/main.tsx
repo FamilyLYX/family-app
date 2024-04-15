@@ -13,7 +13,6 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Toaster } from 'react-hot-toast';
 
 import App from './App.tsx'
@@ -45,7 +44,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <QueryClientProvider client={queryClient}>
         <Toaster position='bottom-right' />
         <NiceModal.Provider>
-          <ReactQueryDevtools initialIsOpen={false} />
           <App />
         </NiceModal.Provider>
       </QueryClientProvider>

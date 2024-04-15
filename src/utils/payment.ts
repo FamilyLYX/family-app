@@ -5,7 +5,11 @@ export async function checkout(
   collection: string,
   variantId: string,
   address: any,
-  priceId: string
+  productId: string,
+  pass: {
+    address: string,
+    id: string
+  } | null
 ) {
   try {
     const user = getAuth().currentUser;
@@ -22,7 +26,8 @@ export async function checkout(
         collection,
         variantId,
         address,
-        priceId,
+        productId,
+        pass
       },
       {
         headers: {

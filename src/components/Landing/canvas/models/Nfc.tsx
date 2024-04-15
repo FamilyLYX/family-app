@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
-//@ts-ignore
 import { GLTF } from "three-stdlib";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
