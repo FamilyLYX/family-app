@@ -1,5 +1,7 @@
+import { isAddress } from "ethers";
 import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
+import { getProfileAddress } from "../utils/api";
 
 export const UserContext = createContext<any>(null);
 
@@ -25,7 +27,22 @@ export default function UserProvider({ children }: { children: any }) {
     });
   }, [user]);
 
-  return <UserContext.Provider value={{ vault, user, loading }}>
+  function getProfile() {
+    if (!user) { return; }
+
+    if (isAddress(user.uid)) {
+      return user.uid;
+    }
+
+
+    const address = (user as User).getIdToken().then((token) => {
+      return getProfileAddress(token);
+    })
+
+    return address;
+  }
+
+  return <UserContext.Provider value={{ vault, user, loading, getProfile }}>
     {children}
   </UserContext.Provider>
 }

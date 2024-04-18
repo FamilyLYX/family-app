@@ -1,5 +1,6 @@
 import { Contract } from "ethers";
 import { abi as LSP8 } from '../artifacts/@lukso/lsp8-contracts/contracts/LSP8IdentifiableDigitalAsset.sol/LSP8IdentifiableDigitalAsset.json'
+import { abi as OrderExtension } from '../artifacts/contracts/OrderExtension.sol/OrderExtension.json';
 import { readerRpcProvider } from "../hooks/useContract";
 
 export type DiscountPass = {
@@ -15,14 +16,25 @@ const passes = [
     { label:'genesis perk', address: import.meta.env.VITE_GENESIS_PERK_ADDRESS, discount: 100 },
 ];
 
-export async function fetchPasses(address: string): Promise<DiscountPass[]> {
+export async function fetchPasses(address: string, collection: string): Promise<DiscountPass[]> {
+    const orderExtension = new Contract(import.meta.env.VITE_ORDER_EXTENSION, OrderExtension, readerRpcProvider);
+
     const userPasses = await Promise.all(passes.map(async (pass) => {
         const contract = new Contract(pass.address, LSP8, readerRpcProvider);
 
         const balance = await contract.getFunction("balanceOf")(address);
         const tokenIds = Number(balance) > 0 ? await contract.getFunction("tokenIdsOf")(address) : [];
 
-        return Object.assign({ tokenIds: tokenIds.map((id: string) => id.toString()) }, pass);
+        const availableTokenIds = await Promise.all(tokenIds.map(async (tokenId: string) => {
+            return {
+                used: await orderExtension.isPerkClaimed(pass.address, import.meta.env.VITE_ASSET_PLACEHOLDER, tokenId),
+                tokenId
+            }
+        }));
+
+        return Object.assign({
+            tokenIds: availableTokenIds.filter((token) => !token.used).map((t) => t.tokenId.toString())
+        }, pass);
     }));
 
     return userPasses;

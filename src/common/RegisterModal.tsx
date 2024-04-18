@@ -198,15 +198,15 @@ const RegisterModal = NiceModal.create(() => {
       if (data.status === "completed" && data.signature) {
         setWaiting(2);
 
-        console.log(vault);
         registerToken(data.uid, data.signature, tokenId, query.data?.inVault ? vault : null)
           .then(console.log)
           .catch(console.error)
           .finally(() => {
-            setTimeout(() => {
-              modal.hide();
-              window.location.reload();
-            }, 10000);
+            console.log('finally is also done');
+            // setTimeout(() => {
+            //   modal.hide();
+            //   window.location.reload();
+            // }, 10000);
           });
       }
     });

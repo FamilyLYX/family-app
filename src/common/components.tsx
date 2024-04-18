@@ -43,15 +43,15 @@ export function TokenCard ({ tokenId, owner, address, transfer, showActions = tr
   }
 
   return <div className="w-full">
-    {/* <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} /> */}
-    <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' />
+    <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} />
+    {/* <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' /> */}
     { query.data && <>
         <p className="long-title text-2xl text-center py-2">{query.data.name}</p>
-        <p className="text-center text-base text-gray-400 pb-2">{query.data.description}</p>
+        <p className="text-center text-base text-gray-400 pb-2 h-12 overflow-hidden text-ellipsis">{query.data.description}</p>
       </>
     }
     { 
-      (address === import.meta.env.VITE_ASSET_PLACEHOLDER && showActions) ? <><div className="flex flex-row">
+      (address === import.meta.env.VITE_ASSET_PLACEHOLDER && showActions) ? <><div className="flex flex-row my-4">
       {(window as any).lukso && (
         <Button
           variant="dark"
@@ -100,6 +100,8 @@ export function OrderCard ({ tokenId }: { tokenId: TokenId }) {
 }
 
 export function CollectionCard ({ address }: { address: string }) {
+  console.log(address);
+
   const { getCollectionMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['collection', address], queryFn: () => getCollectionMetadata() });
 

@@ -11,7 +11,6 @@ import { loadStripe } from "@stripe/stripe-js";
 import { getProductByLabel, getShippingCost } from "../utils/api";
 import { getCryptoOrderQuote } from "../utils/api";
 import {
-  ExtensionInterface,
   useTransactionSender,
 } from "../hooks/transactions";
 import { UserContext } from "../contexts/UserContext";
@@ -19,11 +18,9 @@ import { UserContext } from "../contexts/UserContext";
 import safeGet from "lodash/get";
 import toast from "react-hot-toast";
 import { checkout } from "../utils/payment";
-import { getAddress } from "ethers";
+import { isAddress } from "ethers";
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
-
-const ORDER_FUNCTION_NAME = "placeOrder";
 
 const sizeVariantMap: Record<string, string> = {
   xs: "0x000000000000000000000001",
@@ -245,7 +242,7 @@ function OrderDetail({
                     >
                       <span className="capitalize">
                         {pass.label}:{" "}
-                        {Number(productCost) * (100 - pass.discount)}{" "}
+                        {Number(productCost) * (100 - pass.discount)/100}{" "}
                         {productCurrency}
                         <span className="line-through text-gray-400 ml-2">
                           {productCost} {productCurrency}
@@ -346,47 +343,25 @@ function PaymentDetail({
 
     getCryptoOrderQuote(account, collection, variantId, address, product.id, pass).then(
       (quote) => {
-        let orderCalldata,
-          orderValue,
-          orderId: string;
-
         setLoading({ status: 2, message: "Preparing mint transaction" });
 
-        if (pass && pass.address) {
-          const [placeholder, passAddress, passTokenId, value, maxBlockNumber, nonce, data, signature, quoteOrderId] =
-          quote?.params as any[];
+        if (!quote || !quote.value || !quote.calldata) {
+          console.log('Invalid Quote');
 
-          console.log([placeholder, passAddress, passTokenId, value, maxBlockNumber, nonce, data, signature, quoteOrderId]);
-
-          orderValue = value;
-          orderId = quoteOrderId;
-          orderCalldata = ExtensionInterface.encodeFunctionData(
-            'redeemPerk',
-            [placeholder, pass.address, passTokenId, value, maxBlockNumber, nonce, data, signature, orderId]
-          );
-        } else {
-          const [placeholder, value, maxBlockNumber, nonce, data, signature, quoteOrderId] =
-          quote?.params as any[];
-
-          orderValue = value;
-          orderId = quoteOrderId;
-          orderCalldata = ExtensionInterface.encodeFunctionData(
-            ORDER_FUNCTION_NAME,
-            [placeholder, value, maxBlockNumber, nonce, data, signature, orderId]
-          );
+          return;
         }
 
         executeTransactionRequest({
           to: import.meta.env.VITE_FAMILY_PROFILE,
-          value: BigInt(orderValue),
-          data: orderCalldata,
+          value: BigInt(quote.value),
+          data: quote.calldata,
         })
           .then(() => {
             // response.wait(1);
             return new Promise((resolve) => setTimeout(resolve, 10000));
           })
           .then(() => {
-            window.location.pathname = `/orders/${orderId}`;
+            window.location.pathname = `/orders/${quote.order.id}`;
           })
           .catch((error) => {
             setError(error.message);
@@ -446,11 +421,17 @@ export function OrderView({ label }: OrderViewProps) {
       return;
     }
 
-    fetchPasses(user.uid).then((userPasses) => {
-      setPasses(userPasses.filter((pass) => pass.tokenIds.length > 0));
-    });
+    getProductByLabel(label).then((_data) => {
+      setData(_data);
 
-    getProductByLabel(label).then(setData);
+      const productContract = safeGet(_data, 'product.metadata.contract');
+
+      if (!isAddress(productContract)) { return; }
+
+      fetchPasses(user.uid, productContract).then((userPasses) => {
+        setPasses(userPasses.filter((pass) => pass.tokenIds.length > 0));
+      });
+    });
   }, [user]);
 
   if (loading || data === undefined) {
@@ -472,6 +453,8 @@ export function OrderView({ label }: OrderViewProps) {
       </div>
     );
   }
+
+  console.log(data);
 
   return (
     <PaymentDetail

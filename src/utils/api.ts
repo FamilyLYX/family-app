@@ -109,11 +109,7 @@ export async function getCryptoOrderQuote (
       },
     });
 
-    const { order, params: data } = response.data;
-
-    data[1] = BigInt(data[1]);
-
-    return { params: data, order };
+    return response.data;
   } catch (error) {
     console.log(error);
   }
@@ -155,6 +151,22 @@ export async function getShippingCost(code: string){
     const { shippingCost } = response.data;
 
     return  shippingCost ;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getProfileAddress(auth: string){
+  try {
+    const response = await axios({
+      baseURL: `${import.meta.env.VITE_API_HOST}/profile`,
+      method: 'get',
+      headers: {
+        Authorization: auth
+      }
+    });
+
+    return  response.data.address;
   } catch (error) {
     console.log(error);
   }
