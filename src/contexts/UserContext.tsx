@@ -9,6 +9,21 @@ export default function UserProvider({ children }: { children: any }) {
   const [loading, setLoading] = useState(false);
   const [vault, setVault] = useState<any>(null);
   const [user, setUser] = useState<User|null>(null);
+  const [profile, setProfile] = useState<string|null>(null);
+
+  async function getUserProfile() {
+    if (!user) { return null; }
+
+    if (isAddress(user.uid)) {
+      return user.uid;
+    }
+
+    const address = (user as User).getIdToken().then((token) => {
+      return getProfileAddress(token);
+    })
+
+    return address;
+  }
 
   useEffect(() => {
     const auth = getAuth();
@@ -25,24 +40,15 @@ export default function UserProvider({ children }: { children: any }) {
     (user as User).getIdTokenResult(true).then((idToken) => {
       setVault(idToken.claims?.target);
     });
+
+    getUserProfile().then((address) => {
+      if (!address) { return; }
+
+      setProfile(address)
+    });
   }, [user]);
 
-  function getProfile() {
-    if (!user) { return; }
-
-    if (isAddress(user.uid)) {
-      return user.uid;
-    }
-
-
-    const address = (user as User).getIdToken().then((token) => {
-      return getProfileAddress(token);
-    })
-
-    return address;
-  }
-
-  return <UserContext.Provider value={{ vault, user, loading, getProfile }}>
+  return <UserContext.Provider value={{ vault, user, loading, profile }}>
     {children}
   </UserContext.Provider>
 }
