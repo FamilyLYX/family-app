@@ -1,69 +1,72 @@
-import { Fragment, useState, useEffect, useContext } from "react";
-import { Transition, Dialog } from "@headlessui/react";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import { Fragment, useState, useEffect, useContext } from 'react';
+import { Transition, Dialog } from '@headlessui/react';
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
 
-import { Button } from "./buttons";
-import OrderModalTable from "../components/common/Tables/OrderModalTable";
-import AddressForm from "../components/AddressForm";
-import { fetchPasses, DiscountPass } from "../services/DiscountService";
-import { Elements, useElements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { getProductByLabel, getShippingCost } from "../utils/api";
-import { getCryptoOrderQuote } from "../utils/api";
-import {
-  useTransactionSender,
-} from "../hooks/transactions";
-import { UserContext } from "../contexts/UserContext";
+import { Button } from './buttons';
+import OrderModalTable from '../components/common/Tables/OrderModalTable';
+import AddressForm from '../components/AddressForm';
+import { fetchPasses, DiscountPass } from '../services/DiscountService';
+import { Elements, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { getProductByLabel, getShippingCost } from '../utils/api';
+import { getCryptoOrderQuote } from '../utils/api';
+import { useTransactionSender } from '../hooks/transactions';
+import { UserContext } from '../contexts/UserContext';
 
-import safeGet from "lodash/get";
-import toast from "react-hot-toast";
-import { checkout } from "../utils/payment";
-import { isAddress } from "ethers";
+import safeGet from 'lodash/get';
+import toast from 'react-hot-toast';
+import { checkout } from '../utils/payment';
+import { isAddress } from 'ethers';
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
 const sizeVariantMap: Record<string, string> = {
-  xs: "0x000000000000000000000001",
-  s: "0x000000000000000000000002",
-  m: "0x000000000000000000000003",
-  l: "0x000000000000000000000004",
-  xl: "0x000000000000000000000005",
+  xs: '0x000000000000000000000001',
+  s: '0x000000000000000000000002',
+  m: '0x000000000000000000000003',
+  l: '0x000000000000000000000004',
+  xl: '0x000000000000000000000005',
 };
 
+const redeemables = [
+  { name: 'Honft Pass' },
+  { name: 'Giveaway Pass' },
+  { name: 'Genesis Perk NFT' },
+];
 const sizes = [
   {
-    name: "xs",
+    name: 'xs',
     sleeve_length: 59,
     body_length: 52,
     body_width: 61,
   },
   {
-    name: "s",
+    name: 's',
     sleeve_length: 60,
     body_length: 59,
     body_width: 65,
   },
   {
-    name: "m",
+    name: 'm',
     sleeve_length: 61,
     body_length: 62,
     body_width: 67,
   },
   {
-    name: "l",
+    name: 'l',
     sleeve_length: 62,
     body_length: 65,
     body_width: 69,
   },
   {
-    name: "xl",
+    name: 'xl',
     sleeve_length: 63,
     body_length: 71,
     body_width: 73,
   },
 ];
 
-const props = ["sleeve_length", "body_length", "body_width"];
+const props = ['sleeve_length', 'body_length', 'body_width'];
 
 export function Loader() {
   return (
@@ -107,6 +110,7 @@ function OrderDetail({
   const elements = useElements();
   const [extra, setExtra] = useState({});
   const [selectedSize, setSelectedSize] = useState<string>();
+  const [selectedRedeemable, setSelectedRedeemable] = useState<string>();
   const [selectedPass, setPass] = useState<DiscountPass | null>(null);
   const [variantId, selectVariantId] = useState<string | null>();
   const [shippingCost, setShippingCost] = useState<number>(20);
@@ -114,9 +118,9 @@ function OrderDetail({
   const [formReady, setFormReady] = useState(false);
 
   const productCost = Number(
-    (safeGet(price, "unit_amount", 0) / 100).toFixed(2)
+    (safeGet(price, 'unit_amount', 0) / 100).toFixed(2)
   );
-  const productCurrency = safeGet(price, "currency", "").toUpperCase();
+  const productCurrency = safeGet(price, 'currency', '').toUpperCase();
   const discountedCost = (
     productCost * (selectedPass ? (100 - selectedPass.discount) / 100 : 1)
   ).toFixed(2);
@@ -140,7 +144,7 @@ function OrderDetail({
       return;
     }
 
-    const addrEl = elements.getElement("address");
+    const addrEl = elements.getElement('address');
 
     if (!addrEl) {
       return;
@@ -163,7 +167,7 @@ function OrderDetail({
       return;
     }
 
-    const addrEl = elements.getElement("address");
+    const addrEl = elements.getElement('address');
     if (!addrEl) {
       return;
     }
@@ -174,7 +178,7 @@ function OrderDetail({
     // }
 
     if (!selectedSize) {
-      toast.error("Please select a size");
+      toast.error('Please select a size');
 
       return;
     }
@@ -187,7 +191,7 @@ function OrderDetail({
       variantId: variantId,
       collection: product.metadata.contract,
       passTokenId,
-      shippingCost
+      shippingCost,
     });
   }
 
@@ -207,8 +211,17 @@ function OrderDetail({
       {formReady && (
         <div className="flex flex-col xl:w-[50%] w-full h-auto p-4 m-2 space-y-4 ">
           <p className="long-title text-4xl text-gray-400">Size Chart</p>
-          <div className="overflow-hidden border-2 border-gray-200 rounded-3xl">
-            <OrderModalTable data={sizes} columns={props} />
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <img
+              src="/size.png"
+              className="block md:max-w-[35%]"
+              alt="size-image"
+            />
+            <div className="overflow-x-auto w-full md:flex-1">
+              <div className="overflow-x-auto w-full border-2 border-gray-200 rounded-3xl">
+                <OrderModalTable data={sizes} columns={props} />
+              </div>
+            </div>
           </div>
           <div>
             <span className="text-gray-400 mb-2">Select Size:</span>
@@ -217,10 +230,28 @@ function OrderDetail({
                 return (
                   <Button
                     key={sizeIdx}
-                    variant={selectedSize === size.name ? "dark" : ""}
+                    variant={selectedSize === size.name ? 'dark' : ''}
                     onClick={() => setSelectedSize(size.name)}
                   >
                     {size.name.toUpperCase()}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            <span className="text-gray-400 mb-2">Redeem:</span>
+            <div className="flex flex-row">
+              {redeemables.map((redeemable, redeemableIdx) => {
+                return (
+                  <Button
+                    key={redeemableIdx}
+                    variant={
+                      selectedRedeemable === redeemable.name ? 'dark' : ''
+                    }
+                    onClick={() => setSelectedRedeemable(redeemable.name)}
+                  >
+                    {redeemable.name}
                   </Button>
                 );
               })}
@@ -235,14 +266,14 @@ function OrderDetail({
                   return (
                     <Button
                       key={passIdx}
-                      variant={selectedPass === pass ? "dark" : ""}
+                      variant={selectedPass === pass ? 'dark' : ''}
                       onClick={() =>
                         setPass(selectedPass === pass ? null : pass)
                       }
                     >
                       <span className="capitalize">
-                        {pass.label}:{" "}
-                        {Number(productCost) * (100 - pass.discount)/100}{" "}
+                        {pass.label}:{' '}
+                        {(Number(productCost) * (100 - pass.discount)) / 100}{' '}
                         {productCurrency}
                         <span className="line-through text-gray-400 ml-2">
                           {productCost} {productCurrency}
@@ -263,7 +294,7 @@ function OrderDetail({
                   return (
                     <Button
                       key={passTokenIdx}
-                      variant={tokenId === passTokenId ? "dark" : ""}
+                      variant={tokenId === passTokenId ? 'dark' : ''}
                       onClick={() =>
                         setPassTokenId(tokenId === passTokenId ? null : tokenId)
                       }
@@ -284,18 +315,18 @@ function OrderDetail({
             <span className=" text-gray-400">Price:</span>
             <br />
             <span className="">
-              {((Number(discountedCost) + shippingCost) * lyxFactor).toFixed(2)}{" "}
+              {((Number(discountedCost) + shippingCost) * lyxFactor).toFixed(2)}{' '}
               LYX
             </span>
           </div>
 
           <div className="">
             <span className=" text-gray-400">
-              ≈ {discountedCost} {productCurrency} +{" "}
+              ≈ {discountedCost} {productCurrency} +{' '}
               {shippingCost ? (
                 <span>{shippingCost}USD (Shipping Cost) </span>
               ) : (
-                "Shipping Cost"
+                'Shipping Cost'
               )}
             </span>
             <div>
@@ -324,57 +355,74 @@ function PaymentDetail({
   collection,
   variantId,
   address,
-  lyxFactor
+  lyxFactor,
 }: any) {
   const { executeTransactionRequest } = useTransactionSender();
-  const [loading, setLoading] = useState({ status: 0, message: "Not Loading" });
+  const [loading, setLoading] = useState({ status: 0, message: 'Not Loading' });
   const [error, setError] = useState<null | string>(null);
 
-  const discountFactor = discountPass && discountPass.pass ? (100-discountPass.pass.discount)/100 : 1;
-  const totalCost = (price.unit_amount/100)*discountFactor + shippingCost;
+  const discountFactor =
+    discountPass && discountPass.pass
+      ? (100 - discountPass.pass.discount) / 100
+      : 1;
+  const totalCost = (price.unit_amount / 100) * discountFactor + shippingCost;
 
-  const pass = discountPass && discountPass.pass ? {
-    address: discountPass.pass.address,
-    id: discountPass.tokenId
-  } : null;
+  const pass =
+    discountPass && discountPass.pass
+      ? {
+          address: discountPass.pass.address,
+          id: discountPass.tokenId,
+        }
+      : null;
 
   function buyWithCrypto() {
-    setLoading({ status: 1, message: "Fetching quotes for the order" });
+    setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
-    getCryptoOrderQuote(account, collection, variantId, address, product.id, pass).then(
-      (quote) => {
-        setLoading({ status: 2, message: "Preparing mint transaction" });
+    getCryptoOrderQuote(
+      account,
+      collection,
+      variantId,
+      address,
+      product.id,
+      pass
+    ).then((quote) => {
+      setLoading({ status: 2, message: 'Preparing mint transaction' });
 
-        if (!quote || !quote.value || !quote.calldata) {
-          console.log('Invalid Quote');
+      if (!quote || !quote.value || !quote.calldata) {
+        console.log('Invalid Quote');
 
-          return;
-        }
-
-        executeTransactionRequest({
-          to: import.meta.env.VITE_FAMILY_PROFILE,
-          value: BigInt(quote.value),
-          data: quote.calldata,
-        })
-          .then(() => {
-            // response.wait(1);
-            return new Promise((resolve) => setTimeout(resolve, 10000));
-          })
-          .then(() => {
-            window.location.pathname = `/orders/${quote.order.id}`;
-          })
-          .catch((error) => {
-            setError(error.message);
-            setLoading({ status: 0, message: "Not Loading" });
-          });
+        return;
       }
-    );
+
+      executeTransactionRequest({
+        to: import.meta.env.VITE_FAMILY_PROFILE,
+        value: BigInt(quote.value),
+        data: quote.calldata,
+      })
+        .then(() => {
+          // response.wait(1);
+          return new Promise((resolve) => setTimeout(resolve, 10000));
+        })
+        .then(() => {
+          window.location.pathname = `/orders/${quote.order.id}`;
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading({ status: 0, message: 'Not Loading' });
+        });
+    });
   }
 
   async function payWithFiat() {
-    setLoading({ status: 1, message: "Fetching quotes for the order" });
+    setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
-    const url = await checkout(collection, variantId, address, product.id, pass);
+    const url = await checkout(
+      collection,
+      variantId,
+      address,
+      product.id,
+      pass
+    );
 
     window.location = url;
   }
@@ -397,8 +445,7 @@ function PaymentDetail({
         )}
         {!loading.status && (
           <Button onClick={() => payWithFiat()}>
-            Continue without LYX ({totalCost}{" "}
-            {price.currency.toUpperCase()})
+            Continue without LYX ({totalCost} {price.currency.toUpperCase()})
           </Button>
         )}
         {loading.status > 0 && <p className="text-center">{loading.message}</p>}
@@ -426,7 +473,9 @@ export function OrderView({ label }: OrderViewProps) {
 
       const productContract = safeGet(_data, 'product.metadata.contract');
 
-      if (!isAddress(productContract)) { return; }
+      if (!isAddress(productContract)) {
+        return;
+      }
 
       fetchPasses(user.uid, productContract).then((userPasses) => {
         setPasses(userPasses.filter((pass) => pass.tokenIds.length > 0));
@@ -445,9 +494,9 @@ export function OrderView({ label }: OrderViewProps) {
           <OrderDetail
             passes={passes}
             setOrderData={setOrderDetails}
-            product={safeGet(data, "product", {})}
-            price={safeGet(data, "price")}
-            lyxFactor={safeGet(data, "lyxFactor", 0)}
+            product={safeGet(data, 'product', {})}
+            price={safeGet(data, 'price')}
+            lyxFactor={safeGet(data, 'lyxFactor', 0)}
           />
         </Elements>
       </div>
@@ -458,16 +507,16 @@ export function OrderView({ label }: OrderViewProps) {
 
   return (
     <PaymentDetail
-      product={safeGet(data, "product")}
-      price={safeGet(data, "price")}
+      product={safeGet(data, 'product')}
+      price={safeGet(data, 'price')}
       account={user.uid}
       variantId={safeGet(orderDetail, 'variantId', '')}
       address={safeGet(orderDetail, 'address', '')}
       shippingCost={safeGet(orderDetail, 'shippingCost', '')}
-      lyxFactor={safeGet(data, "lyxFactor", 0)}
+      lyxFactor={safeGet(data, 'lyxFactor', 0)}
       discountPass={{
         pass: safeGet(orderDetail, 'pass', ''),
-        tokenId: safeGet(orderDetail, 'passTokenId', '')
+        tokenId: safeGet(orderDetail, 'passTokenId', ''),
       }}
     />
   );
@@ -481,12 +530,12 @@ const options = {
       //   color: "transparent",
       //   fontSize: "0px",
       // },
-      ".Input": {
-        borderColor: "#e5e7eb",
-        borderWidth: "2px",
-        paddingTop: "0.85rem",
-        paddingBottom: "0.85rem",
-        borderRadius: "0.75rem",
+      '.Input': {
+        borderColor: '#e5e7eb',
+        borderWidth: '2px',
+        paddingTop: '0.85rem',
+        paddingBottom: '0.85rem',
+        borderRadius: '0.75rem',
       },
     },
   },

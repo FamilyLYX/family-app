@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 function OrderModalTable(props: any) {
-  const [size, setSize] = useState("cm");
+  const [size, setSize] = useState('cm');
 
   return (
     <table className="w-full">
@@ -13,7 +13,7 @@ function OrderModalTable(props: any) {
               <input
                 type="checkbox"
                 onClick={() => {
-                  size === "cm" ? setSize("inch") : setSize("cm");
+                  size === 'cm' ? setSize('inch') : setSize('cm');
                 }}
                 className="sr-only peer"
               />
@@ -29,11 +29,14 @@ function OrderModalTable(props: any) {
       </thead>
       <tbody>
         {props.columns.map((prop: any, index: number) => (
-          <tr key={index} className="border-b-2 border-gray-200 leading-loose last:border-none">
+          <tr
+            key={index}
+            className="border-b-2 border-gray-200 leading-loose last:border-none"
+          >
             <td className="px-4 py-2 capitalize">{prop.replace('_', ' ')}</td>
             {props.data.map((item: any, idx: number) => (
               <td className="px-4 py-2" key={idx}>
-                {size === 'cm' ? item[prop] : (item[prop]*0.3937).toFixed(1)}
+                {size === 'cm' ? item[prop] : (item[prop] * 0.3937).toFixed(1)}
               </td>
             ))}
           </tr>
