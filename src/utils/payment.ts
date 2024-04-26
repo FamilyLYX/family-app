@@ -35,10 +35,10 @@ export async function checkout(
         },
       }
     );
+    // console.log(response.data)
+    // const { url, message } = response.data;
 
-    const { url } = response.data;
-
-    return url;
+    return response.data;
   } catch (error) {
     console.log(error);
   }

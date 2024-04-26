@@ -85,7 +85,7 @@ export default function Header() {
               </div> */}
               {/* <div className="grow"></div> */}
               {/* <div className="flex items-center absolute left-1/2 -ml-[40px]"> */}
-                <Link to="/" className="flex-shrink-0 pl-6">
+                <Link to="/buy/honft" className="flex-shrink-0 pl-6">
                   <img src={logo} alt="Family" />
                 </Link>
               {/* </div> */}

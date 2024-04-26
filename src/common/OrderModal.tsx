@@ -68,6 +68,34 @@ const sizes = [
 
 const props = ['sleeve_length', 'body_length', 'body_width'];
 
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1280);
+
+  useEffect(() => {
+      window.addEventListener("resize", () => {
+          if (window.innerWidth <= 1280 && !isMobile) {
+            setIsMobile(true);
+          }
+          else if (window.innerWidth > 1280 && isMobile) {
+            setIsMobile(false)
+          }
+      });
+
+      return () => {
+          window.removeEventListener("resize", () => {
+            if (window.innerWidth <= 1280 && !isMobile) {
+              setIsMobile(true);
+            }
+            else if (window.innerWidth > 1280 && isMobile) {
+              setIsMobile(false)
+            }
+          })
+      }
+  }, []);
+
+  return isMobile;
+}
+
 export function Loader() {
   return (
     <div className="p-4 mx-auto w-20" role="status">
@@ -116,7 +144,11 @@ function OrderDetail({
   const [shippingCost, setShippingCost] = useState<number>(20);
   const [passTokenId, setPassTokenId] = useState<string | null>(null);
   const [formReady, setFormReady] = useState(false);
-
+  const [next, setNext] = useState(false);
+  const[address,setAddress] = useState<any>({})
+  
+  const mobile = useIsMobile()
+ 
   const productCost = Number(
     (safeGet(price, 'unit_amount', 0) / 100).toFixed(2)
   );
@@ -138,6 +170,9 @@ function OrderDetail({
 
     fetchShippingCost();
   }, [selectedSize, selectedPass]);
+
+  useEffect(() => {
+  }, [mobile]);
 
   async function fetchShippingCost() {
     if (!elements) {
@@ -162,7 +197,8 @@ function OrderDetail({
     setShippingCost(shippingCost);
   }
 
-  async function handleSave() {
+
+  async function handleAddress(){
     if (!elements) {
       return;
     }
@@ -172,17 +208,60 @@ function OrderDetail({
       return;
     }
 
-    const address = await addrEl.getValue();
-    // if (!address.complete) {
-    //   return;
-    // }
+    
+    setAddress(await addrEl.getValue());
+    if (!address.complete) {
+      return;
+    }
+    setNext(true);
+    return
+    
+  }
+  async function handleSaveMobile() {
 
     if (!selectedSize) {
       toast.error('Please select a size');
-
+      return;
+    }
+    if (!address.complete) {
+      return;
+    }
+    
+    setOrderData({
+      address,
+      meta: extra,
+      size: selectedSize,
+      pass: selectedPass,
+      variantId: variantId,
+      collection: product.metadata.contract,
+      passTokenId,
+      shippingCost,
+    });
+  }
+  async function handleSave() {
+    if (!elements) {
+      toast.error('Something went wrong.');
       return;
     }
 
+    const addrEl = elements.getElement('address');
+    if (!addrEl) {
+      toast.error('Something went wrong.');
+      return;
+    }
+
+    
+    setAddress(await addrEl.getValue());
+    if (!address.complete) {
+      toast.error('Please complete address fields.');
+      return;
+    }
+
+    if (!selectedSize) {
+      toast.error('Please select a size.');
+      return;
+    }
+    
     setOrderData({
       address,
       meta: extra,
@@ -198,19 +277,95 @@ function OrderDetail({
   return (
     <>
       <div className="flex flex-col xl:w-[50%] w-full p-4 m-2 space-y-6">
-        {formReady && (
-          <p className="long-title text-4xl">
-            Buy
-            <span className="long-title text-4xl text-gray-400 xl:inline ml-2">
-              Honft
-            </span>
-          </p>
+        {formReady && !next && (
+          <div className="flex flex-row justify-between">
+            <p className="long-title xl:text-4xl text-8xl">
+              Buy
+              <span className="long-title xl:text-4xl text-8xl text-gray-400 xl:inline ml-2">
+                Honft
+              </span>
+            </p>
+            {mobile && (
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="39"
+                  height="39"
+                  rx="19.5"
+                  stroke="black"
+                  strokeOpacity="0.07"
+                />
+
+                <path
+                  d="M25 15L15 25M15 15L25 25"
+                  stroke="black"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
+          </div>
         )}
-        <AddressForm onChange={setExtra} onReady={() => setFormReady(true)} />
+        {!next && (
+          <AddressForm onChange={setExtra} onReady={() => setFormReady(true)} />
+        )}
+        {
+          (!next && mobile) && (
+            <Button
+              variant="dark"
+              onClick={() => {
+                handleAddress()
+              }}
+            >
+              Next
+            </Button>
+          ) 
+        }
       </div>
-      {formReady && (
+      {formReady && (next || (!mobile && !next))  && (
         <div className="flex flex-col xl:w-[50%] w-full h-auto p-4 m-2 space-y-4 ">
-          <p className="long-title text-4xl text-gray-400">Size Chart</p>
+          <div className="flex flex-row justify-start space-x-10">
+            {
+              (next && mobile) && (
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  onClick={() => {
+                    setNext(false);
+                  }}
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="0.5"
+                    y="0.5"
+                    width="39"
+                    height="39"
+                    rx="19.5"
+                    stroke="black"
+                    strokeOpacity="0.07"
+                  />
+                  <path
+                    d="M25.8334 20H14.1667M14.1667 20L20.0001 25.8334M14.1667 20L20.0001 14.1667"
+                    stroke="black"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )
+            }
+            <p className="long-title xl:text-4xl text-8xl text-gray-400">Size Chart</p>
+          </div>
           <div className="flex flex-col md:flex-row items-center gap-4">
             <img
               src="/size.png"
@@ -330,14 +485,26 @@ function OrderDetail({
               )}
             </span>
             <div>
-              <Button
+              {mobile ? (
+                <Button
+                  variant="dark"
+                  onClick={() => {
+                    handleSaveMobile();
+                  }}
+                >
+                  {(Number(discountedCost)+shippingCost)}USD. 
+                </Button>
+              ): (
+                <Button
                 variant="dark"
                 onClick={() => {
                   handleSave();
                 }}
               >
-                Continue To Payment
+                {(Number(discountedCost)+shippingCost)}USD
               </Button>
+              )}
+              
             </div>
           </div>
         </div>
@@ -375,6 +542,8 @@ function PaymentDetail({
         }
       : null;
 
+  const UPExist = window.lukso;
+
   function buyWithCrypto() {
     setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
@@ -386,11 +555,14 @@ function PaymentDetail({
       product.id,
       pass
     ).then((quote) => {
+      if(quote.message){
+        toast.error(quote.message);
+        return;
+      }
       setLoading({ status: 2, message: 'Preparing mint transaction' });
 
       if (!quote || !quote.value || !quote.calldata) {
-        console.log('Invalid Quote');
-
+        toast.error('Invalid quote.');
         return;
       }
 
@@ -416,19 +588,23 @@ function PaymentDetail({
   async function payWithFiat() {
     setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
-    const url = await checkout(
+    const res = await checkout(
       collection,
       variantId,
       address,
       product.id,
       pass
     );
-
-    window.location = url;
+    
+    if(res.message){
+      toast.error(res.message);
+      return;
+    }
+    window.location = res.url;
   }
 
   return (
-    <div className="mx-auto max-w-md">
+    <div className="mx-auto max-w-md flex flex-col min-h-screen justify-center items-center">
       <h2 className="text-2xl pl-4 m-4 font-medium leading-6 text-gray-900 text-center">
         Choose payment method
       </h2>
@@ -438,10 +614,14 @@ function PaymentDetail({
             {error}
           </p>
         )}
-        {!loading.status && (
+        {!loading.status && UPExist ? (
           <Button variant="dark" onClick={() => buyWithCrypto()}>
             Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
-          </Button>
+          </Button >
+        ):(
+          <button className="px-4 mx-1 w-full py-2 rounded-full border transition duration-700 bg-gray-100 text-gray-900 focus:outline-none font-medium text-center">
+            Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
+          </button>
         )}
         {!loading.status && (
           <Button onClick={() => payWithFiat()}>
@@ -502,8 +682,6 @@ export function OrderView({ label }: OrderViewProps) {
       </div>
     );
   }
-
-  console.log(data);
 
   return (
     <PaymentDetail

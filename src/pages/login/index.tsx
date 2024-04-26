@@ -42,7 +42,7 @@ export function Login() {
   useEffect(() => {
     return onAuthStateChanged(getAuth(), (user) => {
       if (user) {
-        return navigate("/");
+        return navigate("/buy/honft");
       }
     });
   }, []);

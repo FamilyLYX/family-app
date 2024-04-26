@@ -60,7 +60,7 @@ const router = () =>
               path="/inventory/phygitals"
               element={<Phygitals />}
             />
-            <Route path="/inventory/digitals" element={<Digitals />} />
+            {/* <Route path="/inventory/digitals" element={<Digitals />} /> */}
             <Route path="/inventory/orders" element={<Orders />} />
           </Route>
           <Route path="/mob-order" element={<OrderScreen />} />

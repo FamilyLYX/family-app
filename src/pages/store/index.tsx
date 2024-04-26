@@ -119,6 +119,8 @@ function ProductCard({ product }: { product: ProductType }) {
 }
 
 export default function Store() {
+  window.location.href = "buy/honft"
+  
   const productQuery = useQuery({
     queryKey: ["products"],
     queryFn: () => getAllProducts(),

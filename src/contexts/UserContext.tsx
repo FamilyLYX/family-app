@@ -6,7 +6,7 @@ import { getProfileAddress } from "../utils/api";
 export const UserContext = createContext<any>(null);
 
 export default function UserProvider({ children }: { children: any }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [vault, setVault] = useState<any>(null);
   const [user, setUser] = useState<User|null>(null);
   const [profile, setProfile] = useState<string|null>(null);
@@ -47,7 +47,6 @@ export default function UserProvider({ children }: { children: any }) {
       setProfile(address)
     });
   }, [user]);
-
   return <UserContext.Provider value={{ vault, user, loading, profile }}>
     {children}
   </UserContext.Provider>
