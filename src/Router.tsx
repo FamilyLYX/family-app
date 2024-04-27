@@ -48,8 +48,8 @@ const router = () =>
           <Route path="/orders/:id" element={<Order />} />
           <Route path="/store" element={<Store />} />
           <Route path='/buy/:item' element={<BuyItem />} />
-          <Route path='/termandcondition' element={<TermCondition />} />
-          <Route path='/privacypolicy' element={<PrivacyPolicy />} />
+          <Route path='/terms' element={<TermCondition />} />
+          <Route path='/privacy' element={<PrivacyPolicy />} />
           {/* <Route path="/trade" element={<Trade />} /> */}
           {/* <Route path="/escrowmoreinfo" element={<EscrowMoreinfo />} />
           <Route path="/marketplace" element={<Marketplace />} />
