@@ -16,7 +16,7 @@ const passes = [
     { label:'genesis perk', address: import.meta.env.VITE_GENESIS_PERK_ADDRESS, discount: 100 },
 ];
 
-export async function fetchPasses(address: string, collection: string): Promise<DiscountPass[]> {
+export async function fetchPasses(address: string): Promise<DiscountPass[]> {
     const orderExtension = new Contract(import.meta.env.VITE_ORDER_EXTENSION, OrderExtension, readerRpcProvider);
 
     const userPasses = await Promise.all(passes.map(async (pass) => {
@@ -37,5 +37,5 @@ export async function fetchPasses(address: string, collection: string): Promise<
         }, pass);
     }));
 
-    return userPasses;
+    return userPasses.filter((passes) => passes.tokenIds.length > 0);
 }

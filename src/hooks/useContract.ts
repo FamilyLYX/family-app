@@ -5,7 +5,7 @@ import {
   JsonRpcProvider,
   JsonRpcSigner,
 } from "ethers";
-export const readerRpcProvider = new JsonRpcProvider("https://rpc.testnet.lukso.network");
+export const readerRpcProvider = new JsonRpcProvider(import.meta.env.VITE_RPC_PROVIDER);
 
 export const useContract = (
   target: string,

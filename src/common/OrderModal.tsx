@@ -28,11 +28,6 @@ const sizeVariantMap: Record<string, string> = {
   xl: '0x000000000000000000000005',
 };
 
-const redeemables = [
-  { name: 'Honft Pass' },
-  { name: 'Giveaway Pass' },
-  { name: 'Genesis Perk NFT' },
-];
 const sizes = [
   {
     name: 'xs',
@@ -138,7 +133,6 @@ function OrderDetail({
   const elements = useElements();
   const [extra, setExtra] = useState({});
   const [selectedSize, setSelectedSize] = useState<string>();
-  const [selectedRedeemable, setSelectedRedeemable] = useState<string>();
   const [selectedPass, setPass] = useState<DiscountPass | null>(null);
   const [variantId, selectVariantId] = useState<string | null>();
   const [shippingCost, setShippingCost] = useState<number>(20);
@@ -170,9 +164,6 @@ function OrderDetail({
 
     fetchShippingCost();
   }, [selectedSize, selectedPass]);
-
-  useEffect(() => {
-  }, [mobile]);
 
   async function fetchShippingCost() {
     if (!elements) {
@@ -394,26 +385,7 @@ function OrderDetail({
               })}
             </div>
           </div>
-          <div>
-            <span className="text-gray-400 mb-2">Redeem:</span>
-            <div className="flex flex-row">
-              {redeemables.map((redeemable, redeemableIdx) => {
-                return (
-                  <Button
-                    key={redeemableIdx}
-                    variant={
-                      selectedRedeemable === redeemable.name ? 'dark' : ''
-                    }
-                    onClick={() => setSelectedRedeemable(redeemable.name)}
-                  >
-                    {redeemable.name}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-
-          {passes && passes.length !== 0 && (
+          {(passes && passes.length > 0) ? (
             <div>
               <span className="text-gray-400 mb-2">Reedem:</span>
               <div className="flex flex-row">
@@ -439,7 +411,7 @@ function OrderDetail({
                 })}
               </div>
             </div>
-          )}
+          ) : <></>}
 
           {selectedPass && selectedPass.tokenIds.length > 1 && (
             <div>
@@ -542,7 +514,7 @@ function PaymentDetail({
         }
       : null;
 
-  const UPExist = window.lukso;
+  const UPExist = (window as any).lukso;
 
   function buyWithCrypto() {
     setLoading({ status: 1, message: 'Fetching quotes for the order' });
@@ -657,7 +629,7 @@ export function OrderView({ label }: OrderViewProps) {
         return;
       }
 
-      fetchPasses(user.uid, productContract).then((userPasses) => {
+      fetchPasses(user.uid).then((userPasses) => {
         setPasses(userPasses.filter((pass) => pass.tokenIds.length > 0));
       });
     });

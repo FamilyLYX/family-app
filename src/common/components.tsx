@@ -16,7 +16,7 @@ export function ShortAddress ({ address }: { address: string }) {
   </a>
 }
 
-export function TokenCard ({ tokenId, owner, address, transfer, showActions = true }: { tokenId: TokenId,owner:string, address: string, showActions?: boolean, transfer?: boolean }) {
+export function TokenCard ({ tokenId, owner, address, transfer, showActions = true }: { tokenId: TokenId,owner?:string, address: string, showActions?: boolean, transfer?: boolean }) {
   const { vault, user } = useContext(UserContext);
   const { phygital, getTokenMetadata } = usePhygitalCollection(address);
   const { sendTransaction } = useTransactionSender();

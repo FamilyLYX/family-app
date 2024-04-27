@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { LinkButton } from "../../common/buttons";
-import { getAddress, isAddress } from "ethers";
+import { isAddress } from "ethers";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import ConnectWallet from "../../common/ConnectWallet";

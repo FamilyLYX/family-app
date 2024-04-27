@@ -29,19 +29,15 @@ function AddressForm({ onChange, onReady }: { onChange: (address: any) => void, 
             mode: "google_maps_api",
             apiKey: "AIzaSyBxyov5lb60HJOhkimWull9Bi23mBIj9L4",
           },
-          fields: { name: "always", phone: "always" },
+          fields: { phone: "always" },
           validation: {
-            name: { required: "always" },
             phone: {
               required: "always",
             },
           },
           defaultValues: {
             address: { state: "CA", country: "US" },
-          },
-          appearance: {
-            labels: "floating",
-          },
+          }
         }}
       />
       { isReady && <input

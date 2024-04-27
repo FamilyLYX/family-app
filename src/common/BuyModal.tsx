@@ -9,7 +9,6 @@ import {
   ExtensionInterface,
   useTransactionSender,
 } from "../hooks/transactions";
-import { checkout } from "../utils/payment";
 import { Elements, AddressElement, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -72,8 +71,6 @@ function AddressInput(props: any) {
           mode: "shipping",
           blockPoBox: true,
           autocomplete: { mode: "disabled" },
-          fields: { name: "always" },
-          validation: { name: { required: "always" } },
           defaultValues: {
             address: { state: "CA", country: "US" },
           },
@@ -129,7 +126,7 @@ const BuyModal = NiceModal.create(() => {
 
     setLoading({ status: 1, message: "Fetching quotes for the order" });
 
-    getCryptoOrderQuote(profile, collection, variantId, address, priceId).then(
+    getCryptoOrderQuote(profile, collection, variantId, address, priceId, null).then(
       (quote) => {
         const [placeholder, value, maxBlockNumber, nonce, data, signature] =
           quote?.params as any[];
@@ -163,15 +160,15 @@ const BuyModal = NiceModal.create(() => {
   }
 
   async function payWithFiat() {
-    const collection = product.metadata.contract;
-    const variantId = "0x00000000000000000000001d";
-    const priceId = product.price.id;
+    // const collection = product.metadata.contract;
+    // const variantId = "0x00000000000000000000001d";
+    // const priceId = product.price.id;
 
-    setLoading({ status: 1, message: 'Fetching quotes for the order' });
+    // setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
-    const url = await checkout(collection, variantId, address, priceId);
+    // const url = await checkout(collection, variantId, address, priceId);
     
-    window.location = url;
+    // window.location = url;
   }
 
   return (

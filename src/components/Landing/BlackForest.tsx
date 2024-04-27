@@ -7,7 +7,7 @@ import { useModal } from "@ebay/nice-modal-react";
 function BlackForest() {
   const navigate = useNavigate();
   const orderModal = useModal("family-order-modal")
-  const [mobile,setMobile] = useState(false)
+  const [,setMobile] = useState(false)
 
   useEffect(() => {
       console.log(window.innerWidth,'@@@@@@@')
