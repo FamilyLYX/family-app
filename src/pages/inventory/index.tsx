@@ -1,5 +1,4 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { LinkButton } from "../../common/buttons";
 import { isAddress } from "ethers";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";

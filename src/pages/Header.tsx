@@ -12,14 +12,6 @@ import { LinkButton, Button } from "../common/buttons";
 
 import logo from "../logo.svg";
 
-function LeftActions() {
-  return (
-    <>
-      
-    </>
-  );
-}
-
 function NavActions() {
   const [user, setUser] = useState<User | null>(null);
   
