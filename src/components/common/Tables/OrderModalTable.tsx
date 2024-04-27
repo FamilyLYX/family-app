@@ -33,7 +33,7 @@ function OrderModalTable(props: any) {
             key={index}
             className="border-b-2 border-gray-200 leading-loose last:border-none"
           >
-            <td className="px-4 py-2 capitalize">{prop.replace('_', ' ')}</td>
+            <td className="px-4 py-2 capitalize">{String.fromCharCode(65 + index) }{" "}{prop.replace('_', ' ')}</td>
             {props.data.map((item: any, idx: number) => (
               <td className="px-4 py-2" key={idx}>
                 {size === 'cm' ? item[prop] : (item[prop] * 0.3937).toFixed(1)}

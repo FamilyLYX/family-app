@@ -82,11 +82,11 @@ export default function Header() {
                 </div>
               </div> */}
               {/* <div className="grow"></div> */}
-              {/* <div className="flex items-center absolute left-1/2 -ml-[40px]"> */}
-                <Link to="/buy/honft" className="flex-shrink-0 pl-6">
+              <div className="flex items-center absolute left-1/2 -ml-[40px]">
+                <Link to="/buy/honft" className="flex-shrink-0">
                   <img src={logo} alt="Family" />
                 </Link>
-              {/* </div> */}
+              </div>
               <div className="grow"></div>
               <div className="hidden lg:block">
                 <div className="ml-4 flex items-center lg:ml-6">
@@ -110,7 +110,7 @@ export default function Header() {
           <Disclosure.Panel className="lg:hidden">
             <div className="pt-4 pb-3 h-screen">
               <div className="flex flex-col space-y-2">
-              <LeftActions/>
+              {/* <LeftActions/> */}
               <NavActions/>
               </div>
             </div>

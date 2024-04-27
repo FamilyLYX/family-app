@@ -25,7 +25,7 @@ export default function Inventory() {
       <h2 className="long-title text-center text-8xl">Inventory</h2>
       <p className="text-center text-gray-400 py-2">Here you can fully interact with your NFTs, sell them, study them, etc.</p>
       <div className="max-w-2xl mx-auto flex flex-row justify-center mt-4">
-        <LinkButton variant="outline" to="/inventory/phygitals">Phygitals</LinkButton>
+        {/* <LinkButton variant="outline" to="/inventory/phygitals">Phygitals</LinkButton> */}
         {/* <LinkButton variant="outline" to="/inventory/digitals">Digitals</LinkButton> */}
         {/* <LinkButton variant="outline" to="/inventory/orders">Orders</LinkButton> */}
       </div>

@@ -32,36 +32,36 @@ const sizes = [
   {
     name: 'xs',
     sleeve_length: 59,
-    body_length: 52,
-    body_width: 61,
+    body_length: 61,
+    body_width: 53,
   },
   {
     name: 's',
     sleeve_length: 60,
-    body_length: 59,
-    body_width: 65,
+    body_length: 65,
+    body_width: 59,
   },
   {
     name: 'm',
     sleeve_length: 61,
-    body_length: 62,
-    body_width: 67,
+    body_length: 67,
+    body_width: 62,
   },
   {
     name: 'l',
     sleeve_length: 62,
-    body_length: 65,
-    body_width: 69,
+    body_length: 69,
+    body_width: 65,
   },
   {
     name: 'xl',
     sleeve_length: 63,
-    body_length: 71,
-    body_width: 73,
+    body_length: 73,
+    body_width: 71,
   },
 ];
 
-const props = ['sleeve_length', 'body_length', 'body_width'];
+const props = ['sleeve_length', 'body_width', 'body_length'];
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1280);
@@ -177,9 +177,12 @@ function OrderDetail({
     }
 
     const address = await addrEl.getValue();
-    if (!address.complete) {
-      return;
-    }
+    // if (!address.complete) {
+    //   setSelectedSize('');
+    //   return;
+    // }
+    
+    setAddress(await addrEl.getValue());
 
     const countryCode = address.value.address.country;
 
@@ -201,9 +204,9 @@ function OrderDetail({
 
     
     setAddress(await addrEl.getValue());
-    if (!address.complete) {
-      return;
-    }
+    // if (!address.complete) {
+    //   return;
+    // }
     setNext(true);
     return
     
@@ -241,15 +244,18 @@ function OrderDetail({
       return;
     }
 
-    
-    setAddress(await addrEl.getValue());
-    if (!address.complete) {
-      toast.error('Please complete address fields.');
-      return;
-    }
+    // if (!address.complete) {
+    //   toast.error('Please fill complete address and select size');
+    //   return;
+    // }
 
     if (!selectedSize) {
       toast.error('Please select a size.');
+      return;
+    }
+
+    if (!shippingCost) {
+      toast.error('Please select a size again.');
       return;
     }
     
@@ -576,7 +582,7 @@ function PaymentDetail({
   }
 
   return (
-    <div className="mx-auto max-w-md flex flex-col min-h-screen justify-center items-center">
+    <div className="mx-auto max-w-md flex flex-col justify-center items-center mt-48">
       <h2 className="text-2xl pl-4 m-4 font-medium leading-6 text-gray-900 text-center">
         Choose payment method
       </h2>
@@ -586,15 +592,15 @@ function PaymentDetail({
             {error}
           </p>
         )}
-        {!loading.status && UPExist ? (
-          <Button variant="dark" onClick={() => buyWithCrypto()}>
+        {!loading.status && <>
+          { UPExist ? (<Button variant="dark" onClick={() => buyWithCrypto()}>
             Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
-          </Button >
-        ):(
-          <button className="px-4 mx-1 w-full py-2 rounded-full border transition duration-700 bg-gray-100 text-gray-900 focus:outline-none font-medium text-center">
+          </Button >) : (
+            <button className="px-4 mx-1 w-full py-2 rounded-full border transition duration-700 bg-gray-100 text-gray-900 focus:outline-none font-medium text-center">
             Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
           </button>
-        )}
+          )}
+        </>}
         {!loading.status && (
           <Button onClick={() => payWithFiat()}>
             Continue without LYX ({totalCost} {price.currency.toUpperCase()})
