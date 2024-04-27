@@ -137,7 +137,7 @@ function PrivacyPolicy() {
           </div>
           <div>
             <p className="text-center text-gray-600 xl:text-base max-w-5xl mx-auto">
-            Whether you are from Australia or an overseas country, you have the right to request copies of the data we have collected about you, request that your personal information be deleted, or exercise your right of access or correction. To make any of these requests, please contact us at support@familylyx.com.
+            Whether you are from Australia or an overseas country, you have the right to request copies of the data we have collected about you, request that your personal information be deleted, or exercise your right of access or correction. To make any of these requests, please contact us at <a className="text-blue-600 hover:text-blue-800" href="mailto:support@familylyx.com">support@familylyx.com</a>.
             </p>
             
           </div>

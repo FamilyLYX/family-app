@@ -382,7 +382,7 @@ In no case shall ‘Family Australia Clothing’, our directors, officers, emplo
         <div className="space-y-3">
           <div>
             <p className="flex justify-center long-title text-center text-gray-500 max-w-5xl text-5xl p-4 xl:p-0 space-x-2">
-            SECTION 20 - CONTACT INFORMATION Questions about the Terms of Service should be sent to us at:info@pushpull.shop
+            SECTION 20 - CONTACT INFORMATION Questions about the Terms of Service should be sent to us at:support@familylyx.com
             </p>
           </div>
          </div> 
