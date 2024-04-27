@@ -27,6 +27,9 @@ import TransferModal from "./common/TransferModal";
 import OrderModal from "./common/OrderModal";
 import OrderScreen from "./common/OrderScreen";
 import BuyItem from "./pages/buy";
+import TermCondition from "./pages/TermCondition";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+
 
 NiceModal.register("family-buy-modal", OrderModal);
 NiceModal.register("family-register-modal", RegisterModal);
@@ -45,12 +48,15 @@ const router = () =>
           <Route path="/orders/:id" element={<Order />} />
           <Route path="/store" element={<Store />} />
           <Route path='/buy/:item' element={<BuyItem />} />
+          <Route path='/termandcondition' element={<TermCondition />} />
+          <Route path='/privacypolicy' element={<PrivacyPolicy />} />
           {/* <Route path="/trade" element={<Trade />} /> */}
           {/* <Route path="/escrowmoreinfo" element={<EscrowMoreinfo />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/product-card" element={<ProductCard />} /> */}
           {/* <Route path="/admin-xyz" element={<Admin />} /> */}
           <Route path="/inventory" element={<Inventory />}>
+
             <Route
               index={true}
               path="/inventory/phygitals"
