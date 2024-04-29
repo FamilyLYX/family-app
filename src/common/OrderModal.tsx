@@ -177,10 +177,10 @@ function OrderDetail({
     }
 
     const address = await addrEl.getValue();
-    // if (!address.complete) {
-    //   setSelectedSize('');
-    //   return;
-    // }
+    if (!address.complete) {
+      setSelectedSize('');
+      return;
+    }
     
     setAddress(await addrEl.getValue());
 
@@ -204,9 +204,9 @@ function OrderDetail({
 
     
     setAddress(await addrEl.getValue());
-    // if (!address.complete) {
-    //   return;
-    // }
+    if (!address.complete) {
+      return;
+    }
     setNext(true);
     return
     
@@ -244,10 +244,10 @@ function OrderDetail({
       return;
     }
 
-    // if (!address.complete) {
-    //   toast.error('Please fill complete address and select size');
-    //   return;
-    // }
+    if (!address.complete) {
+      toast.error('Please fill complete address and select size');
+      return;
+    }
 
     if (!selectedSize) {
       toast.error('Please select a size.');
