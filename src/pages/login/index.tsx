@@ -19,6 +19,11 @@ export function Login() {
   async function authenticate() {
     localStorage.setItem("auth-email", email);
 
+    if(!email){
+      setError("Please enter your email address.")
+      return;
+    }
+
     setLoading({
       status: 1,
       message: "Validating email address and sending link",
