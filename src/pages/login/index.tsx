@@ -24,6 +24,7 @@ export function Login() {
       return;
     }
 
+    setError("");
     setLoading({
       status: 1,
       message: "Validating email address and sending link",
