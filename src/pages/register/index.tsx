@@ -56,19 +56,77 @@ function Handover ({ uid, secret, user, children }: { uid: string, secret: strin
   }
 
   if (code) {
-    return <div>
-      <h3 className="long-title text-8xl mb-4 text-center">{code}</h3>
-      <p className="text-xs text-center text-gray-400 py-2">Enter this code on the desktop browser to continue registration</p>
-      {children}
+    return <div className="bg-white flex flex-col justify-center">
+    <div className="flex flex-col xl:flex-row">
+        <div className="xl:w-[50%] m-2 xl:m-0 rounded-3xl xl:rounded-none aspect-[1/1] xl:aspect-auto">
+          <video
+            className="xl:h-screen xl:rounded-none rounded-3xl "
+            autoPlay
+            playsInline
+            loop
+            muted
+            src="/hoodie-1.mp4"
+          ></video>
+        </div>
+        <div className="xl:w-[50%] w-[100] mx-auto flex flex-col justify-center xl:p-10">
+            <h2 className="long-title text-center text-8xl mt-24 xl:mt-4">{code}</h2>
+            <p className="text-sm text-center text-gray-400 py-2">Enter this code on the desktop browser to continue registration</p>
+        </div>
     </div>
+  </div>
   }
 
-  return <div>
-    <h3 className="long-title text-8xl mb-4 text-center">Register</h3>
-    <p className="text-xs text-center mb-4">To register, open the app on a desktop, and connect to UP extension.<br/>Once connected, navigate to <em>Inventory</em> section and continue registration.</p>
-    {children}
-    <Button variant="dark" onClick={initHandover}>Start Registration</Button>
+  return <div className="bg-white flex flex-col justify-center">
+  <div className="flex flex-col xl:flex-row">
+      <div className="xl:w-[50%] m-2 xl:m-0 rounded-3xl xl:rounded-none aspect-[1/1] xl:aspect-auto">
+        <video
+          className="xl:h-screen xl:rounded-none rounded-3xl"
+          autoPlay
+          playsInline
+          loop
+          muted
+          src="/hoodie-1.mp4"
+        ></video>
+      </div>
+      <div className="xl:w-[50%] w-[100] flex flex-col justify-center p-2">
+          <h2 className="long-title text-center text-8xl xl:mt-36 mt-4">NFT Claim</h2>
+
+          <div className="flex flex-col justify-center space-y-2 xl:mt-4 m-2 p-2 ">
+            <p className="flex xl:ms-64 items-center space-x-2">
+              <img src="/dots/one.ico" alt="Icon" className="w-7 h-7" />
+              <span>Download the<span className="font-bold"> UP Extension</span> on your Laptop/PC</span>
+            </p>
+            <p className="flex xl:ms-64 items-center space-x-2">
+              <img src="/dots/two.ico" alt="Icon" className="w-7 h-7" />
+              <span>Login to your account on <span className="font-bold underline underline-offset-4 decoration-dashed decoration-1">Familylyx.com</span></span>
+            </p>
+            <p className="flex xl:ms-64 items-center space-x-2">
+              <img src="/dots/three.ico" alt="Icon" className="w-7 h-7" />
+              <span>Go to your <strong>Inventory</strong></span>
+            </p>
+            <p className="flex xl:ms-64 items-center space-x-2">
+              <img src="/dots/four.ico" alt="Icon" className="w-7 h-7" />
+              <span>Merge your <strong>Vault</strong> tp your <strong>UP Extension</strong></span>
+            </p>
+            <p className="flex xl:ms-64 items-center space-x-2">
+              <img src="/dots/five.ico" alt="Icon" className="w-7 h-7" />
+              <span>The <strong>Claim Button</strong> can now be activated</span>
+            </p>
+            <p className="flex xl:ms-64 items-center space-x-2">
+              <img src="/dots/six.ico" alt="Icon" className="w-7 h-7" />
+              <span>Input the <strong>OTP</strong> onto the NFT</span>
+            </p>
+            <p className="flex xl:ms-64 items-center space-x-2">
+              <img src="/dots/seven.ico" alt="Icon" className="w-7 h-7" />
+              <span>Click <strong>Claim</strong> below to receive your OTP</span>
+            </p>
+            
+          </div>
+
+          <button className="w-full max-w-md  mx-auto  py-3 rounded-full font-medium text-white bg-gray-800 bg-opacity-65 xl:mt-48 mt-4" onClick={initHandover}>Start Registration</button>
+      </div>
   </div>
+</div>
 }
 
 function MarketplaceHandover ({ uid, secret, user }: { uid: string, secret: string, user: User, owner: string }) {
@@ -160,9 +218,9 @@ export default function RegisterToken () {
     </div>
   }
 
-  return <div className="p-8 max-w-sm mx-auto">    
+  return <>
     <Handover uid={uid as string} user={tempUser} secret={signature() as string}>
       <CollectionCard address={data.collection} />
     </Handover>
-  </div>
+    </>
 }
