@@ -16,19 +16,6 @@ export function ShortAddress ({ address }: { address: string }) {
   </a>
 }
 
-type Item = {
-  title:string;
-  desc:string;
-}
-
-function ItemTrait(item:Item) {
-return (
-  <p className="text-center font-normal tracking-tighter mx-auto">
-  <span className="font-bold">{item.title}: </span>
-  {item.desc}
-  </p>
-);
-}
 export function TokenCard ({ tokenId, owner, address, transfer, showActions = true }: { tokenId: TokenId,owner?:string, address: string, showActions?: boolean, transfer?: boolean }) {
   const { vault, user } = useContext(UserContext);
   const { phygital, getTokenMetadata } = usePhygitalCollection(address);
@@ -128,86 +115,33 @@ export function TokenCard ({ tokenId, owner, address, transfer, showActions = tr
   // </div>
   /* ---------------- ################ ----------------- */
 
-  return <div className="bg-white flex flex-col justify-center">
-  <div className="flex flex-col xl:flex-row">
-      <div className="xl:w-[50%] xl:left-0 xl:top-0 xl:bottom-0 m-2 xl:m-0 rounded-3xl xl:rounded-none aspect-[1/1] xl:aspect-auto">
-        <video
-          className="xl:h-screen xl:rounded-none rounded-3xl "
-          autoPlay
-          playsInline
-          loop
-          muted
-          src="/hoodie-1.mp4"
-        ></video>
-      </div>
-      <div className="xl:w-[50%] w-[100] mx-auto flex flex-col justify-center xl:p-10">
-        <h2 className="long-title text-center text-8xl">Honft</h2>
-
-        <p className="text-center font-normal py-3 mx-auto">
-          The next evolution of hoodies that blurs the line between the
-          physical and digital world. Seamlessly synergising the power of
-          technology and the comfort of luxury
-        </p>
-
-        <div className="border-b-2 border-t-2 px-2 py-3">
-          <ItemTrait title="Product Code" desc="Honft 001 - Black Forest" />
-          <ItemTrait title="Size" desc="X-Small to X-Large" />
-          <ItemTrait
-            title="Material"
-            desc="100% French Terry Cotton (500GSM)"
-          />
-          <ItemTrait
-            title="Extra Details"
-            desc="Garment Dyed, Brushed Back, Peach Finish, Relaxed Fit"
-          />
-          <ItemTrait title="Manufacturing Cost" desc="$36" />
-          <ItemTrait title="Development Cost" desc="$23" />
-          <ItemTrait title="Total Sale Cost" desc="$127" />
-          <p className=" text-center italic py-2 mx-auto">
-            Made in China (NTG Textile)
-          </p>
+  return <div className="w-full">
+    <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} />
+    <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' />
+    { query.data && <>
+        <p className="long-title text-2xl text-center py-2">{query.data.name}</p>
+        <p className="text-center text-base text-gray-400 pb-2 h-12 overflow-hidden text-ellipsis">{query.data.description}</p>
+      </>
+    }
+    { 
+      (address === import.meta.env.VITE_ASSET_PLACEHOLDER && showActions) ? <><div className="flex flex-row my-4">
+      {(window as any).lukso && (
+        <Button
+          variant="dark"
+          onClick={() => registerModal.show({order})}
+        >
+          Register
+        </Button>
+      )}
+    </div></> : <>
+        <div className="flex flex-row">
+          { !transfer &&  <Button variant="dark" onClick={() => modal.show({ tokenId, address })}>Sell</Button> }
+          { transfer &&  <Button variant="dark" onClick={() => transferModal.show({ from: vault, to: user?.uid, tokenId, address })}>Transfer</Button> }
+          <Button onClick={() => internalTransfer()}>Info</Button>
         </div>
-        <br />
-
-        <div className="flex flex-col justify-center space-x-8 text-center">
-          <p className="tracking-tighter">Cold Gentle Machine Wash</p>
-          <p className="tracking-tighter">With Similar Colours</p>
-          <p className="tracking-tighter">Do not Bleach, Soak or Wring</p>
-          <p className="tracking-tighter">Air Dry Only (Avoid Direct Sunlight)</p>
-          <p className="tracking-tighter">Warm Iron</p>
-        </div>
-
-        <button className="w-full max-w-md mx-auto py-3 rounded-full font-medium text-white bg-gray-500 bg-opacity-65 xl:mt-64 mt-4 mb-2" >Sell</button>
-      </div>
+      </>
+    }
   </div>
-</div>
-  // <div className="w-full">
-  //   <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} />
-  //   <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' />
-  //   { query.data && <>
-  //       <p className="long-title text-2xl text-center py-2">{query.data.name}</p>
-  //       <p className="text-center text-base text-gray-400 pb-2 h-12 overflow-hidden text-ellipsis">{query.data.description}</p>
-  //     </>
-  //   }
-  //   { 
-  //     (address === import.meta.env.VITE_ASSET_PLACEHOLDER && showActions) ? <><div className="flex flex-row my-4">
-  //     {(window as any).lukso && (
-  //       <Button
-  //         variant="dark"
-  //         onClick={() => registerModal.show({order})}
-  //       >
-  //         Register
-  //       </Button>
-  //     )}
-  //   </div></> : <>
-  //       <div className="flex flex-row">
-  //         { !transfer &&  <Button variant="dark" onClick={() => modal.show({ tokenId, address })}>Sell</Button> }
-  //         { transfer &&  <Button variant="dark" onClick={() => transferModal.show({ from: vault, to: user?.uid, tokenId, address })}>Transfer</Button> }
-  //         <Button onClick={() => internalTransfer()}>Info</Button>
-  //       </div>
-  //     </>
-  //   }
-  // </div>
 }
 
 export function TokenMetadata ({ address, tokenId, children }: { address: string, tokenId: TokenId, children: (owner: string) => any }) {
