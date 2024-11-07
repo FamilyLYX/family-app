@@ -1,18 +1,20 @@
-import { isAddress } from "ethers";
-import { User, getAuth, onAuthStateChanged } from "firebase/auth";
-import { createContext, useEffect, useState } from "react";
-import { getProfileAddress } from "../utils/api";
+import { isAddress } from 'ethers6';
+import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { createContext, useEffect, useState } from 'react';
+import { getProfileAddress } from '../utils/api';
 
 export const UserContext = createContext<any>(null);
 
 export default function UserProvider({ children }: { children: any }) {
   const [loading, setLoading] = useState(true);
   const [vault, setVault] = useState<any>(null);
-  const [user, setUser] = useState<User|null>(null);
-  const [profile, setProfile] = useState<string|null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<string | null>(null);
 
   async function getUserProfile() {
-    if (!user) { return null; }
+    if (!user) {
+      return null;
+    }
 
     if (isAddress(user.uid)) {
       return user.uid;
@@ -20,7 +22,7 @@ export default function UserProvider({ children }: { children: any }) {
 
     const address = (user as User).getIdToken().then((token) => {
       return getProfileAddress(token);
-    })
+    });
 
     return address;
   }
@@ -35,19 +37,25 @@ export default function UserProvider({ children }: { children: any }) {
   }, []);
 
   useEffect(() => {
-    if (!user) { return; }
+    if (!user) {
+      return;
+    }
 
     (user as User).getIdTokenResult(true).then((idToken) => {
       setVault(idToken.claims?.target);
     });
 
     getUserProfile().then((address) => {
-      if (!address) { return; }
+      if (!address) {
+        return;
+      }
 
-      setProfile(address)
+      setProfile(address);
     });
   }, [user]);
-  return <UserContext.Provider value={{ vault, user, loading, profile }}>
-    {children}
-  </UserContext.Provider>
+  return (
+    <UserContext.Provider value={{ vault, user, loading, profile }}>
+      {children}
+    </UserContext.Provider>
+  );
 }

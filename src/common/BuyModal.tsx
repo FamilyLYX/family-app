@@ -1,21 +1,21 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useState } from "react";
-import { Transition, Dialog } from "@headlessui/react";
+import { Fragment, useState } from 'react';
+import { Transition, Dialog } from '@headlessui/react';
 
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { Button } from "./buttons";
-import { getCryptoOrderQuote } from "../utils/api";
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Button } from './buttons';
+import { getCryptoOrderQuote } from '../utils/api';
 import {
   ExtensionInterface,
   useTransactionSender,
-} from "../hooks/transactions";
-import { Elements, AddressElement, useElements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+} from '../hooks/transactions';
+import { Elements, AddressElement, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
 const ORDER_FUNCTION_NAME =
-  "placeOrder(address collection, uint256 value, uint256 maxBlockNumber, bytes32 nonce, bytes data, bytes signature)";
+  'placeOrder(address collection, uint256 value, uint256 maxBlockNumber, bytes32 nonce, bytes data, bytes signature)';
 
 export function Loader() {
   return (
@@ -49,7 +49,7 @@ function AddressInput(props: any) {
       return;
     }
 
-    const addrEl = elements.getElement("address");
+    const addrEl = elements.getElement('address');
 
     if (!addrEl) {
       return;
@@ -68,11 +68,11 @@ function AddressInput(props: any) {
     <>
       <AddressElement
         options={{
-          mode: "shipping",
+          mode: 'shipping',
           blockPoBox: true,
-          autocomplete: { mode: "disabled" },
+          autocomplete: { mode: 'disabled' },
           defaultValues: {
-            address: { state: "CA", country: "US" },
+            address: { state: 'CA', country: 'US' },
           },
         }}
       />
@@ -86,7 +86,7 @@ function AddressInput(props: any) {
 function AddressForm({ update }: { update: (address: any) => void }) {
   const options = {
     // Fully customizable with appearance API.
-    autocomplete: "disabled",
+    autocomplete: 'disabled',
     appearance: {
       /*...*/
     },
@@ -102,10 +102,10 @@ function AddressForm({ update }: { update: (address: any) => void }) {
 const BuyModal = NiceModal.create(() => {
   const modal = useModal();
   const { executeTransactionRequest } = useTransactionSender();
-  const [loading, setLoading] = useState({ status: 0, message: "Not Loading" });
+  const [loading, setLoading] = useState({ status: 0, message: 'Not Loading' });
   const [error, setError] = useState<null | string>(null);
   const [address, setAddress] = useState<any>(
-    modal.args?.addressRequired ? null : { status: "not_required" }
+    modal.args?.addressRequired ? null : { status: 'not_required' }
   );
   const product = modal.args?.product as ProductType;
 
@@ -114,8 +114,8 @@ const BuyModal = NiceModal.create(() => {
   }
 
   function buyWithCrypto() {
-    if (typeof modal.args?.to !== "string") {
-      window.alert("wallet not connected");
+    if (typeof modal.args?.to !== 'string') {
+      window.alert('wallet not connected');
       return;
     }
 
@@ -124,50 +124,52 @@ const BuyModal = NiceModal.create(() => {
     const variantId = modal.args?.variant as string;
     const priceId = product.price.id as string;
 
-    setLoading({ status: 1, message: "Fetching quotes for the order" });
+    setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
-    getCryptoOrderQuote(profile, collection, variantId, address, priceId, null).then(
-      (quote) => {
-        const [placeholder, value, maxBlockNumber, nonce, data, signature] =
-          quote?.params as any[];
-        const orderId = quote?.order.id;
+    getCryptoOrderQuote(
+      profile,
+      collection,
+      variantId,
+      address,
+      priceId,
+      null
+    ).then((quote) => {
+      const [placeholder, value, maxBlockNumber, nonce, data, signature] =
+        quote?.params as any[];
+      const orderId = quote?.order.id;
 
-        setLoading({ status: 2, message: "Preparing mint transaction" });
+      setLoading({ status: 2, message: 'Preparing mint transaction' });
 
-        const orderCalldata = ExtensionInterface.encodeFunctionData(
-          ORDER_FUNCTION_NAME,
-          [placeholder, value, maxBlockNumber, nonce, data, signature]
-        );
+      const orderCalldata = ExtensionInterface.encodeFunctionData(
+        ORDER_FUNCTION_NAME,
+        [placeholder, value, maxBlockNumber, nonce, data, signature]
+      );
 
-        executeTransactionRequest({
-          to: import.meta.env.VITE_FAMILY_PROFILE,
-          value: BigInt(value),
-          data: orderCalldata,
+      executeTransactionRequest({
+        to: import.meta.env.VITE_FAMILY_PROFILE,
+        value: BigInt(value),
+        data: orderCalldata,
+      })
+        .then(() => {
+          // response.wait(1);
+          return new Promise((resolve) => setTimeout(resolve, 10000));
         })
-          .then(() => {
-            // response.wait(1);
-            return new Promise((resolve) => setTimeout(resolve, 10000));
-          })
-          .then(() => {
-            window.location.pathname = `/orders/${orderId}`;
-          })
-          .catch((error) => {
-            setError(error.message);
-            setLoading({ status: 0, message: "Not Loading" });
-          });
-      }
-    );
+        .then(() => {
+          window.location.pathname = `/orders/${orderId}`;
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading({ status: 0, message: 'Not Loading' });
+        });
+    });
   }
 
   async function payWithFiat() {
-    // const collection = product.metadata.contract;
+    // const collection = product.metadata.new_contract;
     // const variantId = "0x00000000000000000000001d";
     // const priceId = product.price.id;
-
     // setLoading({ status: 1, message: 'Fetching quotes for the order' });
-
     // const url = await checkout(collection, variantId, address, priceId);
-    
     // window.location = url;
   }
 
@@ -203,8 +205,8 @@ const BuyModal = NiceModal.create(() => {
                   className="text-2xl pl-4 font-medium leading-6 text-gray-900 text-center"
                 >
                   {modal.args?.addressRequired && !isAddressSet()
-                    ? "Add shipping address"
-                    : "Choose payment method"}
+                    ? 'Add shipping address'
+                    : 'Choose payment method'}
                 </Dialog.Title>
                 <Dialog.Description
                   as="p"
@@ -227,7 +229,7 @@ const BuyModal = NiceModal.create(() => {
                     )}
                     {!loading.status && (
                       <Button onClick={() => payWithFiat()}>
-                        Continue without LYX ({product.price.unit_amount / 100}{" "}
+                        Continue without LYX ({product.price.unit_amount / 100}{' '}
                         {product.price.currency.toUpperCase()})
                       </Button>
                     )}

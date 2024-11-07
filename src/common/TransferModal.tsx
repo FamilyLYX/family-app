@@ -1,14 +1,14 @@
-import { useContext } from "react";
-import { Transition, Dialog } from "@headlessui/react";
+import { useContext } from 'react';
+import { Transition, Dialog } from '@headlessui/react';
 
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { Button } from "./buttons";
-import { TokenId } from "./objects";
-import { UserContext } from "../contexts/UserContext";
-import { Contract } from "ethers";
-import { useVaultFactory } from "../hooks/useVault";
-import { useTransactionSender } from "../hooks/transactions";
-import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Button } from './buttons';
+import { TokenId } from './objects';
+import { UserContext } from '../contexts/UserContext';
+import { Contract } from 'ethers6';
+import { useVaultFactory } from '../hooks/useVault';
+import { useTransactionSender } from '../hooks/transactions';
+import { usePhygitalCollection } from '../hooks/usePhygitalCollection';
 
 export function Loader() {
   return (
@@ -108,34 +108,40 @@ const TransferModal = NiceModal.create(() => {
   const { sendTransaction } = useTransactionSender();
 
   function transfer() {
-    const transferParams = [
-      from,
-      to,
-      tokenId.toString(),
-      false,
-      '0x'
-    ];
+    const transferParams = [from, to, tokenId.toString(), false, '0x'];
 
     if (from === vault) {
-      const transferCalldata = phygital.interface.encodeFunctionData('transfer', transferParams);
+      const transferCalldata = phygital.interface.encodeFunctionData(
+        'transfer',
+        transferParams
+      );
 
       const vaultContract = vaultFactory.attach(vault) as Contract;
-      
-      return sendTransaction(vaultContract, 'execute', [0, address, 0, transferCalldata]);
+
+      return sendTransaction(vaultContract, 'execute', [
+        0,
+        address,
+        0,
+        transferCalldata,
+      ]);
     }
 
-    return sendTransaction(phygital, 'transfer', transferParams)
+    return sendTransaction(phygital, 'transfer', transferParams);
   }
 
   return (
     <ModalWrapper remove={modal.remove} visible={modal.visible}>
-      <ModalContent title="Transfer" description="You need to transfer asset to your profile before listing on marketplace">
+      <ModalContent
+        title="Transfer"
+        description="You need to transfer asset to your profile before listing on marketplace"
+      >
         <div className="text-center space-y-4">
-        <small>Transfering to</small><br/>
-        <small className="font-bold">{to}</small>
-        <Button variant="dark" onClick={() => transfer()}>
-          Transfer
-        </Button>
+          <small>Transfering to</small>
+          <br />
+          <small className="font-bold">{to}</small>
+          <Button variant="dark" onClick={() => transfer()}>
+            Transfer
+          </Button>
         </div>
       </ModalContent>
     </ModalWrapper>

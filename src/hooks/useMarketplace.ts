@@ -1,27 +1,29 @@
-import { abi } from "../artifacts/@lukso/lsp8-contracts/contracts/LSP8IdentifiableDigitalAsset.sol/LSP8IdentifiableDigitalAsset.json";
-import { useContract } from "./useContract";
-import { TokenId } from "../common/objects";
-import { hexlify, parseEther } from "ethers";
-import { useTransactionSender } from "./transactions";
-import { marketplaceContractAddress } from "../constants";
-import { usePhygitalCollection } from "./usePhygitalCollection";
+import { abi } from '../artifacts/marketplace/contracts/LSP8Marketplace.sol/LSP8Marketplace.json';
+import { useContract } from './useContract';
+import { TokenId } from '../common/objects';
+import { hexlify, parseEther } from 'ethers6';
+import { useTransactionSender } from './transactions';
+import { marketplaceContractAddress } from '../constants';
+import { usePhygitalCollection } from './usePhygitalCollection';
+import { useStorage } from '@thirdweb-dev/react';
 
 const LIST_FUNCTION_NAME =
-  "putDigitalLSP8OnSale(address LSP8Address, bytes32 tokenId, uint256 LYXAmount, string memory listingURl, bool _acceptFiat)";
+  'putDigitalLSP8OnSale(address LSP8Address, bytes32 tokenId, uint256 LYXAmount, string memory listingURl, bool _acceptFiat)';
 
 const LIST_PHYGITAL_FUNCTION_NAME =
-  "putLSP8OnSale(address LSP8Address, bytes32 tokenId, uint256 LYXAmount, string memory uid, bytes memory signature, string memory listingURl, bool _acceptFiat)";
+  'putLSP8OnSale(address LSP8Address, bytes32 tokenId, uint256 LYXAmount, string memory uid, bytes memory signature, string memory listingURl, bool _acceptFiat)';
 export function useMarketplace(address: string) {
   const marketplace = useContract(marketplaceContractAddress, abi);
+  const storage = useStorage();
 
-  const { sendTransaction } = useTransactionSender();
+  const { sendTransaction, executeTransactionRequest } = useTransactionSender();
   const { phygital } = usePhygitalCollection(address);
 
   async function authorize(tokenId: TokenId) {
     return await sendTransaction(
       phygital,
-      "authorizeOperator(address operator, bytes32 tokenId, bytes memory operatorNotificationData)",
-      [marketplaceContractAddress, hexlify(tokenId.toString()), "0x"]
+      'authorizeOperator(address operator, bytes32 tokenId, bytes memory operatorNotificationData)',
+      [marketplaceContractAddress, hexlify(tokenId.toString()), '0x']
     );
   }
   // string memory uid,
@@ -33,7 +35,7 @@ export function useMarketplace(address: string) {
     listingURl: string,
     acceptFiat: boolean
   ) {
-    const tokens = await phygital.getFunction("tokenOwnerOf")(
+    const tokens = await phygital.getFunction('tokenOwnerOf')(
       hexlify(tokenId.toString())
     );
     console.log(tokens);
@@ -67,7 +69,7 @@ export function useMarketplace(address: string) {
     uid: string,
     signature: string
   ) {
-    const tokens = await phygital.getFunction("tokenOwnerOf")(
+    const tokens = await phygital.getFunction('tokenOwnerOf')(
       hexlify(tokenId.toString())
     );
     console.log(tokens);
@@ -89,5 +91,57 @@ export function useMarketplace(address: string) {
     ]);
   }
 
-  return { marketplace, listToken, authorize, listPhygital };
+  const uploadToIPFS = async (data: any) => {
+    const res = await storage!.upload({ ...data });
+
+    console.log(res);
+    return res[0];
+  };
+
+  async function buyWithLYX(
+    LSP8Address: string,
+    tokenId: TokenId,
+    data: Record<any, any>,
+    price: number
+  ) {
+    const operator = await phygital.getFunction('isOperatorFor')(
+      marketplaceContractAddress,
+      hexlify(tokenId.toString())
+    );
+
+    const operators = await phygital.getFunction('getOperatorsOf')(
+      hexlify(tokenId.toString())
+    );
+    console.log('operator', operator, tokenId.toString(), LSP8Address);
+    console.log('getOperatorsOf', operators);
+    // const tradeUrl = await uploadToIPFS(data);
+    const calldata = marketplace.interface.encodeFunctionData(
+      'buyLSP8WithLYX',
+      [LSP8Address, tokenId.toString()]
+    );
+
+    return executeTransactionRequest({
+      to: marketplace.target,
+      data: calldata,
+      value: price,
+    });
+  }
+
+  async function confirmSent(tradeId: string, trackingId: string) {
+    console.log([tradeId, trackingId]);
+    return sendTransaction(
+      marketplace,
+      'confirmSent(bytes32 tradeId, string memory trackingId)',
+      [tradeId, trackingId]
+    );
+  }
+
+  return {
+    marketplace,
+    listToken,
+    authorize,
+    listPhygital,
+    buyWithLYX,
+    confirmSent,
+  };
 }

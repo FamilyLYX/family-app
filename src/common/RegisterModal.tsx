@@ -1,29 +1,34 @@
-import { useContext, useState } from "react";
-import { Transition, Dialog } from "@headlessui/react";
+import { useContext, useState } from 'react';
+import { Transition, Dialog } from '@headlessui/react';
 
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { Button } from "./buttons";
-import { claimVault, requestToClaimHandover } from "../utils/api";
-import { TokenId } from "./objects";
-import { getAuth } from "firebase/auth";
-import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
-import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-import OtpInput from "react-otp-input";
-import { UserContext } from "../contexts/UserContext";
-import { getAddress, hexlify, isAddress, keccak256 } from "ethers";
-import { useQuery } from "@tanstack/react-query";
-import { useVault } from "../hooks/useVault";
-import { useTransactionSender } from "../hooks/transactions";
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Button } from './buttons';
+import { claimVault, requestToClaimHandover } from '../utils/api';
+import { TokenId } from './objects';
+import { getAuth } from 'firebase/auth';
+import { useAssetPlaceholder } from '../hooks/useAssetPlaceholder';
+import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
+import OtpInput from 'react-otp-input';
+import { UserContext } from '../contexts/UserContext';
+import { getAddress, hexlify, isAddress, keccak256 } from 'ethers6';
+import { useQuery } from '@tanstack/react-query';
+import { useVault } from '../hooks/useVault';
+import { useTransactionSender } from '../hooks/transactions';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-const collections = (import.meta.env.VITE_COLLECTIONS?.split(',') as string[]).map(getAddress);
-const collectionsMap = collections.reduce((acc: Record<string, any>, collection: string) => {
-  const hash = keccak256(hexlify(collection));
+const collections = (
+  import.meta.env.VITE_COLLECTIONS?.split(',') as string[]
+).map(getAddress);
+const collectionsMap = collections.reduce(
+  (acc: Record<string, any>, collection: string) => {
+    const hash = keccak256(hexlify(collection));
 
-  acc[hash.slice(0, 14)] = { address: collection };
+    acc[hash.slice(0, 14)] = { address: collection };
 
-  return acc;
-}, {});
+    return acc;
+  },
+  {}
+);
 
 export function Loader() {
   return (
@@ -121,15 +126,17 @@ function ClaimVault({ vault }: { vault: string }) {
     queryFn: async () => {
       const [pendingOwner, owner] = await Promise.all([
         contract.pendingOwner(),
-        contract.owner()
+        contract.owner(),
       ]);
 
       return { owner, pendingOwner };
-    }
-  })
+    },
+  });
 
   async function claim() {
-    if (!user) { return; }
+    if (!user) {
+      return;
+    }
 
     const idToken = await user.getIdToken();
 
@@ -143,14 +150,14 @@ function ClaimVault({ vault }: { vault: string }) {
   }
 
   if (query.isLoading) {
-    return <Loader />
+    return <Loader />;
   }
 
   if (query.data && query.data.pendingOwner === user?.uid) {
-    return <Button onClick={acceptVault}>Accept Vault</Button>  
+    return <Button onClick={acceptVault}>Accept Vault</Button>;
   }
 
-  return <Button onClick={claim}>Request access to Vault</Button>
+  return <Button onClick={claim}>Request access to Vault</Button>;
 }
 
 const RegisterModal = NiceModal.create(() => {
@@ -160,25 +167,28 @@ const RegisterModal = NiceModal.create(() => {
   const { placeholder, registerToken } = useAssetPlaceholder();
   const [waiting, setWaiting] = useState<number>(0);
   const [code, setCode] = useState<string>();
-  const { vault: vaultContract } = useVault(isAddress(vault) ? vault : ZERO_ADDRESS);
+  const { vault: vaultContract } = useVault(
+    isAddress(vault) ? vault : ZERO_ADDRESS
+  );
   const query = useQuery({
     queryKey: ['orders', tokenId.toString],
     queryFn: async () => {
       const collection = collectionsMap[tokenId.collectionId];
       const data: Record<string, any> = {
-        collection
-      }
+        collection,
+      };
       const owner = await placeholder.tokenOwnerOf(tokenId.toString());
 
       data.owner = owner;
 
       if (owner === vault) {
         data.inVault = true;
-        data.isVaultOwner = getAddress(user?.uid) === getAddress(await vaultContract.owner());
+        data.isVaultOwner =
+          getAddress(user?.uid) === getAddress(await vaultContract.owner());
       }
 
       return data;
-    }
+    },
   });
 
   async function register(tokenId: TokenId, code: string) {
@@ -191,14 +201,20 @@ const RegisterModal = NiceModal.create(() => {
 
     setWaiting(1);
 
-
     onSnapshot(doc(getFirestore(), `handover/${handoverData.hash}`), (snap) => {
       const data: any = snap.data();
 
-      if (data.status === "completed" && data.signature) {
+      if (data.status === 'completed' && data.signature) {
         setWaiting(2);
 
-        registerToken(data.uid, data.signature, tokenId, query.data?.inVault ? vault : null)
+        console.log('data.signature', data.signature);
+
+        registerToken(
+          data.uid,
+          data.signature,
+          tokenId,
+          query.data?.inVault ? vault : null
+        )
           .then(console.log)
           .catch(console.error)
           .finally(() => {
@@ -225,10 +241,18 @@ const RegisterModal = NiceModal.create(() => {
     );
   }
 
-  if (!query.isLoading && query.data && query.data.inVault && !query.data.isVaultOwner) {
+  if (
+    !query.isLoading &&
+    query.data &&
+    query.data.inVault &&
+    !query.data.isVaultOwner
+  ) {
     return (
       <ModalWrapper remove={modal.remove} visible={modal.visible}>
-        <ModalContent title="Claim Vault" description="Your asset is in a vault that is owned by family.">
+        <ModalContent
+          title="Claim Vault"
+          description="Your asset is in a vault that is owned by family."
+        >
           <ClaimVault vault={vault} />
         </ModalContent>
       </ModalWrapper>
@@ -267,7 +291,7 @@ const RegisterModal = NiceModal.create(() => {
         <>
           <OtpInput
             containerStyle="justify-center my-4"
-            inputStyle={{ width: "32px" }}
+            inputStyle={{ width: '32px' }}
             value={code}
             onChange={setCode}
             numInputs={6}
@@ -279,9 +303,7 @@ const RegisterModal = NiceModal.create(() => {
           />
           <Button
             variant="dark"
-            onClick={() =>
-              register(tokenId, code as string)
-            }
+            onClick={() => register(tokenId, code as string)}
           >
             Continue
           </Button>

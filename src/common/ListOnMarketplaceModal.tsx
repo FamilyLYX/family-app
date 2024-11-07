@@ -1,20 +1,22 @@
-import { ChangeEvent, Fragment, useEffect, useState } from "react";
-import { Transition, Dialog } from "@headlessui/react";
-import { LSP4DigitalAssetMetadata } from "@lukso/lsp-factory.js";
-import ImageUploading from "react-images-uploading";
+import { ChangeEvent, Fragment, useEffect, useState } from 'react';
+import { Transition, Dialog } from '@headlessui/react';
+import { LSP4DigitalAssetMetadata } from '@lukso/lsp-factory.js';
+import ImageUploading from 'react-images-uploading';
 
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { Button } from "./buttons";
-import { requestToClaimHandover } from "../utils/api";
-import { TokenId } from "./objects";
-import { getAuth } from "firebase/auth";
-import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-import overlay1 from "../assets/overlays/Vector 13.png";
-import OtpInput from "react-otp-input";
-import { useMarketplace } from "../hooks/useMarketplace";
-import { IPFS_GATEWAY, marketplaceContractAddress } from "../constants";
-import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
-import { hexlify } from "ethers";
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Button } from './buttons';
+import { axiosClient, requestToClaimHandover } from '../utils/api';
+import { TokenId } from './objects';
+import { getAuth } from 'firebase/auth';
+import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
+import overlay1 from '../assets/overlays/Vector 13.png';
+import OtpInput from 'react-otp-input';
+import { useMarketplace } from '../hooks/useMarketplace';
+import { IPFS_GATEWAY, marketplaceContractAddress } from '../constants';
+import { usePhygitalCollection } from '../hooks/usePhygitalCollection';
+import { hexlify } from 'ethers6';
+import axios from 'axios';
+import { useStorage, useStorageUpload } from '@thirdweb-dev/react';
 
 export function Loader() {
   return (
@@ -41,6 +43,9 @@ export function Loader() {
 }
 
 const ListOnMarketplaceModal = NiceModal.create(() => {
+  // const { mutateAsync: upload, isLoading } = useStorageUpload();
+  const storage = useStorage();
+
   const modal = useModal();
   const assetAddress = modal.args?.address as string;
   const [waiting, setWaiting] = useState<number>(0);
@@ -64,16 +69,29 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
 
   const uploadToIPFS = async () => {
     console.log(images);
-    const res = await LSP4DigitalAssetMetadata.uploadMetadata({
-      description: formData?.description ?? "",
-      images: images.map((image: any) => image.file),
-      ...formData,
+    // const _formData = new FormData();
+    // _formData.append('data', formData);
+    // _formData.append('images', images[0]);
+    // const data=await LSP4DigitalAssetMetadata.pre
+    // const res = await axiosClient.post('/upload', { ...formData, images });
+
+    // const base64Data = (images[0] as any).data_url.split(',')[1]; // Extract base64 data
+    // const buffer = Buffer.from(base64Data, 'base64'); // Convert to binary
+
+    const imagesBuffer = images.map((image: any) => {
+      const base64Data = image.data_url.split(',')[1]; // Extract base64 data
+      const buffer = Buffer.from(base64Data, 'base64'); // Convert to binary
+      return buffer;
     });
-    return res.url.replace("ipfs://", IPFS_GATEWAY);
+
+    const res = await storage!.upload({ ...formData, images: imagesBuffer });
+
+    console.log(res);
+    return res!.replace('ipfs://', IPFS_GATEWAY);
   };
 
   async function getIsOperator() {
-    const isOperator = await phygital.getFunction("isOperatorFor")(
+    const isOperator = await phygital.getFunction('isOperatorFor')(
       marketplaceContractAddress,
       hexlify((modal.args?.tokenId as TokenId).toString())
     );
@@ -112,26 +130,25 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
     tokenId;
     const idToken = await getAuth().currentUser?.getIdToken();
 
-    console.log("handling over");
+    console.log('handling over');
     const handoverData = await requestToClaimHandover(
       idToken as string,
       code as string
     );
-
-    console.log("handed over", handoverData);
+    console.log('handed over', handoverData);
     setWaiting(2);
 
     onSnapshot(doc(getFirestore(), `handover/${handoverData.hash}`), (snap) => {
       const data: any = snap.data();
       console.log(data);
 
-      if (data.status === "completed" && data.signature) {
+      if (data.status === 'completed' && data.signature) {
         // list();
         list(data.uid, data.signature);
 
         setWaiting(3);
 
-        alert("signature received");
+        alert('signature received');
       }
     });
   }
@@ -176,7 +193,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                   <div className="flex gap-2 justify-between ">
                     <div className="w-1/2 max-h-[80vh] overflow-y-auto p-10 rounded-[42px] flex flex-col gap-8 bg-white">
                       <div className="long-title text-6xl">
-                        Sell{" "}
+                        Sell{' '}
                         <span className="text-black/50 long-title ">Honft</span>
                       </div>
                       <div className="text-black/60">
@@ -206,7 +223,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                               onChange={onChange}
                               maxNumber={maxNumber}
                               dataURLKey="data_url"
-                              acceptType={["jpg", "png"]}
+                              acceptType={['jpg', 'png']}
                             >
                               {({
                                 imageList,
@@ -217,7 +234,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                                 // write your building UI
                                 <div className="flex gap-2 items-center">
                                   <button
-                                    style={isDragging ? { color: "red" } : {}}
+                                    style={isDragging ? { color: 'red' } : {}}
                                     onClick={onImageUpload}
                                     {...dragProps}
                                     className="block w-[62px] h-[62px] border rounded-full"
@@ -272,6 +289,7 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                             variant="dark"
                             // disabled={true}
                             onClick={() => setWaiting(1)}
+                            // onClick={() => uploadToIPFS()}
                           >
                             Sell
                           </Button>
@@ -310,16 +328,16 @@ const ListOnMarketplaceModal = NiceModal.create(() => {
                       as="p"
                       className="text-center px-8 mt-4 text-gray-400"
                     >
-                      {waiting === 1 && "Enter your 6-digit code"}
-                      {waiting === 2 && "Waiting for confirmation"}
+                      {waiting === 1 && 'Enter your 6-digit code'}
+                      {waiting === 2 && 'Waiting for confirmation'}
                       {waiting === 3 &&
-                        "Preparing and sending registration transaction"}
+                        'Preparing and sending registration transaction'}
                     </Dialog.Description>
                     {waiting === 1 && (
                       <>
                         <OtpInput
                           containerStyle="justify-center my-4"
-                          inputStyle={{ width: "32px" }}
+                          inputStyle={{ width: '32px' }}
                           value={code}
                           onChange={setCode}
                           numInputs={6}

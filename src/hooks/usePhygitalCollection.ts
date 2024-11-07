@@ -1,10 +1,10 @@
-import { abi } from "../artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json";
-import { useContract, useContractFactory } from "./useContract";
-import { TokenId } from "../common/objects";
-import { useAssetPlaceholder } from "./useAssetPlaceholder";
+import { abi } from '../artifacts/contracts/IdentifiablePhygitalAsset.sol/IdentifiablePhygitalAsset.json';
+import { useContract, useContractFactory } from './useContract';
+import { TokenId } from '../common/objects';
+import { useAssetPlaceholder } from './useAssetPlaceholder';
 import { decodeKeyValue } from '@erc725/erc725.js/build/main/src/lib/utils';
 
-const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
+const IPFS_GATEWAY = 'https://ipfs.io/ipfs/';
 
 export function usePhygitalRepo(collections: string[]) {
   const factory = useContractFactory(abi);
@@ -16,12 +16,19 @@ export function usePhygitalRepo(collections: string[]) {
       return;
     }
 
-    const tokenIds = await Promise.all(collections
-      .map((addr) => factory.attach(addr))
-      .map((contract) => contract.getFunction("tokenIdsOf")(address)));
+    const tokenIds = await Promise.all(
+      collections
+        .map((addr) => factory.attach(addr))
+        .map((contract) => contract.getFunction('tokenIdsOf')(address))
+    );
 
     return tokenIds
-      .map((ids, idx) => ids.map((_id: any) => ({ address: collections[idx], id: TokenId.parseTokenId(_id) })))
+      .map((ids, idx) =>
+        ids.map((_id: any) => ({
+          address: collections[idx],
+          id: TokenId.parseTokenId(_id),
+        }))
+      )
       .flat();
   }
 
@@ -29,10 +36,7 @@ export function usePhygitalRepo(collections: string[]) {
 }
 
 export function usePhygitalCollection(address: string) {
-  const phygital = useContract(
-    address,
-    abi
-  );
+  const phygital = useContract(address, abi);
   const { placeholder } = useAssetPlaceholder();
 
   async function getTokens(address: string) {
@@ -40,7 +44,7 @@ export function usePhygitalCollection(address: string) {
       return [];
     }
 
-    const tokens = await phygital.getFunction("tokenIdsOf")(address);
+    const tokens = await phygital.getFunction('tokenIdsOf')(address);
 
     return Array.from(tokens).map((idStr) =>
       TokenId.parseTokenId(idStr as string)
@@ -48,20 +52,34 @@ export function usePhygitalCollection(address: string) {
   }
 
   async function getTokenMetadata(tokenId: TokenId) {
-    const metadataKey = `0x1339e76a390b7b9ec9010000${tokenId.collectionId.slice(2)}0000${tokenId.variantId.slice(2)}`;
+    const metadataKey = `0x1339e76a390b7b9ec9010000${tokenId.collectionId.slice(
+      2
+    )}0000${tokenId.variantId.slice(2)}`;
+    // 0x9afb95cacc9f95858ec44aa8c3b685511002e30ae54415823f406128b85b238e
     const dataValue = await phygital.getData(metadataKey);
+    console.log('dataValue', dataValue);
 
-    const owner = await phygital.getFunction("tokenOwnerOf")(
+    const owner = await phygital.getFunction('tokenOwnerOf')(
       tokenId.toString()
     );
 
-    const { url } = decodeKeyValue('VerifiableURI', 'bytes', dataValue, 'metadata');
+    const { url } = decodeKeyValue(
+      'VerifiableURI',
+      'bytes',
+      dataValue,
+      'metadata'
+    );
 
-   const data = await fetch(url.replace('ipfs://', IPFS_GATEWAY)).then(res => res.json());
+    const data = await fetch(url.replace('ipfs://', IPFS_GATEWAY)).then((res) =>
+      res.json()
+    );
 
     return {
       ...data.LSP4Metadata,
-      image: data.LSP4Metadata.images[0][0].url.replace('ipfs://', IPFS_GATEWAY),
+      image: data.LSP4Metadata.images[0][0].url.replace(
+        'ipfs://',
+        IPFS_GATEWAY
+      ),
       owner: owner,
     };
   }
@@ -69,10 +87,10 @@ export function usePhygitalCollection(address: string) {
   async function getMintStatus() {
     const [capped, [startAt, endAt, minted, digital]] = await Promise.all([
       phygital.getFunction('supportsInterface')('0x52058d8a'),
-      placeholder.getFunction("collectionMeta")(phygital.target),
+      placeholder.getFunction('collectionMeta')(phygital.target),
     ]);
 
-    const supply = capped ? await phygital.getFunction("tokenSupplyCap")() : 0;
+    const supply = capped ? await phygital.getFunction('tokenSupplyCap')() : 0;
 
     return {
       capped,
@@ -80,14 +98,14 @@ export function usePhygitalCollection(address: string) {
       minted: Number(minted),
       startAt: Number(startAt),
       endAt: Number(endAt),
-      digital
+      digital,
     };
   }
 
   async function getCollectionMetadata() {
     return {
-      name: "Honft",
-      description: "Black Forest",
+      name: 'Honft',
+      description: 'Black Forest',
     };
   }
 

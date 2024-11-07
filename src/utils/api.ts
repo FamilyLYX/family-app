@@ -1,7 +1,11 @@
-import axios from "axios";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import axios from 'axios';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
 
-export async function getAllProducts () {
+export const axiosClient = axios.create({
+  baseURL: import.meta.env.VITE_API_HOST,
+});
+
+export async function getAllProducts() {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_API_HOST}/products`,
@@ -16,7 +20,7 @@ export async function getAllProducts () {
   }
 }
 
-export async function getProductByLabel (label: string) {
+export async function getProductByLabel(label: string) {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_API_HOST}/product-price/${label}`,
@@ -31,17 +35,17 @@ export async function getProductByLabel (label: string) {
   }
 }
 
-export async function initiateHandover (idToken: string, uid: string) {
+export async function initiateHandover(idToken: string, uid: string) {
   try {
     const response = await axios({
       baseURL: `${import.meta.env.VITE_API_HOST}/handover`,
       method: 'post',
       headers: {
-        'Authorization': `${idToken}`
+        Authorization: `${idToken}`,
       },
       data: {
-        uid
-      }
+        uid,
+      },
     });
 
     const { code, hash, expiry } = response.data;
@@ -52,17 +56,17 @@ export async function initiateHandover (idToken: string, uid: string) {
   }
 }
 
-export async function requestToClaimHandover (idToken: string, code: string) {
+export async function requestToClaimHandover(idToken: string, code: string) {
   try {
     const response = await axios({
       baseURL: `${import.meta.env.VITE_API_HOST}/handover/request-claim`,
       method: 'post',
       headers: {
-        'Authorization': `${idToken}`
+        Authorization: `${idToken}`,
       },
       data: {
-        code
-      }
+        code,
+      },
     });
 
     return response.data.handover;
@@ -71,28 +75,28 @@ export async function requestToClaimHandover (idToken: string, code: string) {
   }
 }
 
-export async function updateHandover (codeHash: string, signature: string) {
+export async function updateHandover(codeHash: string, signature: string) {
   const db = getFirestore();
 
   return setDoc(
     doc(db, `handover/${codeHash}`),
     {
       status: 'completed',
-      signature
+      signature,
     },
     { merge: true }
   );
 }
 
-export async function getCryptoOrderQuote (
+export async function getCryptoOrderQuote(
   profile: string,
   collection: string,
   variant: string,
   address: any,
   productId: string,
   pass: {
-    address: string,
-    id: string
+    address: string;
+    id: string;
   } | null
 ) {
   try {
@@ -105,7 +109,7 @@ export async function getCryptoOrderQuote (
         collection,
         address,
         productId,
-        pass
+        pass,
       },
     });
 
@@ -121,11 +125,11 @@ export async function claimVault(idToken: string) {
       baseURL: `${import.meta.env.VITE_API_HOST}/claim-vault`,
       method: 'post',
       headers: {
-        'Authorization': `${idToken}`
+        Authorization: `${idToken}`,
       },
       data: {
-        x: 'y'
-      }
+        x: 'y',
+      },
     });
 
     console.log(response.status);
@@ -139,34 +143,34 @@ export async function claimVault(idToken: string) {
   }
 }
 
-export async function getShippingCost(code: string){
+export async function getShippingCost(code: string) {
   try {
     const response = await axios({
       baseURL: `${import.meta.env.VITE_API_HOST}/shipping-cost`,
       method: 'post',
       data: {
-        countryCode: code
-      }
+        countryCode: code,
+      },
     });
     const { shippingCost } = response.data;
 
-    return  shippingCost ;
+    return shippingCost;
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function getProfileAddress(auth: string){
+export async function getProfileAddress(auth: string) {
   try {
     const response = await axios({
       baseURL: `${import.meta.env.VITE_API_HOST}/profile`,
       method: 'get',
       headers: {
-        Authorization: auth
-      }
+        Authorization: auth,
+      },
     });
 
-    return  response.data.address;
+    return response.data.address;
   } catch (error) {
     console.log(error);
   }

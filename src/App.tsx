@@ -1,7 +1,7 @@
-import Web3Container from "./Web3Container";
-import Router from "./Router";
-import { relayStylePagination } from "@apollo/client/utilities";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import Web3Container from './Web3Container';
+import Router from './Router';
+import { relayStylePagination } from '@apollo/client/utilities';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 function App() {
   const cache = new InMemoryCache({

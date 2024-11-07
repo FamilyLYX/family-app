@@ -1,23 +1,27 @@
-import { useQueries } from "@tanstack/react-query";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { useQueries } from '@tanstack/react-query';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
 
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
-import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
-import { TokenCard } from "../../common/components";
+import { usePhygitalRepo } from '../../hooks/usePhygitalCollection';
+import { TokenCard } from '../../common/components';
 
-import "swiper/css/navigation";
-import EmptyState from "./emptyState";
-import { useOutletContext } from "react-router-dom";
+import 'swiper/css/navigation';
+import EmptyState from './emptyState';
+import { useOutletContext } from 'react-router-dom';
 
-const collections = [import.meta.env.VITE_DIGITAL_ASSET];
+const collections = [
+  import.meta.env.VITE_DIGITAL_ASSET,
+  '0xeF2d4F9F7bC93c865f7D212D195C35aa32C7fa2b',
+  '0xaA60ee0b6d2B8b62830DA9882a9bA50Ce2BF4e8B',
+];
 
 function TargetDigitals({ targets }: { targets: string[] }) {
   const { fetchTokens } = usePhygitalRepo(collections);
   const queries = useQueries({
     queries: targets.map((target) => ({
-      queryKey: ["digitals", target],
+      queryKey: ['digitals', target],
       queryFn: () => fetchTokens(target),
     })),
   });
@@ -31,18 +35,22 @@ function TargetDigitals({ targets }: { targets: string[] }) {
         }
 
         return acc.concat(
-          query.data ? query.data.map((token) => Object.assign({ owner: targets[idx] }, token)) : []
+          query.data
+            ? query.data.map((token) =>
+                Object.assign({ owner: targets[idx] }, token)
+              )
+            : []
         );
       }, [])
     : [];
 
-  if (isLoading) {
-    return <EmptyState message="Loading Digital Tokens" isLoading={true} />;
-  }
+  // if (isLoading) {
+  //   return <EmptyState message="Loading Digital Tokens" isLoading={true} />;
+  // }
 
-  if (!tokens || tokens.length == 0) {
-    return <EmptyState />;
-  }
+  // if (!tokens || tokens.length == 0) {
+  //   return <EmptyState />;
+  // }
 
   return (
     <div className="w-full flex flex-row space-x-2">
@@ -61,8 +69,8 @@ function TargetDigitals({ targets }: { targets: string[] }) {
         slidesPerView={3}
         navigation={{
           enabled: true,
-          nextEl: "#next-page",
-          prevEl: "#prev-page",
+          nextEl: '#next-page',
+          prevEl: '#prev-page',
         }}
         breakpoints={{
           640: {
@@ -105,8 +113,10 @@ function TargetDigitals({ targets }: { targets: string[] }) {
 
 export default function Digitals() {
   const targets = useOutletContext<string[]>();
-  
-  return <div className="space-y-4">
-    <TargetDigitals targets={targets} />
-  </div>
+
+  return (
+    <div className="space-y-4">
+      <TargetDigitals targets={targets} />
+    </div>
+  );
 }

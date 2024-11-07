@@ -1,12 +1,12 @@
-import { abi } from "../artifacts/contracts/AssetPlaceholder.sol/AssetPlaceholder.json";
-import { useContract } from "./useContract";
-import { TokenId } from "../common/objects";
-import { Contract, hexlify } from "ethers";
-import { useTransactionSender } from "./transactions";
-import { useVaultFactory } from "./useVault";
+import { abi } from '../artifacts/contracts/AssetPlaceholder.sol/AssetPlaceholder.json';
+import { useContract } from './useContract';
+import { TokenId } from '../common/objects';
+import { Contract, hexlify } from 'ethers6';
+import { useTransactionSender } from './transactions';
+import { useVaultFactory } from './useVault';
 
 const REGISTER_FUNCTION_NAME =
-  "register(string uid, bytes signature, bytes32 _tokenId)";
+  'register(string uid, bytes signature, bytes32 _tokenId)';
 
 export function useAssetPlaceholder() {
   const placeholder = useContract(import.meta.env.VITE_ASSET_PLACEHOLDER, abi);
@@ -18,7 +18,7 @@ export function useAssetPlaceholder() {
       return [];
     }
 
-    const tokens = await placeholder.getFunction("tokenIdsOf")(address);
+    const tokens = await placeholder.getFunction('tokenIdsOf')(address);
 
     return Array.from(tokens).map((idStr) =>
       TokenId.parseTokenId(idStr as string)
@@ -40,9 +40,17 @@ export function useAssetPlaceholder() {
     if (vault) {
       const vaultContract = vaultFactory.attach(vault);
 
-      const calldata = placeholder.interface.encodeFunctionData(REGISTER_FUNCTION_NAME, registerParams);
+      const calldata = placeholder.interface.encodeFunctionData(
+        REGISTER_FUNCTION_NAME,
+        registerParams
+      );
 
-      return sendTransaction(vaultContract as Contract, 'execute', [0, placeholder.target, 0, calldata]);
+      return sendTransaction(vaultContract as Contract, 'execute', [
+        0,
+        placeholder.target,
+        0,
+        calldata,
+      ]);
     }
 
     return sendTransaction(placeholder, REGISTER_FUNCTION_NAME, registerParams);
@@ -50,8 +58,8 @@ export function useAssetPlaceholder() {
 
   async function getTokenMetadata(tokenId: TokenId) {
     return {
-      name: "Honft",
-      description: "Black Forest",
+      name: 'Honft',
+      description: 'Black Forest',
       id: tokenId,
     };
   }

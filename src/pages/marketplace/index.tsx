@@ -1,36 +1,36 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Tab } from "@headlessui/react";
+import { Tab } from '@headlessui/react';
 
-import { CiFilter } from "react-icons/ci";
+import { CiFilter } from 'react-icons/ci';
 import {
   Button,
   CardCarousel,
   ChipSelect,
   Popover,
   ProductCardListing,
-} from "../../components";
-import { ColorSelectInput, Select } from "../../components";
-import marketplaceBg from "../../assets/marketplace/marketplace-bg.png";
-import marketplaceBgSmall from "../../assets/marketplace/marketplace-bg-mobile.png";
+} from '../../components';
+import { ColorSelectInput, Select } from '../../components';
+import marketplaceBg from '../../assets/marketplace/marketplace-bg.png';
+import marketplaceBgSmall from '../../assets/marketplace/marketplace-bg-mobile.png';
 // import React from "react";
-import { CgShoppingBag } from "react-icons/cg";
-import { IoPlayOutline } from "react-icons/io5";
-import EscrowSystem from "../../components/Escrow/EscrowSystem";
+import { CgShoppingBag } from 'react-icons/cg';
+import { IoPlayOutline } from 'react-icons/io5';
+import EscrowSystem from '../../components/Escrow/EscrowSystem';
 
-import { INDEX_LISTINGS } from "../../queries/listing";
-import { useQuery } from "@apollo/client";
-import { Skeleton } from "@mui/material";
-import { useState } from "react";
-import LoadingLine from "../../components/Escrow/Loadingline";
+import { INDEX_LISTINGS } from '../../queries/listing';
+import { useQuery } from '@apollo/client';
+import { Skeleton } from '@mui/material';
+import { useState } from 'react';
+import LoadingLine from '../../components/Escrow/Loadingline';
 
 function classNames(...classes: (string | undefined | null | false)[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 const colors = [
-  { hexCode: "#FF0000", title: "Red" },
-  { hexCode: "#00FF00", title: "Green" },
-  { hexCode: "#0000FF", title: "Blue" },
+  { hexCode: '#FF0000', title: 'Red' },
+  { hexCode: '#00FF00', title: 'Green' },
+  { hexCode: '#0000FF', title: 'Blue' },
   // Add more colors as needed
 ];
 
@@ -43,21 +43,22 @@ interface ContentMap {
 
 const contentMap: ContentMap = {
   Marketplace: {
-    title: "Marketplace",
+    title: 'Marketplace',
     description:
-      "Our revolutionary Decentralised Marketplace is a peer-to-peer platform designed to empower our vibrant community to trade both phygital and digital assets seamlessly. Embracing the power of blockchain technology, our marketplace ensures a safe and secure environment for all transactions, fostering trust and transparency among our valued users.",
+      'Our revolutionary Decentralised Marketplace is a peer-to-peer platform designed to empower our vibrant community to trade both phygital and digital assets seamlessly. Embracing the power of blockchain technology, our marketplace ensures a safe and secure environment for all transactions, fostering trust and transparency among our valued users.',
   },
   Escrow: {
-    title: "Escrow System",
+    title: 'Escrow System',
     description:
-      "Here you can see in more detail everything that happens with your nft and the order. Statistics metrics, positions and statuses are all displayed here.",
+      'Here you can see in more detail everything that happens with your nft and the order. Statistics metrics, positions and statuses are all displayed here.',
   },
 };
 
 export default function Marketplace() {
-  const [activeCategory, setActiveCategory] = useState("Marketplace");
+  const [activeCategory, setActiveCategory] = useState('Marketplace');
   const [info, setInfo] = useState(false);
   const { data, loading, error } = useQuery(INDEX_LISTINGS);
+  console.log('response', data, loading, error);
   console.log(data, loading, error);
   // const [anchorEl] = React.useState<HTMLButtonElement | null>(
   //   null
@@ -79,16 +80,16 @@ export default function Marketplace() {
 
   return (
     <div className="mt-24 container mx-auto flex flex-col gap-4 mb-8">
-      {activeCategory === "Escrow" && info === true ? (
+      {activeCategory === 'Escrow' && info === true ? (
         <LoadingLine text="Executing Command..." />
       ) : (
-        ""
+        ''
       )}
 
       <h2
         style={{
           color:
-            activeCategory === "Escrow" && info === true ? "gray" : "black",
+            activeCategory === 'Escrow' && info === true ? 'gray' : 'black',
         }}
         className="long-title text-center text-8xl"
       >
@@ -107,10 +108,10 @@ export default function Marketplace() {
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    "w-full rounded-full py-2.5 text-sm font-medium leading-5 transition-colors duration-300 ease-in-out",
+                    'w-full rounded-full py-2.5 text-sm font-medium leading-5 transition-colors duration-300 ease-in-out',
                     selected
-                      ? "bg-gray-900 text-white shadow"
-                      : "text-black hover:bg-gray-100"
+                      ? 'bg-gray-900 text-white shadow'
+                      : 'text-black hover:bg-gray-100'
                   )
                 }
                 onClick={() => handleCategoryChange(category)}
@@ -120,7 +121,7 @@ export default function Marketplace() {
             ))}
           </Tab.List>
           <Tab.Panels className="mt-2">
-            <Tab.Panel className={"rounded-xl bg-white p-3"}>
+            <Tab.Panel className={'rounded-xl bg-white p-3'}>
               <h4 className="long-title text-4xl">Popular</h4>
               <div className="mt-8">
                 <section>
@@ -134,7 +135,7 @@ export default function Marketplace() {
                     <div>
                       <ChipSelect
                         onChange={console.log}
-                        options={["1H", "1D", "7D", "30D"]}
+                        options={['1H', '1D', '7D', '30D']}
                         selectedOption="1D"
                       />
                     </div>
@@ -155,23 +156,23 @@ export default function Marketplace() {
                               placeholder="Condition"
                               data={[]}
                               onChange={console.log}
-                              value={""}
+                              value={''}
                             />
                             <Select
                               placeholder="Status"
                               data={[]}
                               onChange={console.log}
-                              value={""}
+                              value={''}
                             />
                             <Select
                               data={[]}
                               placeholder="Size"
                               onChange={console.log}
-                              value={""}
+                              value={''}
                             />
                             <ColorSelectInput
                               onChange={console.log}
-                              value={""}
+                              value={''}
                               data={colors}
                             />
                           </div>
@@ -183,24 +184,24 @@ export default function Marketplace() {
                         <Select
                           placeholder="Condition"
                           data={[]}
-                          value={""}
+                          value={''}
                           onChange={console.log}
                         />
                         <Select
                           placeholder="Status"
                           data={[]}
-                          value={""}
+                          value={''}
                           onChange={console.log}
                         />
                         <Select
                           placeholder="Size"
                           data={[]}
-                          value={""}
+                          value={''}
                           onChange={console.log}
                         />
                         <ColorSelectInput
                           onChange={console.log}
-                          value={""}
+                          value={''}
                           data={colors}
                         />
                       </div>
@@ -210,18 +211,26 @@ export default function Marketplace() {
 
                   <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
                     {!loading
-                      ? data.listings.map((card: any) => (
+                      ? data.Listing.map((card: any) => (
                           <ProductCardListing data={card} key={card.id} />
                         ))
                       : [1, 2, 3, 4].map(() => (
-                          <Skeleton height={"35rem"} className="h-[28rem]" />
+                          <Skeleton height={'35rem'} className="h-[28rem]" />
                         ))}
                   </div>
 
-                  <div className="mt-8 flex flex-col gap-4">
-                    <p className="text-center mx-auto text-black/50">60/206</p>
-                    <Button onClick={console.log}>Load More</Button>
-                  </div>
+                  {data?.Listing?.length != 0 ? (
+                    <div className="mt-8 flex flex-col gap-4">
+                      <p className="text-center mx-auto text-black/50">
+                        60/206
+                      </p>
+                      <Button onClick={console.log}>Load More</Button>
+                    </div>
+                  ) : (
+                    <div className="text-center mx-auto text-black/50">
+                      No Listed Item
+                    </div>
+                  )}
                 </section>
 
                 <section className="mt-20">
@@ -270,7 +279,7 @@ export default function Marketplace() {
                 </section>
               </div>
             </Tab.Panel>
-            <Tab.Panel className={"rounded-xl bg-white p-3"}>
+            <Tab.Panel className={'rounded-xl bg-white p-3'}>
               {/* Content for Escrow */}
               <EscrowSystem setInfo={setInfo} />
             </Tab.Panel>

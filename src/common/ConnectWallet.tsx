@@ -1,9 +1,9 @@
-import { useConnectWallet } from "@web3-onboard/react";
-import { Button } from "./buttons";
-import { BrowserProvider } from "ethers";
-import { authenticate, authenticateAndTransfer } from "../utils/siwe";
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
+import { useConnectWallet } from '@web3-onboard/react';
+import { Button } from './buttons';
+import { BrowserProvider } from 'ethers6';
+import { authenticate, authenticateAndTransfer } from '../utils/siwe';
+import { useContext } from 'react';
+import { UserContext } from '../contexts/UserContext';
 
 import type { User } from 'firebase/auth';
 
@@ -12,7 +12,7 @@ export default function ConnectWallet() {
   const { user } = useContext(UserContext);
 
   async function connect() {
-    localStorage.removeItem("family:connected:wallet");
+    localStorage.removeItem('family:connected:wallet');
 
     connectToProvider().then((wallets) => {
       const wallet = wallets[0],
@@ -20,18 +20,16 @@ export default function ConnectWallet() {
         provider = new BrowserProvider(wallet.provider);
 
       if (user) {
-        (user as User).getIdToken(true).then(idToken => {
-          return authenticateAndTransfer(address, provider, idToken)
+        (user as User).getIdToken(true).then((idToken) => {
+          return authenticateAndTransfer(address, provider, idToken);
         });
 
         return;
       }
 
-      return authenticate(address, provider).then(
-        () => {
-          localStorage.setItem("family:connected:wallet", address);
-        }
-      );
+      return authenticate(address, provider).then(() => {
+        localStorage.setItem('family:connected:wallet', address);
+      });
     });
   }
 

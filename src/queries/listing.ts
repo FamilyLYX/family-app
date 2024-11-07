@@ -1,35 +1,30 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const FETCH_LISTING = gql`
-  query fetchListing($id: ID!) {
-    listing(id: id) {
+  query fetchListing($id: String!) {
+    Listing_by_pk(id: $id) {
+      acceptFiat
+      collection
+      collectionType
+      db_write_timestamp
       id
-      images
-      location
       price
-      title
       tokenId
       url
-      variant
-      description
-      collection
     }
   }
 `;
 
 export const INDEX_LISTINGS = gql`
   query IndexListings($first: Int = 10, $skip: Int = 0) {
-    listings(first: $first, skip: $skip) {
-      description
+    Listing {
+      acceptFiat
       collection
+      collectionType
       id
-      images
-      location
       price
-      title
       tokenId
       url
-      variant
     }
   }
 `;

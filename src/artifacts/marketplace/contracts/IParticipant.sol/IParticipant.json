@@ -1,0 +1,30 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IParticipant",
+  "sourceName": "contracts/IParticipant.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "profile",
+          "type": "address"
+        }
+      ],
+      "name": "feeDiscountFor",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

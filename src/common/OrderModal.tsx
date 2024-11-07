@@ -16,7 +16,7 @@ import { UserContext } from '../contexts/UserContext';
 import safeGet from 'lodash/get';
 import toast from 'react-hot-toast';
 import { checkout } from '../utils/payment';
-import { isAddress } from 'ethers';
+import { isAddress } from 'ethers6';
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
@@ -67,25 +67,23 @@ export function useIsMobile() {
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1280);
 
   useEffect(() => {
-      window.addEventListener("resize", () => {
-          if (window.innerWidth <= 1280 && !isMobile) {
-            setIsMobile(true);
-          }
-          else if (window.innerWidth > 1280 && isMobile) {
-            setIsMobile(false)
-          }
-      });
-
-      return () => {
-          window.removeEventListener("resize", () => {
-            if (window.innerWidth <= 1280 && !isMobile) {
-              setIsMobile(true);
-            }
-            else if (window.innerWidth > 1280 && isMobile) {
-              setIsMobile(false)
-            }
-          })
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 1280 && !isMobile) {
+        setIsMobile(true);
+      } else if (window.innerWidth > 1280 && isMobile) {
+        setIsMobile(false);
       }
+    });
+
+    return () => {
+      window.removeEventListener('resize', () => {
+        if (window.innerWidth <= 1280 && !isMobile) {
+          setIsMobile(true);
+        } else if (window.innerWidth > 1280 && isMobile) {
+          setIsMobile(false);
+        }
+      });
+    };
   }, []);
 
   return isMobile;
@@ -139,10 +137,10 @@ function OrderDetail({
   const [passTokenId, setPassTokenId] = useState<string | null>(null);
   const [formReady, setFormReady] = useState(false);
   const [next, setNext] = useState(false);
-  const[address,setAddress] = useState<any>({})
-  
-  const mobile = useIsMobile()
- 
+  const [address, setAddress] = useState<any>({});
+
+  const mobile = useIsMobile();
+
   const productCost = Number(
     (safeGet(price, 'unit_amount', 0) / 100).toFixed(2)
   );
@@ -181,7 +179,7 @@ function OrderDetail({
       setSelectedSize('');
       return;
     }
-    
+
     setAddress(await addrEl.getValue());
 
     const countryCode = address.value.address.country;
@@ -191,8 +189,7 @@ function OrderDetail({
     setShippingCost(shippingCost);
   }
 
-
-  async function handleAddress(){
+  async function handleAddress() {
     if (!elements) {
       return;
     }
@@ -202,17 +199,14 @@ function OrderDetail({
       return;
     }
 
-    
     setAddress(await addrEl.getValue());
     if (!address.complete) {
       return;
     }
     setNext(true);
-    return
-    
+    return;
   }
   async function handleSaveMobile() {
-
     if (!selectedSize) {
       toast.error('Please select a size');
       return;
@@ -220,14 +214,14 @@ function OrderDetail({
     if (!address.complete) {
       return;
     }
-    
+
     setOrderData({
       address,
       meta: extra,
       size: selectedSize,
       pass: selectedPass,
       variantId: variantId,
-      collection: product.metadata.contract,
+      collection: product.metadata.new_contract,
       passTokenId,
       shippingCost,
     });
@@ -258,14 +252,14 @@ function OrderDetail({
       toast.error('Please select a size again.');
       return;
     }
-    
+
     setOrderData({
       address,
       meta: extra,
       size: selectedSize,
       pass: selectedPass,
       variantId: variantId,
-      collection: product.metadata.contract,
+      collection: product.metadata.new_contract,
       passTokenId,
       shippingCost,
     });
@@ -314,54 +308,52 @@ function OrderDetail({
         {!next && (
           <AddressForm onChange={setExtra} onReady={() => setFormReady(true)} />
         )}
-        {
-          (!next && mobile) && (
-            <Button
-              variant="dark"
-              onClick={() => {
-                handleAddress()
-              }}
-            >
-              Next
-            </Button>
-          ) 
-        }
+        {!next && mobile && (
+          <Button
+            variant="dark"
+            onClick={() => {
+              handleAddress();
+            }}
+          >
+            Next
+          </Button>
+        )}
       </div>
-      {formReady && (next || (!mobile && !next))  && (
+      {formReady && (next || (!mobile && !next)) && (
         <div className="flex flex-col xl:w-[50%] w-full h-auto p-4 m-2 space-y-4 ">
           <div className="flex flex-row justify-start space-x-10">
-            {
-              (next && mobile) && (
-                <svg
-                  width="40"
-                  height="40"
-                  viewBox="0 0 40 40"
-                  onClick={() => {
-                    setNext(false);
-                  }}
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    x="0.5"
-                    y="0.5"
-                    width="39"
-                    height="39"
-                    rx="19.5"
-                    stroke="black"
-                    strokeOpacity="0.07"
-                  />
-                  <path
-                    d="M25.8334 20H14.1667M14.1667 20L20.0001 25.8334M14.1667 20L20.0001 14.1667"
-                    stroke="black"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )
-            }
-            <p className="long-title xl:text-4xl text-8xl text-gray-400">Size Chart</p>
+            {next && mobile && (
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                onClick={() => {
+                  setNext(false);
+                }}
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="39"
+                  height="39"
+                  rx="19.5"
+                  stroke="black"
+                  strokeOpacity="0.07"
+                />
+                <path
+                  d="M25.8334 20H14.1667M14.1667 20L20.0001 25.8334M14.1667 20L20.0001 14.1667"
+                  stroke="black"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
+            <p className="long-title xl:text-4xl text-8xl text-gray-400">
+              Size Chart
+            </p>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-4">
             <img
@@ -391,7 +383,7 @@ function OrderDetail({
               })}
             </div>
           </div>
-          {(passes && passes.length > 0) ? (
+          {passes && passes.length > 0 ? (
             <div>
               <span className="text-gray-400 mb-2">Reedem:</span>
               <div className="flex flex-row">
@@ -417,7 +409,9 @@ function OrderDetail({
                 })}
               </div>
             </div>
-          ) : <></>}
+          ) : (
+            <></>
+          )}
 
           {selectedPass && selectedPass.tokenIds.length > 1 && (
             <div>
@@ -470,19 +464,18 @@ function OrderDetail({
                     handleSaveMobile();
                   }}
                 >
-                  {(Number(discountedCost)+shippingCost)}USD. 
+                  {Number(discountedCost) + shippingCost}USD.
                 </Button>
-              ): (
+              ) : (
                 <Button
-                variant="dark"
-                onClick={() => {
-                  handleSave();
-                }}
-              >
-                {(Number(discountedCost)+shippingCost)}USD
-              </Button>
+                  variant="dark"
+                  onClick={() => {
+                    handleSave();
+                  }}
+                >
+                  {Number(discountedCost) + shippingCost}USD
+                </Button>
               )}
-              
             </div>
           </div>
         </div>
@@ -533,7 +526,7 @@ function PaymentDetail({
       product.id,
       pass
     ).then((quote) => {
-      if(quote.message){
+      if (quote.message) {
         toast.error(quote.message);
         return;
       }
@@ -573,8 +566,8 @@ function PaymentDetail({
       product.id,
       pass
     );
-    
-    if(res.message){
+
+    if (res.message) {
       toast.error(res.message);
       return;
     }
@@ -592,15 +585,19 @@ function PaymentDetail({
             {error}
           </p>
         )}
-        {!loading.status && <>
-          { UPExist ? (<Button variant="dark" onClick={() => buyWithCrypto()}>
-            Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
-          </Button >) : (
-            <button className="px-4 mx-1 w-full py-2 rounded-full border transition duration-700 bg-gray-100 text-gray-900 focus:outline-none font-medium text-center">
-            Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
-          </button>
-          )}
-        </>}
+        {!loading.status && (
+          <>
+            {UPExist ? (
+              <Button variant="dark" onClick={() => buyWithCrypto()}>
+                Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
+              </Button>
+            ) : (
+              <button className="px-4 mx-1 w-full py-2 rounded-full border transition duration-700 bg-gray-100 text-gray-900 focus:outline-none font-medium text-center">
+                Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
+              </button>
+            )}
+          </>
+        )}
         {!loading.status && (
           <Button onClick={() => payWithFiat()}>
             Continue without LYX ({totalCost} {price.currency.toUpperCase()})
@@ -629,7 +626,7 @@ export function OrderView({ label }: OrderViewProps) {
     getProductByLabel(label).then((_data) => {
       setData(_data);
 
-      const productContract = safeGet(_data, 'product.metadata.contract');
+      const productContract = safeGet(_data, 'product.metadata.new_contract');
 
       if (!isAddress(productContract)) {
         return;

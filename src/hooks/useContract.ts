@@ -4,8 +4,10 @@ import {
   InterfaceAbi,
   JsonRpcProvider,
   JsonRpcSigner,
-} from "ethers";
-export const readerRpcProvider = new JsonRpcProvider(import.meta.env.VITE_RPC_PROVIDER);
+} from 'ethers6';
+export const readerRpcProvider = new JsonRpcProvider(
+  import.meta.env.VITE_RPC_PROVIDER
+);
 
 export const useContract = (
   target: string,
@@ -13,4 +15,4 @@ export const useContract = (
   provider: JsonRpcProvider | JsonRpcSigner = readerRpcProvider
 ) => new Contract(target, abi, provider);
 export const useContractFactory = (abi: InterfaceAbi) =>
-  new ContractFactory(abi, "0x", readerRpcProvider);
+  new ContractFactory(abi, '0x', readerRpcProvider);

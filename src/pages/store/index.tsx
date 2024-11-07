@@ -1,28 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
-import Countdown from "react-countdown";
+import Countdown from 'react-countdown';
 
-import { getAllProducts } from "../../utils/api";
-import { QueryResultView } from "../../common/components";
-import { Button } from "../../common/buttons";
-import { hooks } from "../../connectors/default";
-import { usePhygitalCollection } from "../../hooks/usePhygitalCollection";
-import { useModal } from "@ebay/nice-modal-react";
+import { getAllProducts } from '../../utils/api';
+import { QueryResultView } from '../../common/components';
+import { Button } from '../../common/buttons';
+import { hooks } from '../../connectors/default';
+import { usePhygitalCollection } from '../../hooks/usePhygitalCollection';
+import { useModal } from '@ebay/nice-modal-react';
 
 function ProductCard({ product }: { product: ProductType }) {
   const account = hooks.useAccount();
-  const buyModal = useModal("family-buy-modal");
-  const { getMintStatus } = usePhygitalCollection(product.metadata.contract);
+  const buyModal = useModal('family-buy-modal');
+  const { getMintStatus } = usePhygitalCollection(
+    product.metadata.new_contract
+  );
   const mintStatus = useQuery({
-    queryKey: ["collection", product.metadata.contract, "status"],
+    queryKey: ['collection', product.metadata.new_contract, 'status'],
     queryFn: getMintStatus,
   });
+
+  console.log('Product', product);
 
   async function handleCheckout(product: ProductType) {
     buyModal.show({
       addressRequired: !mintStatus.data?.digital,
-      collection: product.metadata.contract,
-      variant: "0x00000000000000000000001d",
+      collection: product.metadata.new_contract,
+      variant: '0x00000000000000000000001d',
       to: account as string,
       product: product,
     });
@@ -56,7 +60,7 @@ function ProductCard({ product }: { product: ProductType }) {
             </>
           ) : (
             <p className="w-full text-center">
-              Unlimited Supply{" "}
+              Unlimited Supply{' '}
               {mintStatus.data?.minted && `(${mintStatus.data?.minted} minted)`}
             </p>
           )}
@@ -119,10 +123,10 @@ function ProductCard({ product }: { product: ProductType }) {
 }
 
 export default function Store() {
-  window.location.href = "buy/honft"
-  
+  // window.location.href = "buy/honft"
+
   const productQuery = useQuery({
-    queryKey: ["products"],
+    queryKey: ['products'],
     queryFn: () => getAllProducts(),
   });
 

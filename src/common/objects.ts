@@ -1,4 +1,4 @@
-import { concat, dataSlice } from "ethers";
+import { concat, dataSlice } from 'ethers6';
 
 export class TokenId {
   collectionId: string;
@@ -24,8 +24,8 @@ export class TokenId {
     return {
       collectionId: this.collectionId,
       variantId: this.variantId,
-      assetId: this.assetId
-    }
+      assetId: this.assetId,
+    };
   }
 
   toString() {

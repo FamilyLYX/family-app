@@ -1,27 +1,27 @@
-import { useQueries } from "@tanstack/react-query";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import { useOutletContext } from "react-router-dom";
+import { useQueries } from '@tanstack/react-query';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import { useOutletContext } from 'react-router-dom';
 
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
-import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
-import { TokenCard } from "../../common/components";
+import { usePhygitalRepo } from '../../hooks/usePhygitalCollection';
+import { TokenCard } from '../../common/components';
 
-import "swiper/css/navigation";
-import EmptyState from "./emptyState";
-import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-
+import 'swiper/css/navigation';
+import EmptyState from './emptyState';
+import { useContext } from 'react';
+import { UserContext } from '../../contexts/UserContext';
 
 const collections = import.meta.env.VITE_COLLECTIONS?.split(',') as string[];
 
 function TargetPhygitals({ targets }: { targets: string[] }) {
   const { vault } = useContext(UserContext);
   const { fetchTokens } = usePhygitalRepo(collections);
+  console.log('targets', targets);
   const queries = useQueries({
     queries: targets.map((target) => ({
-      queryKey: ["phygitals", target],
+      queryKey: ['phygitals', target],
       queryFn: () => fetchTokens(target),
     })),
   });
@@ -33,7 +33,11 @@ function TargetPhygitals({ targets }: { targets: string[] }) {
         }
 
         return acc.concat(
-          query.data ? query.data.map((token) => Object.assign({ owner: targets[idx] }, token)) : []
+          query.data
+            ? query.data.map((token) =>
+                Object.assign({ owner: targets[idx] }, token)
+              )
+            : []
         );
       }, [])
     : [];
@@ -63,8 +67,8 @@ function TargetPhygitals({ targets }: { targets: string[] }) {
         slidesPerView={3}
         navigation={{
           enabled: true,
-          nextEl: "#next-page",
-          prevEl: "#prev-page",
+          nextEl: '#next-page',
+          prevEl: '#prev-page',
         }}
         breakpoints={{
           640: {
@@ -88,7 +92,12 @@ function TargetPhygitals({ targets }: { targets: string[] }) {
               key={`token:${token.id.toString()}`}
               virtualIndex={idx}
             >
-              <TokenCard tokenId={token.id} owner={token.owner} address={token.address} transfer={token.owner === vault} />
+              <TokenCard
+                tokenId={token.id}
+                owner={token.owner}
+                address={token.address}
+                transfer={token.owner === vault}
+              />
             </SwiperSlide>
           ))}
       </Swiper>
@@ -105,10 +114,12 @@ function TargetPhygitals({ targets }: { targets: string[] }) {
   );
 }
 
-export default function Phygitals () {
+export default function Phygitals() {
   const targets = useOutletContext<string[]>();
-  
-  return <div className="space-y-4">
-    <TargetPhygitals targets={targets}  />
-  </div>
+
+  return (
+    <div className="space-y-4">
+      <TargetPhygitals targets={targets} />
+    </div>
+  );
 }

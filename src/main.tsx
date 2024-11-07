@@ -1,26 +1,24 @@
 // import './polyfill.ts';
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
 import NiceModal from '@ebay/nice-modal-react';
 
-import { initializeApp } from "firebase/app";
-import { getFirestore  } from "firebase/firestore";
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { Toaster } from 'react-hot-toast';
 
-import App from './App.tsx'
+import App from './App.tsx';
 import './index.css';
 
 // Import Swiper styles
 import 'swiper/css';
 import UserProvider from './contexts/UserContext.tsx';
+import { ThirdwebProvider } from '@thirdweb-dev/react';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -29,7 +27,7 @@ const firebaseConfig = {
   projectId: import.meta.env.VITE_FB_PROJECT_ID,
   storageBucket: import.meta.env.VITE_FB_BUCKET,
   messagingSenderId: import.meta.env.VITE_FB_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FB_APP_ID
+  appId: import.meta.env.VITE_FB_APP_ID,
 };
 
 // Initialize Firebase
@@ -42,11 +40,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <UserProvider>
       <QueryClientProvider client={queryClient}>
-        <Toaster position='bottom-right' />
-        <NiceModal.Provider>
-          <App />
-        </NiceModal.Provider>
+        <ThirdwebProvider clientId={import.meta.env.VITE_THIRDWEB_ID}>
+          <Toaster position="bottom-right" />
+          <NiceModal.Provider>
+            <App />
+          </NiceModal.Provider>
+        </ThirdwebProvider>
       </QueryClientProvider>
     </UserProvider>
   </React.StrictMode>
-)
+);

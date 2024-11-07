@@ -1,30 +1,36 @@
-import { Disclosure } from "@headlessui/react";
-import {
-  Bars3Icon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { Disclosure } from '@headlessui/react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import { Link } from "react-router-dom";
-import { User, getAuth, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useState } from 'react';
 
-import { LinkButton, Button } from "../common/buttons";
+import { LinkButton, Button } from '../common/buttons';
 
-import logo from "../logo.svg";
+import logo from '../logo.svg';
+
+function LeftActions() {
+  return (
+    <>
+      <LinkButton to="/marketplace">Marketplace</LinkButton>
+      {/* <LinkButton to="/trade">Trade</LinkButton> */}
+    </>
+  );
+}
 
 function NavActions() {
   const [user, setUser] = useState<User | null>(null);
-  
+
   useEffect(() => {
     onAuthStateChanged(getAuth(), setUser);
   }, []);
 
   async function disconnect() {
     const auth = getAuth();
-    console.log("sign out");
+    console.log('sign out');
 
     await auth.signOut();
-    localStorage.removeItem("family:connected:wallet");
+    localStorage.removeItem('family:connected:wallet');
   }
 
   if (!user) {
@@ -68,11 +74,11 @@ export default function Header() {
         <>
           <div className="mx-auto px-1 relative border-b">
             <div className="flex items-center justify-between h-16">
-              {/* <div className="hidden lg:block">
+              <div className="hidden lg:block">
                 <div className="ml-4 flex items-center">
                   <LeftActions />
                 </div>
-              </div> */}
+              </div>
               {/* <div className="grow"></div> */}
               <div className="flex items-center absolute left-1/2 -ml-[40px]">
                 <Link to="/buy/honft" className="flex-shrink-0">
@@ -102,8 +108,8 @@ export default function Header() {
           <Disclosure.Panel className="lg:hidden">
             <div className="pt-4 pb-3 h-screen">
               <div className="flex flex-col space-y-2">
-              {/* <LeftActions/> */}
-              <NavActions/>
+                {/* <LeftActions/> */}
+                <NavActions />
               </div>
             </div>
           </Disclosure.Panel>
