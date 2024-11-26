@@ -35,6 +35,7 @@ import Marketplace from './pages/marketplace';
 import ProductCard from './pages/ProductCard/ProductCard';
 import Digitals from './pages/inventory/digitals';
 import ListDigitalModal from './common/ListDigital';
+import Admin from './pages/admin/Admin';
 // import ProductCard from './pages/ProductCard/ProductCard';
 
 NiceModal.register('family-buy-modal', OrderModal);
@@ -66,7 +67,7 @@ const router = () =>
             element={<ProductCard />}
           />
           {/* <Route path="/product-card" element={<ProductCard />} /> */}
-          {/* <Route path="/admin-xyz" element={<Admin />} /> */}
+          <Route path="/admin-xyz" element={<Admin />} />
           <Route path="/inventory" element={<Inventory />}>
             <Route
               index={true}
