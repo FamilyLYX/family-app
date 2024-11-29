@@ -15,7 +15,7 @@ import { UserContext } from '../contexts/UserContext';
 
 import safeGet from 'lodash/get';
 import toast from 'react-hot-toast';
-import { checkout } from '../utils/payment';
+import { checkout, coinbaseCheckout } from '../utils/payment';
 import { isAddress } from 'ethers';
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
@@ -581,6 +581,23 @@ function PaymentDetail({
     window.location = res.url;
   }
 
+  async function otherCryptoCurrencies() {
+    setLoading({ status: 1, message: 'Loading...' });
+
+    const amount=100;
+    const currency='USD';
+    const res = await coinbaseCheckout(
+      amount,
+      currency
+    );
+    
+    if(res.message){
+      toast.error(res.message);
+      return;
+    }
+    window.location = res.url;
+  }
+
   return (
     <div className="mx-auto max-w-md flex flex-col justify-center items-center mt-48">
       <h2 className="text-2xl pl-4 m-4 font-medium leading-6 text-gray-900 text-center">
@@ -594,7 +611,7 @@ function PaymentDetail({
         )}
         {!loading.status && <>
           { UPExist ? (<Button variant="dark" onClick={() => buyWithCrypto()}>
-            Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
+            LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
           </Button >) : (
             <button className="px-4 mx-1 w-full py-2 rounded-full border transition duration-700 bg-gray-100 text-gray-900 focus:outline-none font-medium text-center">
             Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
@@ -603,7 +620,12 @@ function PaymentDetail({
         </>}
         {!loading.status && (
           <Button onClick={() => payWithFiat()}>
-            Continue without LYX ({totalCost} {price.currency.toUpperCase()})
+            Fiat ({totalCost} {price.currency.toUpperCase()})
+          </Button>
+        )}
+        {!loading.status && (
+          <Button onClick={() => otherCryptoCurrencies()}>
+            Other Currencies ({totalCost} {price.currency.toUpperCase()})
           </Button>
         )}
         {loading.status > 0 && <p className="text-center">{loading.message}</p>}
