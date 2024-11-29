@@ -12,15 +12,6 @@ import { LinkButton, Button } from "../common/buttons";
 
 import logo from "../logo.svg";
 
-function LeftActions() {
-  return (
-    <>
-      <LinkButton to="/marketplace">Marketplace</LinkButton>
-      <LinkButton to="/trade">Trade</LinkButton>
-    </>
-  );
-}
-
 function NavActions() {
   const [user, setUser] = useState<User | null>(null);
   
@@ -39,7 +30,7 @@ function NavActions() {
   if (!user) {
     return (
       <>
-        <LinkButton to="/store">Store</LinkButton>
+        {/* <LinkButton to="/store">Store</LinkButton> */}
         <LinkButton to="/login">Login</LinkButton>
       </>
     );
@@ -47,7 +38,7 @@ function NavActions() {
 
   return (
     <>
-      <LinkButton to="/store">Store</LinkButton>
+      {/* <LinkButton to="/store">Store</LinkButton> */}
       <LinkButton to="/inventory/phygitals">Inventory</LinkButton>
       <Button onClick={disconnect}>
         <span className="sr-only">Sign Out</span>
@@ -75,16 +66,16 @@ export default function Header() {
     <Disclosure as="nav" className="bg-white">
       {({ open }) => (
         <>
-          <div className="mx-auto px-1 relative">
+          <div className="mx-auto px-1 relative border-b">
             <div className="flex items-center justify-between h-16">
-              <div className="hidden lg:block">
+              {/* <div className="hidden lg:block">
                 <div className="ml-4 flex items-center">
                   <LeftActions />
                 </div>
-              </div>
-              <div className="grow"></div>
+              </div> */}
+              {/* <div className="grow"></div> */}
               <div className="flex items-center absolute left-1/2 -ml-[40px]">
-                <Link to="/" className="flex-shrink-0">
+                <Link to="/buy/honft" className="flex-shrink-0">
                   <img src={logo} alt="Family" />
                 </Link>
               </div>
@@ -111,7 +102,7 @@ export default function Header() {
           <Disclosure.Panel className="lg:hidden">
             <div className="pt-4 pb-3 h-screen">
               <div className="flex flex-col space-y-2">
-              <LeftActions/>
+              {/* <LeftActions/> */}
               <NavActions/>
               </div>
             </div>

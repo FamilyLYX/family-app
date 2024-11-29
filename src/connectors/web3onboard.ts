@@ -28,24 +28,18 @@ const wallets = [injected];
 
 const chains = [
   {
-    id: 42,
+    id: import.meta.env.VITE_CHAIN_ID,
     token: 'LYX',
-    label: "LUKSO Mainnet",
-    rpcUrl: 'https://rpc.lukso.gateway.fm/'
-  },
-  {
-    id: 4201,
-    token: "LYXt",
-    label: "LUKSO Testnet",
-    rpcUrl: "https://rpc.testnet.lukso.gateway.fm/",
-  },
+    label: "LUKSO",
+    rpcUrl: import.meta.env.VITE_RPC_PROVIDER
+  }
 ];
 
 const appMetadata = {
-  name: "LUKSO Test dApp",
+  name: "FamilyLYX",
   icon: logo,
   logo: logo,
-  description: "My test dApp using Web3 Onboard",
+  description: "FamilyLYX",
   recommendedInjectedWallets: [
     {
       name: "Universal Profiles",

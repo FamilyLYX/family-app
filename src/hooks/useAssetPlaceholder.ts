@@ -1,8 +1,9 @@
 import { abi } from "../artifacts/contracts/AssetPlaceholder.sol/AssetPlaceholder.json";
 import { useContract } from "./useContract";
 import { TokenId } from "../common/objects";
-import { hexlify } from "ethers";
+import { Contract, hexlify } from "ethers";
 import { useTransactionSender } from "./transactions";
+import { useVaultFactory } from "./useVault";
 
 const REGISTER_FUNCTION_NAME =
   "register(string uid, bytes signature, bytes32 _tokenId)";
@@ -10,6 +11,7 @@ const REGISTER_FUNCTION_NAME =
 export function useAssetPlaceholder() {
   const placeholder = useContract(import.meta.env.VITE_ASSET_PLACEHOLDER, abi);
   const { sendTransaction } = useTransactionSender();
+  const vaultFactory = useVaultFactory();
 
   async function getOrders(address: string) {
     if (!address) {
@@ -26,13 +28,24 @@ export function useAssetPlaceholder() {
   async function registerToken(
     uid: string,
     signature: string,
-    tokenId: TokenId
+    tokenId: TokenId,
+    vault?: string
   ) {
-    return sendTransaction(placeholder, REGISTER_FUNCTION_NAME, [
+    const registerParams = [
       uid,
       hexlify(signature),
       hexlify(tokenId.toString()),
-    ]);
+    ];
+
+    if (vault) {
+      const vaultContract = vaultFactory.attach(vault);
+
+      const calldata = placeholder.interface.encodeFunctionData(REGISTER_FUNCTION_NAME, registerParams);
+
+      return sendTransaction(vaultContract as Contract, 'execute', [0, placeholder.target, 0, calldata]);
+    }
+
+    return sendTransaction(placeholder, REGISTER_FUNCTION_NAME, registerParams);
   }
 
   async function getTokenMetadata(tokenId: TokenId) {

@@ -9,26 +9,22 @@ import { hooks } from "../../connectors/default";
 import { usePhygitalCollection } from "../../hooks/usePhygitalCollection";
 import { useModal } from "@ebay/nice-modal-react";
 
-function ProductCard({
-  product
-}: {
-  product: ProductType
-}) {
+function ProductCard({ product }: { product: ProductType }) {
   const account = hooks.useAccount();
-  const buyModal = useModal('family-buy-modal');
+  const buyModal = useModal("family-buy-modal");
   const { getMintStatus } = usePhygitalCollection(product.metadata.contract);
   const mintStatus = useQuery({
     queryKey: ["collection", product.metadata.contract, "status"],
     queryFn: getMintStatus,
   });
 
-  async function handleCheckout (product: ProductType) {
+  async function handleCheckout(product: ProductType) {
     buyModal.show({
       addressRequired: !mintStatus.data?.digital,
       collection: product.metadata.contract,
-      variant: '0x00000000000000000000001d',
+      variant: "0x00000000000000000000001d",
       to: account as string,
-      product: product
+      product: product,
     });
   }
 
@@ -39,25 +35,36 @@ function ProductCard({
         src={product.images[0]}
       />
       {!mintStatus.isLoading && (
-        <div className="flex flex-row text-xs text-gray-400 justify-self-end mt-8">
-          { mintStatus.data?.capped ? <>
-          <div className="w-44">Limited to</div>
-          <div className="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700 mt-1">
-            <div
-              className="bg-blue-600 h-1 rounded-full"
-              style={{
-                width: `${
-                  ((mintStatus.data?.minted as number) * 100) /
-                  (mintStatus.data?.supply as number)
-                }%`,
-              }}
-            ></div>
-          </div>
-          <div className="w-44">{mintStatus.data?.minted}/{mintStatus.data?.supply} pcs</div>
-          </> : <p className="w-full text-center">Unlimited Supply {mintStatus.data?.minted && `(${mintStatus.data?.minted} minted)`}</p> }
+        <div className="flex flex-row text-xs text-gray-400 justify-self-end items-center mt-8">
+          {mintStatus.data?.capped ? (
+            <>
+              <div className="w-44">Limited to</div>
+              <div className="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700 mt-1">
+                <div
+                  className="bg-blue-600 h-1 rounded-full"
+                  style={{
+                    width: `${
+                      ((mintStatus.data?.minted as number) * 100) /
+                      (mintStatus.data?.supply as number)
+                    }%`,
+                  }}
+                ></div>
+              </div>
+              <div className="w-44">
+                {mintStatus.data?.minted}/{mintStatus.data?.supply} pcs
+              </div>
+            </>
+          ) : (
+            <p className="w-full text-center">
+              Unlimited Supply{" "}
+              {mintStatus.data?.minted && `(${mintStatus.data?.minted} minted)`}
+            </p>
+          )}
         </div>
       )}
-      <p className="text-center text-xs text-gray-400 mt-8">{product.description}</p>
+      <p className="text-center text-xs text-gray-400 mt-8">
+        {product.description}
+      </p>
       {!mintStatus.isLoading && (
         <Countdown
           date={new Date((mintStatus.data?.endAt as number) * 1000)}
@@ -69,11 +76,28 @@ function ProductCard({
 
             return (
               <div className="rounded-lg bg-gray-50 text-center p-4 my-4">
-                <p className="text-xs">Orders open for next {days} days {hours} hours</p>
+                <p className="text-xs">
+                  Orders open for next {days} days {hours} hours
+                </p>
                 <div className="flex flex-row mt-4 space-x-2">
-                  <div className="grow text-2xl border rounded-lg"><span className="long-title">{String(days).padStart(2)}</span><span className="block text-xs">Days</span></div>
-                  <div className="grow text-2xl border rounded-lg"><span className="long-title">{String(hours).padStart(2)}</span><span className="block text-xs">Hours</span></div>
-                  <div className="grow text-2xl border rounded-lg"><span className="long-title">{String(minutes).padStart(2)}</span><span className="block text-xs">Minutes</span></div>
+                  <div className="grow text-2xl border rounded-lg">
+                    <span className="long-title">
+                      {String(days).padStart(2)}
+                    </span>
+                    <span className="block text-xs">Days</span>
+                  </div>
+                  <div className="grow text-2xl border rounded-lg">
+                    <span className="long-title">
+                      {String(hours).padStart(2)}
+                    </span>
+                    <span className="block text-xs">Hours</span>
+                  </div>
+                  <div className="grow text-2xl border rounded-lg">
+                    <span className="long-title">
+                      {String(minutes).padStart(2)}
+                    </span>
+                    <span className="block text-xs">Minutes</span>
+                  </div>
                 </div>
               </div>
             );
@@ -95,6 +119,8 @@ function ProductCard({
 }
 
 export default function Store() {
+  window.location.href = "buy/honft"
+  
   const productQuery = useQuery({
     queryKey: ["products"],
     queryFn: () => getAllProducts(),
@@ -108,10 +134,7 @@ export default function Store() {
           query={productQuery}
           element={(data) =>
             (data as ProductType[]).map((product, index) => (
-              <ProductCard
-                product={product}
-                key={index}
-              />
+              <ProductCard product={product} key={index} />
             ))
           }
         />

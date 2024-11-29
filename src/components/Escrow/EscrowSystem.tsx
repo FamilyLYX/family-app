@@ -10,7 +10,7 @@ interface EscrowSystemProps {
 export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
   const [imageWidth, setImageWidth] = useState(calculateImageWidth());
-  const [productstatus, setProductStatus] = useState("Confirm");
+  const [productstatus] = useState("Confirm");
 
   useEffect(() => {
     const handleResize = () => {
@@ -90,8 +90,7 @@ export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
                 <p>001 — Black Forest»</p>
                 <Link to="/escrowmoreinfo">
                   <Button
-                    children={undefined}
-                    style={{ minWidth: "289px", height: "40px" }}
+                    // style={{ minWidth: "289px", height: "40px" }}
                     variant="dark"
                     onClick={undefined}
                   >
@@ -154,8 +153,8 @@ export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
                 <p>001 — Black Forest»</p>
                 <Link to="/escrowmoreinfo">
                   <Button
-                    children={undefined}
-                    style={{ width: "550px", height: "40px" }}
+                    // children={undefined}
+                    // style={{ width: "550px", height: "40px" }}
                     variant="dark"
                     onClick={() => {
                       setInfo(true);

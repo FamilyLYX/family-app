@@ -4,7 +4,7 @@ import { TokenId } from "../common/objects";
 import { useAssetPlaceholder } from "./useAssetPlaceholder";
 import { decodeKeyValue } from '@erc725/erc725.js/build/main/src/lib/utils';
 
-const IPFS_GATEWAY = "https://2eff.lukso.dev/ipfs/";
+const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 
 export function usePhygitalRepo(collections: string[]) {
   const factory = useContractFactory(abi);
@@ -55,8 +55,9 @@ export function usePhygitalCollection(address: string) {
       tokenId.toString()
     );
 
-    const { url } = decodeKeyValue('JSONURL', 'bytes', dataValue, 'metadata');
-    const data = await fetch(url.replace('ipfs://', IPFS_GATEWAY)).then(res => res.json());
+    const { url } = decodeKeyValue('VerifiableURI', 'bytes', dataValue, 'metadata');
+
+   const data = await fetch(url.replace('ipfs://', IPFS_GATEWAY)).then(res => res.json());
 
     return {
       ...data.LSP4Metadata,

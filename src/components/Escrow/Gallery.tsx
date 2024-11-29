@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./EscrowSystem.module.css";
 
 export default function Gallery() {

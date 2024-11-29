@@ -9,7 +9,7 @@ interface ChatMolProps {
 }
 
 const ChatMol: React.FC<ChatMolProps> = ({ setOpenChat }) => {
-  const [name, setName] = useState("Ninja and James");
+  const [name] = useState("Ninja and James");
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([
     {
@@ -40,8 +40,8 @@ const ChatMol: React.FC<ChatMolProps> = ({ setOpenChat }) => {
     },
   ]);
 
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1023);
-  const [imageWidth, setImageWidth] = useState<number>(calculateImageWidth());
+  const [, setIsMobile] = useState<boolean>(window.innerWidth <= 1023);
+  const [, setImageWidth] = useState<number>(calculateImageWidth());
 
   useEffect(() => {
     const handleResize = () => {
@@ -86,9 +86,8 @@ const ChatMol: React.FC<ChatMolProps> = ({ setOpenChat }) => {
       className="flex flex-col h-screen px-5 overflow-scroll w-full rounded-[28px]"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex mt-10 flex-row gap-2">
+        <div className="flex mt-10 flex-row gap-2 w-[95px] h-[40px]">
           <Button
-            style={{ width: "95px", height: "40px" }}
             onClick={() => {
               setOpenChat(false);
             }}

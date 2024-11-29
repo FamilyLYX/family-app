@@ -3,13 +3,31 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 export async function getAllProducts () {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_HOST}/products`, {});
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_HOST}/products`,
+      {}
+    );
 
     const { products } = response.data;
 
     return products;
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getProductByLabel (label: string) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_HOST}/product-price/${label}`,
+      {}
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    return null;
   }
 }
 
@@ -66,7 +84,17 @@ export async function updateHandover (codeHash: string, signature: string) {
   );
 }
 
-export async function getCryptoOrderQuote (profile: string, collection: string, variant: string, address: any) {
+export async function getCryptoOrderQuote (
+  profile: string,
+  collection: string,
+  variant: string,
+  address: any,
+  productId: string,
+  pass: {
+    address: string,
+    id: string
+  } | null
+) {
   try {
     const response = await axios({
       baseURL: `${import.meta.env.VITE_API_HOST}/order-quote`,
@@ -75,15 +103,70 @@ export async function getCryptoOrderQuote (profile: string, collection: string, 
         profile,
         variant,
         collection,
-        address
+        address,
+        productId,
+        pass
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function claimVault(idToken: string) {
+  try {
+    const response = await axios({
+      baseURL: `${import.meta.env.VITE_API_HOST}/claim-vault`,
+      method: 'post',
+      headers: {
+        'Authorization': `${idToken}`
+      },
+      data: {
+        x: 'y'
       }
     });
 
-    const { order, params: data } = response.data;
+    console.log(response.status);
+    console.log(response.data);
 
-    data[1] = BigInt(data[1]);
+    const { txn } = response.data;
 
-    return { params: data, order };
+    return { txn };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getShippingCost(code: string){
+  try {
+    const response = await axios({
+      baseURL: `${import.meta.env.VITE_API_HOST}/shipping-cost`,
+      method: 'post',
+      data: {
+        countryCode: code
+      }
+    });
+    const { shippingCost } = response.data;
+
+    return  shippingCost ;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getProfileAddress(auth: string){
+  try {
+    const response = await axios({
+      baseURL: `${import.meta.env.VITE_API_HOST}/profile`,
+      method: 'get',
+      headers: {
+        Authorization: auth
+      }
+    });
+
+    return  response.data.address;
   } catch (error) {
     console.log(error);
   }

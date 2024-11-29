@@ -19,6 +19,12 @@ export function Login() {
   async function authenticate() {
     localStorage.setItem("auth-email", email);
 
+    if(!email){
+      setError("Please enter your email address.")
+      return;
+    }
+
+    setError("");
     setLoading({
       status: 1,
       message: "Validating email address and sending link",
@@ -42,7 +48,7 @@ export function Login() {
   useEffect(() => {
     return onAuthStateChanged(getAuth(), (user) => {
       if (user) {
-        return navigate("/");
+        return navigate("/buy/honft");
       }
     });
   }, []);

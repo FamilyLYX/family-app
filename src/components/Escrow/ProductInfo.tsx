@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "..";
 import { Link } from "react-router-dom";
 
 export default function ProductInfo() {
-  const [Trackinginfo, setTrackingInfo] = useState<string>(
+  const [Trackinginfo,] = useState<string>(
     "https://auspost.com.au/mypost/track/#/search"
   );
-  const [size, setSize] = useState<string>("XXL");
-  const [time, setTime] = useState<string>("2023-09-04 09:59:20");
-  const [price, setPrice] = useState<string>("1,4525403543647");
+  const [size,] = useState<string>("XXL");
+  const [time,] = useState<string>("2023-09-04 09:59:20");
+  const [price,] = useState<string>("1,4525403543647");
 
-  const productStatus: string = "Confirm";
+  const productStatus = "Confirm";
   const result: string = checkProductStatus(productStatus);
 
   function checkProductStatus(status: string): string {
@@ -48,14 +48,14 @@ export default function ProductInfo() {
         <span className="text-black/30 text-[13px] font-medium">
           Tracking info:
         </span>
-        <p className="text-[14px] font-medium leading-[13.5px] underline font-normal">
+        <p className="text-[14px] font-medium leading-[13.5px] underline">
           {Trackinginfo}
         </p>
       </div>
       {/* Forth Content */}
       <div className="flex flex-col gap-2">
         <span className="text-black/30 text-[13px] font-medium">Size:</span>
-        <p className="text-[14px] font-medium leading-[13.5px]  font-normal">
+        <p className="text-[14px] font-medium leading-[13.5px]">
           {size}
         </p>
       </div>
@@ -80,18 +80,16 @@ export default function ProductInfo() {
         <Link to="/marketplace">
           <Button
             // variant="dark"
-            children={undefined}
-            onClick={undefined}
+            onClick={console.log}
           >
             Back
           </Button>
         </Link>
 
         <Button
-          style={{ width: "286px", height: "40px" }}
+          // style={{ width: "286px", height: "40px" }}
           variant="dark"
-          children={undefined}
-          onClick={undefined}
+          onClick={console.log}
         >
           Open Dispute
         </Button>
