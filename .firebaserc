@@ -1,7 +1,5 @@
 {
   "projects": {
-    "beta": "familylyx"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "familylyx"
+  }
 }

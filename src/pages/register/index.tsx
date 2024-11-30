@@ -71,7 +71,7 @@ function Handover ({ uid, secret, user, children }: { uid: string, secret: strin
   </div>
 }
 
-function MarketplaceHandover ({ uid, secret, user, owner }: { uid: string, secret: string, user: User, owner: string }) {
+function MarketplaceHandover ({ uid, secret, user }: { uid: string, secret: string, user: User, owner: string }) {
   const [handover, setHandover] = useState<HandoverObj | null>(null);
   const [code, setCode] = useState<number|null>(null);
   
@@ -97,12 +97,12 @@ function MarketplaceHandover ({ uid, secret, user, owner }: { uid: string, secre
     });
   }, [handover]);
 
-  if (handover?.target && handover.target !== owner) {
-    return <div className="mt-4">
-      <h3 className="long-title text-8xl mb-4 text-center">You can't do that</h3>
-      <p className="text-xs text-center text-gray-400 mb-4">Only the present owner of the token can list on marketplace</p>
-    </div>
-  }
+  // if (handover?.target && handover.target !== owner) {
+  //   return <div className="mt-4">
+  //     <h3 className="long-title text-8xl mb-4 text-center">You can't do that</h3>
+  //     <p className="text-xs text-center text-gray-400 mb-4">Only the present owner of the token can list on marketplace</p>
+  //   </div>
+  // }
 
   if (handover?.target) {
     return <div className="mt-4">

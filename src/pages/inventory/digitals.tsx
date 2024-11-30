@@ -1,33 +1,46 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import { usePhygitalRepo } from "../../hooks/usePhygitalCollection";
-import { hooks } from "../../connectors/default";
 import { TokenCard } from "../../common/components";
 
 import "swiper/css/navigation";
 import EmptyState from "./emptyState";
+import { useOutletContext } from "react-router-dom";
 
 const collections = [import.meta.env.VITE_DIGITAL_ASSET];
 
-export default function Digitals() {
-  const account = hooks.useAccount();
-  // const { getTokens } = usePhygitalCollection();
+function TargetDigitals({ targets }: { targets: string[] }) {
   const { fetchTokens } = usePhygitalRepo(collections);
-  const { data, isLoading } = useQuery({
-    queryKey: ["digitals", account],
-    enabled: !!account,
-    queryFn: () => fetchTokens(account as string),
+  const queries = useQueries({
+    queries: targets.map((target) => ({
+      queryKey: ["digitals", target],
+      queryFn: () => fetchTokens(target),
+    })),
   });
+  const isLoading = !!queries.find((q) => q.isLoading);
+  const tokens = !isLoading
+    ? queries.reduce((acc: any[], query, idx) => {
+        if (query.isLoading || query.isError) {
+          console.log(query.isLoading ? 'loading' : 'error');
+
+          return acc;
+        }
+
+        return acc.concat(
+          query.data ? query.data.map((token) => Object.assign({ owner: targets[idx] }, token)) : []
+        );
+      }, [])
+    : [];
 
   if (isLoading) {
-    return <p>Loading Digital Tokens</p>;
+    return <EmptyState message="Loading Digital Tokens" isLoading={true} />;
   }
 
-  if (!data || data.length == 0) {
+  if (!tokens || tokens.length == 0) {
     return <EmptyState />;
   }
 
@@ -68,7 +81,7 @@ export default function Digitals() {
         modules={[Navigation]}
       >
         {!isLoading &&
-          data?.map((token, idx) => (
+          tokens?.map((token: any, idx: any) => (
             <SwiperSlide
               key={`token:${token.id.toString()}`}
               virtualIndex={idx}
@@ -88,4 +101,12 @@ export default function Digitals() {
       </div>
     </div>
   );
+}
+
+export default function Digitals() {
+  const targets = useOutletContext<string[]>();
+  
+  return <div className="space-y-4">
+    <TargetDigitals targets={targets} />
+  </div>
 }

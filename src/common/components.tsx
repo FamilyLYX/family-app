@@ -4,6 +4,10 @@ import { usePhygitalCollection } from "../hooks/usePhygitalCollection";
 import { Button } from "./buttons";
 import { useAssetPlaceholder } from "../hooks/useAssetPlaceholder";
 import { useModal } from "@ebay/nice-modal-react";
+import { useTransactionSender } from "../hooks/transactions";
+import { getAddress } from "ethers";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 // import useUser from "../hooks/useUser";
 
 export function ShortAddress ({ address }: { address: string }) {
@@ -12,27 +16,55 @@ export function ShortAddress ({ address }: { address: string }) {
   </a>
 }
 
-export function TokenCard ({ tokenId, address, showActions = true }: { tokenId: TokenId, address: string, showActions?: boolean }) {
-  const { getTokenMetadata } = usePhygitalCollection(address);
+export function TokenCard ({ tokenId, owner, address, transfer, showActions = true }: { tokenId: TokenId, owner?:string, address: string, showActions?: boolean, transfer?: boolean }) {
+  const { vault, user } = useContext(UserContext);
+  const { phygital, getTokenMetadata } = usePhygitalCollection(address);
+  const { sendTransaction } = useTransactionSender();
   const query = useQuery({ queryKey: ['token', tokenId.toString()], queryFn: () => getTokenMetadata(tokenId) });
   const modal = useModal('family-marketplace-list');
-
+  const transferModal = useModal('family-transfer-modal');
+  const registerModal = useModal("family-register-modal");
+  const order = {id:tokenId,owner:owner};
   if (query.isLoading) {
     return <div className="w-full aspect-square animate-pulse p-5 bg-slate-200 rounded-3xl"></div>
   }
 
+  function internalTransfer() {
+    const address = window.prompt('Address:');
+
+    if (!address) { return; }
+    sendTransaction(phygital, 'transfer', [
+      '0x31a546976fBa6Fe647D85329a4b774636CD17a41',
+      getAddress(address),
+      tokenId.toString(),
+      false,
+      '0x'
+    ]);
+  }
+
   return <div className="w-full">
     <img className="w-full aspect-square object-cover rounded-3xl" src={query.data.image} />
+    {/* <img className="w-full aspect-square object-cover rounded-3xl" src='/item_1.png' /> */}
     { query.data && <>
         <p className="long-title text-2xl text-center py-2">{query.data.name}</p>
-        <p className="text-center text-base text-gray-400 pb-2">{query.data.description}</p>
+        <p className="text-center text-base text-gray-400 pb-2 h-12 overflow-hidden text-ellipsis">{query.data.description}</p>
       </>
     }
     { 
-      showActions && <>
+      (address === import.meta.env.VITE_ASSET_PLACEHOLDER && showActions) ? <><div className="flex flex-row my-4">
+      {(window as any).lukso && (
+        <Button
+          variant="dark"
+          onClick={() => registerModal.show({order})}
+        >
+          Register
+        </Button>
+      )}
+    </div></> : <>
         <div className="flex flex-row">
-          <Button variant="dark" onClick={() => modal.show({ tokenId })}>Sell</Button>
-          <Button onClick={() => window.alert(tokenId.toString())}>Info</Button>
+          { !transfer &&  <Button variant="dark" onClick={() => modal.show({ tokenId, address })}>Sell</Button> }
+          { transfer &&  <Button variant="dark" onClick={() => transferModal.show({ from: vault, to: user?.uid, tokenId, address })}>Transfer</Button> }
+          <Button onClick={() => internalTransfer()}>Info</Button>
         </div>
       </>
     }
@@ -68,6 +100,8 @@ export function OrderCard ({ tokenId }: { tokenId: TokenId }) {
 }
 
 export function CollectionCard ({ address }: { address: string }) {
+  console.log(address);
+
   const { getCollectionMetadata } = usePhygitalCollection(address);
   const query = useQuery({ queryKey: ['collection', address], queryFn: () => getCollectionMetadata() });
 

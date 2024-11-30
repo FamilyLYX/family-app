@@ -6,7 +6,7 @@ interface LoadingLineProps {
 }
 
 const LoadingLine: React.FC<LoadingLineProps> = ({ text }) => {
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   useEffect(() => {
     const startAnimation = setTimeout(() => {

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import Messages from "./Messages";
 
 export default function Chat() {
-  const [name, setName] = useState("Ninja and James");
+  const [name] = useState("Ninja and James");
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([
     {
@@ -35,8 +35,8 @@ export default function Chat() {
     },
   ]);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
-  const [imageWidth, setImageWidth] = useState(calculateImageWidth());
+  const [, setIsMobile] = useState(window.innerWidth <= 1023);
+  const [, setImageWidth] = useState(calculateImageWidth());
 
   useEffect(() => {
     const handleResize = () => {

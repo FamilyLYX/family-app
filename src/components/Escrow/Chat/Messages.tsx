@@ -1,4 +1,3 @@
-import { Avatar } from "@mui/material";
 import React from "react";
 
 interface Message {
@@ -15,7 +14,7 @@ interface MessagesProps {
 const Messages: React.FC<MessagesProps> = ({ messages }) => {
   return (
     <div className="flex flex-col gap-4">
-      {messages.map((message, index) => (
+      {messages.map((message) => (
         <div
           key={message.id}
           className={`${

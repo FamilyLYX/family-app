@@ -1,6 +1,5 @@
 import React from "react";
 import Modal from "react-modal";
-import { useState } from "react";
 import productImg from "../../../assets/product/product-01.png";
 import { Select, TextInput } from "../../../components";
 import { Button } from "../../../common/buttons";
@@ -32,11 +31,11 @@ const ProductModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
               To buy nft, please fill in all fields below
             </p>
             <div className="flex flex-col gap-3">
-              <TextInput placeholder="Name*" />
-              <Select rounded="12px" data={[]} placeholder="Country*" />{" "}
-              <TextInput placeholder="Email*" />
-              <TextInput placeholder="Phone Number*" />
-              <TextInput placeholder="Address*" />
+              <TextInput placeholder="Name*" onChange={console.log} value="" />
+              <Select rounded="12px" data={[]} placeholder="Country*" onChange={console.log} value="" />
+              <TextInput placeholder="Email*" onChange={console.log} value="" />
+              <TextInput placeholder="Phone Number*" onChange={console.log} value="" />
+              <TextInput placeholder="Address*" onChange={console.log} value="" />
               <div>
                 <p className="text-black/25">Price</p>
                 <div className="flex justify-between font-semibold mt-0.5">
@@ -44,7 +43,7 @@ const ProductModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
                   <span className="text-black/25">ETH</span>
                 </div>
               </div>
-              <Button variant="dark">Buy</Button>
+              <Button variant="dark" onClick={console.log}>Buy</Button>
             </div>
           </div>
         </div>

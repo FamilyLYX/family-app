@@ -8,15 +8,15 @@ interface ProductInfoMolProps {
 }
 
 const ProductInfoMol: React.FC<ProductInfoMolProps> = ({ setOpenChat }) => {
-  const [Trackinginfo, setTrackingInfo] = useState<string>(
+  const [Trackinginfo] = useState<string>(
     "https://auspost.com.au/mypost/track/#/search"
   );
-  const [size, setSize] = useState<string>("XXL");
-  const [time, setTime] = useState<string>("2023-09-04 09:59:20");
-  const [price, setPrice] = useState<string>("1,4525403543647");
-  const [openchat, setOpenChatState] = useState<boolean>(false);
+  const [size] = useState<string>("XXL");
+  const [time] = useState<string>("2023-09-04 09:59:20");
+  const [price] = useState<string>("1,4525403543647");
+  const [openchat] = useState<boolean>(false);
 
-  const productStatus: string = "Confirm";
+  const productStatus = "Confirm";
   const result: string = checkProductStatus(productStatus);
 
   function checkProductStatus(status: string): string {
@@ -66,14 +66,14 @@ const ProductInfoMol: React.FC<ProductInfoMolProps> = ({ setOpenChat }) => {
             <span className="text-black/30 text-[13px] font-medium">
               Tracking info:
             </span>
-            <p className="text-[14px] font-medium leading-[13.5px] underline font-normal">
+            <p className="text-[14px] font-medium leading-[13.5px] underline">
               {Trackinginfo}
             </p>
           </div>
           {/* Fourth Content */}
           <div className="flex flex-col gap-2">
             <span className="text-black/30 text-[13px] font-medium">Size:</span>
-            <p className="text-[14px] font-medium leading-[13.5px]  font-normal">
+            <p className="text-[14px] font-medium leading-[13.5px]">
               {size}
             </p>
           </div>
@@ -81,7 +81,7 @@ const ProductInfoMol: React.FC<ProductInfoMolProps> = ({ setOpenChat }) => {
           {/* Fifth Content */}
           <div className="flex flex-col gap-2">
             <span className="text-black/30 text-[13px] font-medium">Time:</span>
-            <p className="text-[14px] font-medium leading-[13.5px]  font-normal">
+            <p className="text-[14px] font-medium leading-[13.5px]">
               {time}
             </p>
           </div>
@@ -97,14 +97,13 @@ const ProductInfoMol: React.FC<ProductInfoMolProps> = ({ setOpenChat }) => {
           </div>
 
           <div className="flex gap-2">
-            <Button variant="dark" children={undefined} onClick={undefined}>
+            <Button variant="dark" onClick={console.log}>
               Open Dispute
             </Button>
 
             <Button
-              style={{ width: "286px", height: "40px" }}
+              // style={{ width: "286px", height: "40px" }}
               //   variant="dark"
-              children={undefined}
               onClick={() => {
                 setOpenChat(true);
               }}
