@@ -1,18 +1,15 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import {
-  getAuth,
-  onAuthStateChanged
-} from "firebase/auth";
-import { useModal } from "@ebay/nice-modal-react";
-import CountdownTimer from "./common/CountdownTimer";
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useModal } from '@ebay/nice-modal-react';
+import CountdownTimer from './common/CountdownTimer';
 
 type Item = {
-  title:string;
-  desc:string;
-}
+  title: string;
+  desc: string;
+};
 
-function ItemTrait(item:Item) {
+function ItemTrait(item: Item) {
   return (
     <p className="text-center font-normal tracking-tighter mx-auto">
       <span className="font-bold">{item.title}: </span>
@@ -23,24 +20,23 @@ function ItemTrait(item:Item) {
 
 function Honft() {
   const navigate = useNavigate();
-  const orderModal = useModal("family-order-modal")
-// @ts-expect-error
-  const [mobile,setMobile] = useState(false);
+  const orderModal = useModal('family-order-modal');
+  // @ts-expect-error
+  const [mobile, setMobile] = useState(false);
 
-
-    useEffect(() => {
-        console.log(window.innerWidth,'@@@@@@@')
-        if (window.innerWidth > 768) setMobile(true);
-        else setMobile(false);
-    }, [window.innerWidth]);
+  useEffect(() => {
+    console.log(window.innerWidth, '@@@@@@@');
+    if (window.innerWidth > 768) setMobile(true);
+    else setMobile(false);
+  }, [window.innerWidth]);
   //const [loading, setLoading] = useState({ status: 0, message: "Not Loading" });
 
-  function handleLogin (){
+  function handleLogin() {
     return onAuthStateChanged(getAuth(), (user) => {
-      console.log(user)
-      if (!user) {
-        return navigate("/login");
-      }
+      console.log(user);
+      // if (!user) {
+      //   return navigate("/login");
+      // }
       orderModal.show();
     });
   }
@@ -51,10 +47,13 @@ function Honft() {
         <div className="xl:w-[50%]  flex flex-col justify-end p-2 xl:left-0 xl:top-0 xl:bottom-0 m-2 xl:m-0 rounded-3xl xl:rounded-none aspect-[1/1.5] xl:aspect-auto bg-[url('./assets/hoodie.png')] bg-cover">
           <div className="max-w-md mx-auto w-full p-2">
             <CountdownTimer />
-            <button onClick={handleLogin} className="w-full py-2 rounded-3xl font-medium text-center text-[#FFFFFF] bg-black bg-opacity-25 hover:bg-opacity-50">
+            <button
+              onClick={handleLogin}
+              className="w-full py-2 rounded-3xl font-medium text-center text-[#FFFFFF] bg-black bg-opacity-25 hover:bg-opacity-50"
+            >
               127USD
             </button>
-          </div> 
+          </div>
         </div>
 
         <div className="xl:h-screen xl:w-[50%] w-[100] mx-auto flex flex-col justify-center xl:p-10  p-4 mb-4 ">
@@ -89,7 +88,9 @@ function Honft() {
             <p className="tracking-tighter">Cold Gentle Machine Wash</p>
             <p className="tracking-tighter">With Similar Colours</p>
             <p className="tracking-tighter">Do not Bleach, Soak or Wring</p>
-            <p className="tracking-tighter">Air Dry Only (Avoid Direct Sunlight)</p>
+            <p className="tracking-tighter">
+              Air Dry Only (Avoid Direct Sunlight)
+            </p>
             <p className="tracking-tighter">Warm Iron</p>
           </div>
         </div>

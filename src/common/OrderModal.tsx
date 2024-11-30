@@ -16,7 +16,9 @@ import { UserContext } from '../contexts/UserContext';
 import safeGet from 'lodash/get';
 import toast from 'react-hot-toast';
 import { checkout } from '../utils/payment';
-import { isAddress } from 'ethers';
+import { BrowserProvider, isAddress } from 'ethers';
+import { useConnectWallet, useWallets } from '@web3-onboard/react';
+import { authenticate } from '../utils/siwe';
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
@@ -110,6 +112,9 @@ function OrderDetail({
   const [shippingCost, setShippingCost] = useState<number>(20);
   const [passTokenId, setPassTokenId] = useState<string | null>(null);
   const [formReady, setFormReady] = useState(false);
+  const [siweDone, setSiweDone] = useState(false);
+  const connectedWallets = useWallets();
+  const [{ wallet }, connectToProvider, disconnect] = useConnectWallet();
 
   const productCost = Number(
     (safeGet(price, 'unit_amount', 0) / 100).toFixed(2)
@@ -118,6 +123,38 @@ function OrderDetail({
   const discountedCost = (
     productCost * (selectedPass ? (100 - selectedPass.discount) / 100 : 1)
   ).toFixed(2);
+
+  async function connect() {
+    localStorage.removeItem('family:connected:wallet');
+    connectToProvider().then((wallets) => {
+      const wallet = wallets[0],
+        address = wallet.accounts[0].address,
+        provider = new BrowserProvider(wallet.provider);
+      // if (user) {
+      //   (user as User).getIdToken(true).then((idToken) => {
+      //     return authenticateAndTransfer(address, provider, idToken);
+      //   });
+      //   return;
+      // }
+      return authenticate(address, provider).then(() => {
+        localStorage.setItem('family:connected:wallet', address);
+        setSiweDone(true);
+      });
+    });
+  }
+
+  const handleDisconnect = async () => {
+    try {
+      // If a wallet is connected
+      console.log(wallet);
+      if (wallet) {
+        // Disconnect the specific wallet
+        await disconnect(wallet);
+      }
+    } catch (error) {
+      console.error('Wallet disconnection error:', error);
+    }
+  };
 
   useEffect(() => {
     if (!selectedSize) {
@@ -234,7 +271,19 @@ function OrderDetail({
             </div>
           </div>
 
-          {passes && passes.length !== 0 && (
+          <div>
+            {!wallet || !connectedWallets || !siweDone ? (
+              <Button variant={'dark'} onClick={connect}>
+                Login to Unlock Discounts
+              </Button>
+            ) : (
+              <Button variant={'dark'} onClick={handleDisconnect}>
+                Logout
+              </Button>
+            )}
+          </div>
+
+          {passes && wallet && passes.length > 0 && (
             <div>
               <span className="text-gray-400 mb-2">Reedem:</span>
               <div className="flex flex-row">
@@ -336,6 +385,28 @@ function PaymentDetail({
   const { executeTransactionRequest } = useTransactionSender();
   const [loading, setLoading] = useState({ status: 0, message: 'Not Loading' });
   const [error, setError] = useState<null | string>(null);
+  const [siweDone, setSiweDone] = useState(false);
+  // const connectedWallets = useWallets();
+  const [{ wallet }, connectToProvider] = useConnectWallet();
+
+  async function connect() {
+    localStorage.removeItem('family:connected:wallet');
+    connectToProvider().then((wallets) => {
+      const wallet = wallets[0],
+        address = wallet.accounts[0].address,
+        provider = new BrowserProvider(wallet.provider);
+      // if (user) {
+      //   (user as User).getIdToken(true).then((idToken) => {
+      //     return authenticateAndTransfer(address, provider, idToken);
+      //   });
+      //   return;
+      // }
+      return authenticate(address, provider).then(() => {
+        localStorage.setItem('family:connected:wallet', address);
+        setSiweDone(true);
+      });
+    });
+  }
 
   const discountFactor =
     discountPass && discountPass.pass
@@ -430,19 +501,24 @@ function PaymentDetail({
             {error}
           </p>
         )}
-        {!loading.status && (
-          <Button variant="dark" onClick={() => buyWithCrypto()}>
-            Pay with LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
-          </Button>
-        )}
+        {!loading.status &&
+          (!wallet || !siweDone ? (
+            <Button variant="dark" onClick={() => connect()}>
+              Login to pay with LYX
+            </Button>
+          ) : (
+            <Button variant="dark" onClick={() => buyWithCrypto()}>
+              LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
+            </Button>
+          ))}
         {!loading.status && (
           <Button onClick={() => payWithFiat()}>
-            Continue without LYX ({totalCost} {price.currency.toUpperCase()})
+            Fiat ({totalCost} {price.currency.toUpperCase()})
           </Button>
         )}
         {!loading.status && (
           <Button onClick={() => payWithCoinbase()}>
-            Other Currencies ({totalCost} {price.currency.toUpperCase()})
+            Other Cryptocurrencies ({totalCost} {price.currency.toUpperCase()})
           </Button>
         )}
         {loading.status > 0 && <p className="text-center">{loading.message}</p>}
@@ -488,11 +564,11 @@ export function OrderView({ label }: OrderViewProps) {
     return <Loader />;
   }
 
-  if (!loading && !user) {
-    window.location.href = '/login';
+  // if (!loading && !user) {
+  //   window.location.href = '/login';
 
-    return;
-  }
+  //   return;
+  // }
 
   if (!orderDetail) {
     return (
@@ -514,7 +590,7 @@ export function OrderView({ label }: OrderViewProps) {
     <PaymentDetail
       product={safeGet(data, 'product')}
       price={safeGet(data, 'price')}
-      account={user.uid}
+      account={user?.uid}
       variantId={safeGet(orderDetail, 'variantId', '')}
       address={safeGet(orderDetail, 'address', '')}
       shippingCost={safeGet(orderDetail, 'shippingCost', '')}
