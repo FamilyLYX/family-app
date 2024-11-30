@@ -24,7 +24,9 @@ function ItemTrait(item:Item) {
 function Honft() {
   const navigate = useNavigate();
   const orderModal = useModal("family-order-modal")
-  const [mobile,setMobile] = useState(false)
+// @ts-expect-error
+  const [mobile,setMobile] = useState(false);
+
 
     useEffect(() => {
         console.log(window.innerWidth,'@@@@@@@')

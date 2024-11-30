@@ -72,7 +72,9 @@ function AddressInput(props: any) {
           mode: "shipping",
           blockPoBox: true,
           autocomplete: { mode: "disabled" },
+          // @ts-expect-error
           fields: { name: "always" },
+          // @ts-expect-error
           validation: { name: { required: "always" } },
           defaultValues: {
             address: { state: "CA", country: "US" },
@@ -129,7 +131,7 @@ const BuyModal = NiceModal.create(() => {
 
     setLoading({ status: 1, message: "Fetching quotes for the order" });
 
-    getCryptoOrderQuote(profile, collection, variantId, address, priceId).then(
+    getCryptoOrderQuote(profile, collection, variantId, address, priceId, null).then(
       (quote) => {
         const [placeholder, value, maxBlockNumber, nonce, data, signature] =
           quote?.params as any[];
@@ -169,7 +171,7 @@ const BuyModal = NiceModal.create(() => {
 
     setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
-    const url = await checkout(collection, variantId, address, priceId);
+    const url = await checkout(collection, variantId, address, priceId, null, 'stripe');
     
     window.location = url;
   }

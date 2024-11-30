@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import AddressForm from "../components/AddressForm";
-import { Button, LinkButton } from "./buttons";
+import { Button } from "./buttons";
 import OrderModalTable from "../components/common/Tables/OrderModalTable";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -62,6 +62,7 @@ const options = {
 function OrderScreen() {
   const [next, setNext] = useState(false);
   const [buy, setBuy] = useState(false);
+  // @ts-expect-error
   const [address, setAddress] = useState();
 
   return (
@@ -107,7 +108,7 @@ function OrderScreen() {
                   />
                 </svg>
               </div>
-              <AddressForm onChange={setAddress} />
+              <AddressForm onChange={setAddress} onReady={console.log}/>
               <Button
                 variant="dark"
                 onClick={() => {

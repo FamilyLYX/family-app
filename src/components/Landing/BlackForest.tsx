@@ -7,6 +7,7 @@ import { useModal } from "@ebay/nice-modal-react";
 function BlackForest() {
   const navigate = useNavigate();
   const orderModal = useModal("family-order-modal")
+  // @ts-expect-error
   const [mobile,setMobile] = useState(false)
 
   useEffect(() => {

@@ -9,25 +9,19 @@ import NiceModal from "@ebay/nice-modal-react";
 // import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 import Layout from "./pages/Layout";
-import Marketplace from "./pages/marketplace";
-import EscrowMoreinfo from "./pages/escrowmoreinfo";
+
 import Inventory from "./pages/inventory";
 import Store from "./pages/store";
-import Trade from "./pages/trade";
 import Phygitals from "./pages/inventory/phygitals";
 import Digitals from "./pages/inventory/digitals";
 import Orders from "./pages/inventory/orders";
-import Admin from "./pages/admin/Admin";
 import RegisterToken from "./pages/register";
 
-import BuyModal from "./common/BuyModal";
 import RegisterModal from "./common/RegisterModal";
 import { Order } from "./pages/order";
 import { Login } from "./pages/login";
 import ListOnMarketplaceModal from "./common/ListOnMarketplaceModal";
-import ProductCard from "./pages/ProductCard/ProductCard";
 import TransferModal from "./common/TransferModal";
-import Landing from "./pages/landing/Landing";
 import OrderModal from "./common/OrderModal";
 import OrderScreen from "./common/OrderScreen";
 import BuyItem from "./pages/buy";

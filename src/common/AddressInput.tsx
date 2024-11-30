@@ -7,6 +7,7 @@ function AddressInput ({ onChange }: { onChange: (event: any) => void}) {
   const elements = useElements();
 
   if (elements) {
+    // @ts-expect-error
     console.log(elements.getElement('address').getValue());
   }
 
@@ -15,7 +16,9 @@ function AddressInput ({ onChange }: { onChange: (event: any) => void}) {
           mode: 'shipping',
           blockPoBox: true,
           autocomplete: { mode: 'disabled' },
+          // @ts-expect-error
           fields: {name: 'always'},
+          // @ts-expect-error
           validation: {name: {required: 'always'}},
           defaultValues: {
             address: { state: 'CA', country: 'US' } 

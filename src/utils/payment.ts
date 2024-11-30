@@ -9,7 +9,8 @@ export async function checkout(
   pass: {
     address: string,
     id: string
-  } | null
+  } | null,
+  method: string
 ) {
   try {
     const user = getAuth().currentUser;
@@ -27,7 +28,8 @@ export async function checkout(
         variantId,
         address,
         productId,
-        pass
+        pass,
+        method
       },
       {
         headers: {

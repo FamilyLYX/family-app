@@ -14,7 +14,7 @@ function createSiweMessage (address: string) {
     uri: origin + '/',
     nonce: generateNonce(),
     version: '1',
-    chainId: 4201
+    chainId: 42
   });
 
   return message.prepareMessage();

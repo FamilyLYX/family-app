@@ -1,20 +1,5 @@
 {
   "projects": {
-    "testnet": "family-lyx",
-    "mainnet": "familylyx"
-  },
-  "targets": {
-    "family-lyx": {
-      "hosting": {
-        "testnet": [
-          "family-lyx",
-          "testnet"
-        ],
-        "mainnet": [
-          "mainnet"
-        ]
-      }
-    }
-  },
-  "etags": {}
+    "default": "familylyx"
+  }
 }

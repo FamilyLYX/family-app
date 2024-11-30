@@ -29,8 +29,10 @@ function AddressForm({ onChange, onReady }: { onChange: (address: any) => void, 
             mode: "google_maps_api",
             apiKey: "AIzaSyBxyov5lb60HJOhkimWull9Bi23mBIj9L4",
           },
+          // @ts-expect-error
           fields: { name: "always", phone: "always" },
           validation: {
+            // @ts-expect-error
             name: { required: "always" },
             phone: {
               required: "always",

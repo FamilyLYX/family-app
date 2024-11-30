@@ -11,12 +11,13 @@ export type DiscountPass = {
 };
 
 const passes = [
-    { label:'honft pass', address: import.meta.env.VITE_HONFT_PASS_ADDRESS, discount: 50 },
-    { label:'giveaway pass', address: import.meta.env.VITE_GIVEAWAY_PASS_ADDRESS, discount: 100 },
-    { label:'genesis perk', address: import.meta.env.VITE_GENESIS_PERK_ADDRESS, discount: 100 },
+    { label:'genesis perk', address: '0x9131820e8EcDC7e514f9D98567741744363e51D3', discount: 100 },
+    { label:'chillwhales', address: '0x86e817172b5c07f7036bf8aa46e2db9063743a83', discount: 25 },
+    { label:'platties', address: '0x5021e9ed50d8c71e3d74c0de7964342aaa1a0f62', discount: 25 },
+    { label:'universal page', address: '0x5599d0ae8576250db2b9a9975fd3db1f6399b4fd', discount: 25 }
 ];
 
-export async function fetchPasses(address: string, collection: string): Promise<DiscountPass[]> {
+export async function fetchPasses(address: string, collectionAddr: string): Promise<DiscountPass[]> {
     const orderExtension = new Contract(import.meta.env.VITE_ORDER_EXTENSION, OrderExtension, readerRpcProvider);
 
     const userPasses = await Promise.all(passes.map(async (pass) => {
@@ -27,7 +28,7 @@ export async function fetchPasses(address: string, collection: string): Promise<
 
         const availableTokenIds = await Promise.all(tokenIds.map(async (tokenId: string) => {
             return {
-                used: await orderExtension.isPerkClaimed(pass.address, import.meta.env.VITE_ASSET_PLACEHOLDER, tokenId),
+                used: await orderExtension.isPerkClaimed(pass.address, collectionAddr, tokenId),
                 tokenId
             }
         }));

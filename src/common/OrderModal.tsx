@@ -28,11 +28,6 @@ const sizeVariantMap: Record<string, string> = {
   xl: '0x000000000000000000000005',
 };
 
-const redeemables = [
-  { name: 'Honft Pass' },
-  { name: 'Giveaway Pass' },
-  { name: 'Genesis Perk NFT' },
-];
 const sizes = [
   {
     name: 'xs',
@@ -110,7 +105,6 @@ function OrderDetail({
   const elements = useElements();
   const [extra, setExtra] = useState({});
   const [selectedSize, setSelectedSize] = useState<string>();
-  const [selectedRedeemable, setSelectedRedeemable] = useState<string>();
   const [selectedPass, setPass] = useState<DiscountPass | null>(null);
   const [variantId, selectVariantId] = useState<string | null>();
   const [shippingCost, setShippingCost] = useState<number>(20);
@@ -234,24 +228,6 @@ function OrderDetail({
                     onClick={() => setSelectedSize(size.name)}
                   >
                     {size.name.toUpperCase()}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-          <div>
-            <span className="text-gray-400 mb-2">Redeem:</span>
-            <div className="flex flex-row">
-              {redeemables.map((redeemable, redeemableIdx) => {
-                return (
-                  <Button
-                    key={redeemableIdx}
-                    variant={
-                      selectedRedeemable === redeemable.name ? 'dark' : ''
-                    }
-                    onClick={() => setSelectedRedeemable(redeemable.name)}
-                  >
-                    {redeemable.name}
                   </Button>
                 );
               })}
@@ -421,7 +397,23 @@ function PaymentDetail({
       variantId,
       address,
       product.id,
-      pass
+      pass,
+      'stripe'
+    );
+
+    window.location = url;
+  }
+
+  async function payWithCoinbase() {
+    setLoading({ status: 1, message: 'Fetching quotes for the order' });
+
+    const url = await checkout(
+      collection,
+      variantId,
+      address,
+      product.id,
+      pass,
+      'coinbase'
     );
 
     window.location = url;
@@ -448,6 +440,11 @@ function PaymentDetail({
             Continue without LYX ({totalCost} {price.currency.toUpperCase()})
           </Button>
         )}
+        {!loading.status && (
+          <Button onClick={() => payWithCoinbase()}>
+            Other Currencies ({totalCost} {price.currency.toUpperCase()})
+          </Button>
+        )}
         {loading.status > 0 && <p className="text-center">{loading.message}</p>}
       </div>
     </div>
@@ -464,9 +461,12 @@ export function OrderView({ label }: OrderViewProps) {
   const [data, setData] = useState<undefined | null>();
 
   useEffect(() => {
-    if (!user) {
+    if (loading) {
+      console.log('user does not exists');
       return;
     }
+
+    console.log('fetch product by label');
 
     getProductByLabel(label).then((_data) => {
       setData(_data);
@@ -481,10 +481,17 @@ export function OrderView({ label }: OrderViewProps) {
         setPasses(userPasses.filter((pass) => pass.tokenIds.length > 0));
       });
     });
-  }, [user]);
+  }, [loading, user]);
 
   if (loading || data === undefined) {
+    console.log({ loading, data });
     return <Loader />;
+  }
+
+  if (!loading && !user) {
+    window.location.href = '/login';
+
+    return;
   }
 
   if (!orderDetail) {
@@ -502,8 +509,6 @@ export function OrderView({ label }: OrderViewProps) {
       </div>
     );
   }
-
-  console.log(data);
 
   return (
     <PaymentDetail
