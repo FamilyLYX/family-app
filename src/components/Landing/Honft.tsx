@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useModal } from '@ebay/nice-modal-react';
@@ -19,7 +19,7 @@ function ItemTrait(item: Item) {
 }
 
 function Honft() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const orderModal = useModal('family-order-modal');
   // @ts-expect-error
   const [mobile, setMobile] = useState(false);
