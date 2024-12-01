@@ -165,9 +165,9 @@ const BuyModal = NiceModal.create(() => {
   }
 
   async function payWithFiat() {
-    const collection = product.metadata.contract;
-    const variantId = "0x00000000000000000000001d";
-    const priceId = product.price.id;
+    const collection = modal.args?.collection as string;
+    const variantId = modal.args?.variant as string;
+    const priceId = product.price.id as string;
 
     setLoading({ status: 1, message: 'Fetching quotes for the order' });
 
@@ -224,7 +224,7 @@ const BuyModal = NiceModal.create(() => {
                         {error}
                       </p>
                     )}
-                    {!loading.status && (
+                    {!loading.status && (window as any).lukso && (
                       <Button variant="dark" onClick={() => buyWithCrypto()}>
                         Pay with LYX (
                         {(modal.args?.product as ProductType).lyxPrice} LYX)

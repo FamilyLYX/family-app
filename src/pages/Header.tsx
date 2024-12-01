@@ -15,9 +15,9 @@ import logo from "../logo.svg";
 function LeftActions() {
   return (
     <>
-      <LinkButton to="/marketplace">Marketplace</LinkButton>
-      <LinkButton to="/trade">Trade</LinkButton>
-      <LinkButton to="/landing">Landing</LinkButton>
+      {/* <LinkButton to="/marketplace">Marketplace</LinkButton> */}
+      {/* <LinkButton to="/trade">Trade</LinkButton> */}
+      {/* <LinkButton to="/landing">Landing</LinkButton> */}
     </>
   );
 }
@@ -41,7 +41,7 @@ function NavActions() {
     return (
       <>
         {/* <LinkButton to="/store">Store</LinkButton> */}
-        <LinkButton to="/login">Login</LinkButton>
+        {/* <LinkButton to="/login">Login</LinkButton> */}
       </>
     );
   }

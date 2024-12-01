@@ -7,7 +7,7 @@ import { UserContext } from "../contexts/UserContext";
 
 import type { User } from 'firebase/auth';
 
-export default function ConnectWallet() {
+export default function ConnectWallet({ label = 'Connect Wallet' }) {
   const [, connectToProvider] = useConnectWallet();
   const { user } = useContext(UserContext);
 
@@ -67,7 +67,7 @@ export default function ConnectWallet() {
           </clipPath>
         </defs>
       </svg>
-      Connect Wallet
+      {label}
     </Button>
   );
 }

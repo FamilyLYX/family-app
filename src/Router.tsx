@@ -25,12 +25,14 @@ import TransferModal from "./common/TransferModal";
 import OrderModal from "./common/OrderModal";
 import OrderScreen from "./common/OrderScreen";
 import BuyItem from "./pages/buy";
+import MobileLoginModal from "./common/MobileLoginModal";
 
 NiceModal.register("family-buy-modal", OrderModal);
 NiceModal.register("family-register-modal", RegisterModal);
 NiceModal.register("family-marketplace-list", ListOnMarketplaceModal);
 NiceModal.register('family-transfer-modal', TransferModal);
 NiceModal.register("family-order-modal", OrderModal);
+NiceModal.register("family-mobile-auth", MobileLoginModal)
 
 const router = () =>
   createBrowserRouter(

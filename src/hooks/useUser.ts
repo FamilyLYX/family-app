@@ -14,6 +14,7 @@ export default function useUser () {
 
       if (user) {
         isAddress(user.uid) ? setTarget(user.uid) : user.getIdTokenResult(true).then((idTokenRes) => {
+          // @ts-expect-error
           setTarget(idTokenRes.claims?.target);
         })
       }

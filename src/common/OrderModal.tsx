@@ -17,6 +17,8 @@ import safeGet from 'lodash/get';
 import toast from 'react-hot-toast';
 import { checkout } from '../utils/payment';
 import { isAddress } from 'ethers';
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, User } from 'firebase/auth';
+import ConnectWallet from './ConnectWallet';
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
@@ -93,6 +95,7 @@ type OrderDetailProps = {
   price: any;
   product: any;
   lyxFactor: number;
+  user: User | undefined
 };
 
 function OrderDetail({
@@ -101,6 +104,7 @@ function OrderDetail({
   setOrderData,
   price,
   lyxFactor,
+  user
 }: OrderDetailProps) {
   const elements = useElements();
   const [extra, setExtra] = useState({});
@@ -110,7 +114,8 @@ function OrderDetail({
   const [shippingCost, setShippingCost] = useState<number>(20);
   const [passTokenId, setPassTokenId] = useState<string | null>(null);
   const [formReady, setFormReady] = useState(false);
-
+  const [verifier, setVerifier] = useState<RecaptchaVerifier | null>(null);
+  const mobileLoginModal = useModal('family-mobile-auth');
   const productCost = Number(
     (safeGet(price, 'unit_amount', 0) / 100).toFixed(2)
   );
@@ -133,6 +138,20 @@ function OrderDetail({
     fetchShippingCost();
   }, [selectedSize, selectedPass]);
 
+  useEffect(() => {
+      const fbAuth = getAuth();
+
+      fbAuth.useDeviceLanguage();
+
+      const _verifier = new RecaptchaVerifier(fbAuth, 'recap', {
+        size: 'invisible'
+    });
+
+    _verifier.render().then(() => {
+        setVerifier(_verifier);
+    });
+  }, []);
+
   async function fetchShippingCost() {
     if (!elements) {
       return;
@@ -145,6 +164,7 @@ function OrderDetail({
     }
 
     const address = await addrEl.getValue();
+
     if (!address.complete) {
       return;
     }
@@ -167,9 +187,9 @@ function OrderDetail({
     }
 
     const address = await addrEl.getValue();
-    // if (!address.complete) {
-    //   return;
-    // }
+    if (!address.complete) {
+      return;
+    }
 
     if (!selectedSize) {
       toast.error('Please select a size');
@@ -189,8 +209,48 @@ function OrderDetail({
     });
   }
 
+  async function handleMobileOtpLogin() {
+    if (!elements) {
+      return;
+    }
+
+    const addrEl = elements.getElement('address');
+    if (!addrEl) {
+      return;
+    }
+
+    const address = await addrEl.getValue();
+    const phone = address.value.phone;
+
+    if (!phone) {
+      toast.error('Please enter a valid phone number');
+
+      return;
+    }
+
+    if (!selectedSize) {
+      toast.error('Please select a size');
+
+      return;
+    }
+
+    if (!verifier) {
+      toast.error('Looks like an issue with re-captcha');
+      
+      return;
+    }
+
+    const fbAuth = getAuth();
+    signInWithPhoneNumber(fbAuth, phone, verifier).then((confirmationResult) => {
+      mobileLoginModal.show({ confirmationResult }).then(() => {
+        handleSave();
+      });
+    });
+  }
+
   return (
     <>
+    <div id='recap'></div>
       <div className="flex flex-col xl:w-[50%] w-full p-4 m-2 space-y-6">
         {formReady && (
           <p className="long-title text-4xl">
@@ -233,6 +293,8 @@ function OrderDetail({
               })}
             </div>
           </div>
+
+          {!user && <ConnectWallet label='Connect UP Wallet to Avail Discounts' />}
 
           {passes && passes.length !== 0 && (
             <div>
@@ -306,14 +368,22 @@ function OrderDetail({
               )}
             </span>
             <div>
-              <Button
+
+              {user && <Button
                 variant="dark"
                 onClick={() => {
                   handleSave();
                 }}
               >
                 Continue To Payment
-              </Button>
+              </Button>}
+              {!user && <Button
+                variant="dark"
+                id="mobile-login-button"
+                onClick={handleMobileOtpLogin}
+              >
+                Continue To Payment
+              </Button>}
             </div>
           </div>
         </div>
@@ -346,9 +416,9 @@ function PaymentDetail({
   const pass =
     discountPass && discountPass.pass
       ? {
-          address: discountPass.pass.address,
-          id: discountPass.tokenId,
-        }
+        address: discountPass.pass.address,
+        id: discountPass.tokenId,
+      }
       : null;
 
   function buyWithCrypto() {
@@ -477,6 +547,8 @@ export function OrderView({ label }: OrderViewProps) {
         return;
       }
 
+      if (!user) { return; }
+
       fetchPasses(user.uid, productContract).then((userPasses) => {
         setPasses(userPasses.filter((pass) => pass.tokenIds.length > 0));
       });
@@ -486,12 +558,6 @@ export function OrderView({ label }: OrderViewProps) {
   if (loading || data === undefined) {
     console.log({ loading, data });
     return <Loader />;
-  }
-
-  if (!loading && !user) {
-    window.location.href = '/login';
-
-    return;
   }
 
   if (!orderDetail) {
@@ -504,6 +570,7 @@ export function OrderView({ label }: OrderViewProps) {
             product={safeGet(data, 'product', {})}
             price={safeGet(data, 'price')}
             lyxFactor={safeGet(data, 'lyxFactor', 0)}
+            user={user}
           />
         </Elements>
       </div>
