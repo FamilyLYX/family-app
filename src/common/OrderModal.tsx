@@ -642,7 +642,7 @@ const OrderModal = NiceModal.create(() => {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="mx-auto w-full max-w-7xl transform overflow-hidden xl:rounded-2xl bg-white px-2 py-6 border text-left align-middle shadow-xl transition-all">
-                <OrderView label="honft" />
+                <OrderView label="cherry-blossoms" />
               </Dialog.Panel>
             </Transition.Child>
           </div>
