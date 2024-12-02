@@ -16,9 +16,9 @@ import { UserContext } from '../contexts/UserContext';
 import safeGet from 'lodash/get';
 import toast from 'react-hot-toast';
 import { checkout } from '../utils/payment';
-import { BrowserProvider, isAddress } from 'ethers';
-import { useConnectWallet, useWallets } from '@web3-onboard/react';
-import { authenticate } from '../utils/siwe';
+import { isAddress } from 'ethers';
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, User } from 'firebase/auth';
+import ConnectWallet from './ConnectWallet';
 
 const stripe = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
@@ -95,6 +95,7 @@ type OrderDetailProps = {
   price: any;
   product: any;
   lyxFactor: number;
+  user: User | undefined
 };
 
 function OrderDetail({
@@ -103,6 +104,7 @@ function OrderDetail({
   setOrderData,
   price,
   lyxFactor,
+  user
 }: OrderDetailProps) {
   const elements = useElements();
   const [extra, setExtra] = useState({});
@@ -112,10 +114,9 @@ function OrderDetail({
   const [shippingCost, setShippingCost] = useState<number>(20);
   const [passTokenId, setPassTokenId] = useState<string | null>(null);
   const [formReady, setFormReady] = useState(false);
-  const [siweDone, setSiweDone] = useState(false);
-  const connectedWallets = useWallets();
-  const [{ wallet }, connectToProvider, disconnect] = useConnectWallet();
 
+  const [verifier, setVerifier] = useState<RecaptchaVerifier | null>(null);
+  const mobileLoginModal = useModal('family-mobile-auth');
   const productCost = Number(
     (safeGet(price, 'unit_amount', 0) / 100).toFixed(2)
   );
@@ -123,38 +124,6 @@ function OrderDetail({
   const discountedCost = (
     productCost * (selectedPass ? (100 - selectedPass.discount) / 100 : 1)
   ).toFixed(2);
-
-  async function connect() {
-    localStorage.removeItem('family:connected:wallet');
-    connectToProvider().then((wallets) => {
-      const wallet = wallets[0],
-        address = wallet.accounts[0].address,
-        provider = new BrowserProvider(wallet.provider);
-      // if (user) {
-      //   (user as User).getIdToken(true).then((idToken) => {
-      //     return authenticateAndTransfer(address, provider, idToken);
-      //   });
-      //   return;
-      // }
-      return authenticate(address, provider).then(() => {
-        localStorage.setItem('family:connected:wallet', address);
-        setSiweDone(true);
-      });
-    });
-  }
-
-  const handleDisconnect = async () => {
-    try {
-      // If a wallet is connected
-      console.log(wallet);
-      if (wallet) {
-        // Disconnect the specific wallet
-        await disconnect(wallet);
-      }
-    } catch (error) {
-      console.error('Wallet disconnection error:', error);
-    }
-  };
 
   useEffect(() => {
     if (!selectedSize) {
@@ -170,6 +139,20 @@ function OrderDetail({
     fetchShippingCost();
   }, [selectedSize, selectedPass]);
 
+  useEffect(() => {
+    const fbAuth = getAuth();
+
+    fbAuth.useDeviceLanguage();
+
+    const _verifier = new RecaptchaVerifier(fbAuth, 'recap', {
+      size: 'invisible'
+    });
+
+    _verifier.render().then(() => {
+      setVerifier(_verifier);
+    });
+  }, []);
+
   async function fetchShippingCost() {
     if (!elements) {
       return;
@@ -182,6 +165,7 @@ function OrderDetail({
     }
 
     const address = await addrEl.getValue();
+
     if (!address.complete) {
       return;
     }
@@ -204,9 +188,9 @@ function OrderDetail({
     }
 
     const address = await addrEl.getValue();
-    // if (!address.complete) {
-    //   return;
-    // }
+    if (!address.complete) {
+      return;
+    }
 
     if (!selectedSize) {
       toast.error('Please select a size');
@@ -226,8 +210,48 @@ function OrderDetail({
     });
   }
 
+  async function handleMobileOtpLogin() {
+    if (!elements) {
+      return;
+    }
+
+    const addrEl = elements.getElement('address');
+    if (!addrEl) {
+      return;
+    }
+
+    const address = await addrEl.getValue();
+    const phone = address.value.phone;
+
+    if (!phone) {
+      toast.error('Please enter a valid phone number');
+
+      return;
+    }
+
+    if (!selectedSize) {
+      toast.error('Please select a size');
+
+      return;
+    }
+
+    if (!verifier) {
+      toast.error('Looks like an issue with re-captcha');
+
+      return;
+    }
+
+    const fbAuth = getAuth();
+    signInWithPhoneNumber(fbAuth, phone, verifier).then((confirmationResult) => {
+      mobileLoginModal.show({ confirmationResult }).then(() => {
+        handleSave();
+      });
+    });
+  }
+
   return (
     <>
+      <div id='recap'></div>
       <div className="flex flex-col xl:w-[50%] w-full p-4 m-2 space-y-6">
         {formReady && (
           <p className="long-title text-4xl">
@@ -271,19 +295,9 @@ function OrderDetail({
             </div>
           </div>
 
-          <div>
-            {!wallet || !connectedWallets || !siweDone ? (
-              <Button variant={'dark'} onClick={connect}>
-                Login to Unlock Discounts
-              </Button>
-            ) : (
-              <Button variant={'dark'} onClick={handleDisconnect}>
-                Logout
-              </Button>
-            )}
-          </div>
+          {!user && <ConnectWallet label='Connect UP Wallet to Avail Discounts' />}
 
-          {passes && wallet && passes.length > 0 && (
+          {passes && passes.length !== 0 && (
             <div>
               <span className="text-gray-400 mb-2">Reedem:</span>
               <div className="flex flex-row">
@@ -355,14 +369,22 @@ function OrderDetail({
               )}
             </span>
             <div>
-              <Button
+
+              {user && <Button
                 variant="dark"
                 onClick={() => {
                   handleSave();
                 }}
               >
                 Continue To Payment
-              </Button>
+              </Button>}
+              {!user && <Button
+                variant="dark"
+                id="mobile-login-button"
+                onClick={handleMobileOtpLogin}
+              >
+                Continue To Payment
+              </Button>}
             </div>
           </div>
         </div>
@@ -385,28 +407,6 @@ function PaymentDetail({
   const { executeTransactionRequest } = useTransactionSender();
   const [loading, setLoading] = useState({ status: 0, message: 'Not Loading' });
   const [error, setError] = useState<null | string>(null);
-  const [siweDone, setSiweDone] = useState(false);
-  // const connectedWallets = useWallets();
-  const [{ wallet }, connectToProvider] = useConnectWallet();
-
-  async function connect() {
-    localStorage.removeItem('family:connected:wallet');
-    connectToProvider().then((wallets) => {
-      const wallet = wallets[0],
-        address = wallet.accounts[0].address,
-        provider = new BrowserProvider(wallet.provider);
-      // if (user) {
-      //   (user as User).getIdToken(true).then((idToken) => {
-      //     return authenticateAndTransfer(address, provider, idToken);
-      //   });
-      //   return;
-      // }
-      return authenticate(address, provider).then(() => {
-        localStorage.setItem('family:connected:wallet', address);
-        setSiweDone(true);
-      });
-    });
-  }
 
   const discountFactor =
     discountPass && discountPass.pass
@@ -417,9 +417,9 @@ function PaymentDetail({
   const pass =
     discountPass && discountPass.pass
       ? {
-          address: discountPass.pass.address,
-          id: discountPass.tokenId,
-        }
+        address: discountPass.pass.address,
+        id: discountPass.tokenId,
+      }
       : null;
 
   function buyWithCrypto() {
@@ -501,16 +501,11 @@ function PaymentDetail({
             {error}
           </p>
         )}
-        {!loading.status &&
-          (!wallet || !siweDone ? (
-            <Button variant="dark" onClick={() => connect()}>
-              Login to pay with LYX
-            </Button>
-          ) : (
-            <Button variant="dark" onClick={() => buyWithCrypto()}>
-              LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
-            </Button>
-          ))}
+        {!loading.status && (window as any).lukso && (
+          <Button variant="dark" onClick={() => buyWithCrypto()}>
+            LYX ({(totalCost * lyxFactor).toFixed(3)} LYX)
+          </Button>
+        )}
         {!loading.status && (
           <Button onClick={() => payWithFiat()}>
             Fiat ({totalCost} {price.currency.toUpperCase()})
@@ -553,6 +548,8 @@ export function OrderView({ label }: OrderViewProps) {
         return;
       }
 
+      if (!user) { return; }
+
       fetchPasses(user.uid, productContract).then((userPasses) => {
         setPasses(userPasses.filter((pass) => pass.tokenIds.length > 0));
       });
@@ -564,12 +561,6 @@ export function OrderView({ label }: OrderViewProps) {
     return <Loader />;
   }
 
-  // if (!loading && !user) {
-  //   window.location.href = '/login';
-
-  //   return;
-  // }
-
   if (!orderDetail) {
     return (
       <div className="flex xl:flex-row flex-col">
@@ -580,6 +571,7 @@ export function OrderView({ label }: OrderViewProps) {
             product={safeGet(data, 'product', {})}
             price={safeGet(data, 'price')}
             lyxFactor={safeGet(data, 'lyxFactor', 0)}
+            user={user}
           />
         </Elements>
       </div>
@@ -651,7 +643,7 @@ const OrderModal = NiceModal.create(() => {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="mx-auto w-full max-w-7xl transform overflow-hidden xl:rounded-2xl bg-white px-2 py-6 border text-left align-middle shadow-xl transition-all">
-                <OrderView label="honft" />
+                <OrderView label="cherry-blossoms" />
               </Dialog.Panel>
             </Transition.Child>
           </div>

@@ -17,6 +17,7 @@ export function Button({
   children: ReactNode;
   onClick: any;
   variant?: string
+  id?: string
 }) {
   return (
     <button
