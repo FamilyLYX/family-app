@@ -24,12 +24,28 @@ export async function fetchPasses(address: string, collectionAddr: string): Prom
         const contract = new Contract(pass.address, LSP8, readerRpcProvider);
 
         const balance = await contract.getFunction("balanceOf")(address);
-        const tokenIds = Number(balance) > 0 ? await contract.getFunction("tokenIdsOf")(address) : [];
+        let tokenIds;
+
+        try {
+            tokenIds = Number(balance) > 0 ? await contract.getFunction("tokenIdsOf")(address) : [];
+        } catch (err) {
+            console.log(pass.address, err);
+
+            tokenIds = []
+        }
 
         const availableTokenIds = await Promise.all(tokenIds.map(async (tokenId: string) => {
-            return {
-                used: await orderExtension.isPerkClaimed(pass.address, collectionAddr, tokenId),
-                tokenId
+            try {
+                return {
+                    used: await orderExtension.isPerkClaimed(pass.address, collectionAddr, tokenId),
+                    tokenId
+                }
+            }
+            catch (err) {
+                console.log('error');
+                console.log(err);
+
+                return { used: true, tokenId }
             }
         }));
 
