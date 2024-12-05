@@ -144,9 +144,9 @@ function OrderDetail({
 
     fbAuth.useDeviceLanguage();
 
-    const _verifier = new RecaptchaVerifier(fbAuth, 'recap', {
+    const _verifier = new RecaptchaVerifier('recap', {
       size: 'invisible'
-    });
+    }, fbAuth);
 
     _verifier.render().then(() => {
       setVerifier(_verifier);
@@ -393,6 +393,62 @@ function OrderDetail({
   );
 }
 
+interface ImportantNoticeProps {
+  setAgree: (value: boolean) => void;
+}
+
+function ImportantNotice({ setAgree }: ImportantNoticeProps){
+  const handleAgree = () => {
+    setAgree(true)
+  }
+  return (
+    <div className="mt-24">
+      <h2 className="long-title text-center text-8xl text-red-500">IMPORTANT NOTICE</h2>
+      <div className="max-w-lg mx-auto text-center space-y-3 mt-4 flex flex-col gap-3">
+        <p>
+          Please note that we require a total minimum order of 150 units before we can begin production of this product. By proceeding to checkout, you acknowledge and agree to this requirement and understand the associated wait times.
+        </p>
+        <p>
+        Once production begins, please allow for manufacturing time. It will take roughly 30 days after production for when you will receive your purchase.
+        </p>
+        <p>
+          We appreciate your patience and understanding!
+        </p>
+        <p>Thank you for supporting us <span class="text-2xl">❤️</span></p>
+
+        <div className="flex justify-center">
+          <svg
+            width="82"
+            height="82"
+            viewBox="0 0 82 82"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="82" height="82" rx="41" fill="#00C113" />
+            <path
+              d="M55 30.5L35.75 49.75L27 41"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          
+        </div>
+        <div className="flex justify-center">
+          <button onClick={handleAgree} className="px-4 mx-1 w-36 py-2 rounded-full border transition duration-700 bg-[#00C113] text-white  font-medium text-center">
+            I AGREE
+          </button>
+        </div>
+        {/* <Button variant="dark" onClick={handleAgree}>
+          Agree
+        </Button> */}
+        
+      </div>
+    </div>
+  )
+}
+
 function PaymentDetail({
   product,
   price,
@@ -530,6 +586,7 @@ export function OrderView({ label }: OrderViewProps) {
   const [passes, setPasses] = useState<any>([]);
   const { user, loading } = useContext(UserContext);
   const [data, setData] = useState<undefined | null>();
+  const [agree, setAgree] = useState<boolean>(false);
 
   useEffect(() => {
     if (loading) {
@@ -576,6 +633,12 @@ export function OrderView({ label }: OrderViewProps) {
         </Elements>
       </div>
     );
+  }
+
+  if (!agree){
+    return(
+      <ImportantNotice setAgree={setAgree} />
+    )
   }
 
   return (
