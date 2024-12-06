@@ -144,9 +144,7 @@ function OrderDetail({
 
     fbAuth.useDeviceLanguage();
 
-    const _verifier = new RecaptchaVerifier('recap', {
-      size: 'invisible'
-    }, fbAuth);
+    const _verifier = new RecaptchaVerifier(fbAuth,'recap', {'size': 'invisible'});
 
     _verifier.render().then(() => {
       setVerifier(_verifier);
@@ -414,7 +412,7 @@ function ImportantNotice({ setAgree }: ImportantNoticeProps){
         <p>
           We appreciate your patience and understanding!
         </p>
-        <p>Thank you for supporting us <span class="text-2xl">❤️</span></p>
+        <p>Thank you for supporting us <span className="text-2xl">❤️</span></p>
 
         <div className="flex justify-center">
           <svg
