@@ -612,7 +612,7 @@ type OrderViewProps = {
 export function OrderView({ label }: OrderViewProps) {
   const [orderDetail, setOrderDetails] = useState();
   const [passes, setPasses] = useState<any>([]);
-  const { user, loading } = useContext(UserContext);
+  const { user, loading, profile } = useContext(UserContext);
   const [data, setData] = useState<undefined | null>();
   const [agree, setAgree] = useState<boolean>(false);
 
@@ -673,7 +673,7 @@ export function OrderView({ label }: OrderViewProps) {
     <PaymentDetail
       product={safeGet(data, 'product')}
       price={safeGet(data, 'price')}
-      account={user?.uid}
+      account={profile}
       variantId={safeGet(orderDetail, 'variantId', '')}
       address={safeGet(orderDetail, 'address', '')}
       shippingCost={safeGet(orderDetail, 'shippingCost', '')}
