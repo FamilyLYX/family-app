@@ -65,6 +65,35 @@ const sizes = [
 
 const props = ['sleeve_length', 'body_length', 'body_width'];
 
+function RemoveWallet() {
+  async function disconnect() {
+    const auth = getAuth();
+    console.log('sign out');
+
+    await auth.signOut();
+    localStorage.removeItem('family:connected:wallet');
+  }
+  return (
+    <button onClick={disconnect} className="px-4 mx-1 w-48 py-2 rounded-full border transition duration-700 hover:bg-gray-200 hover:text-gray-900 focus:outline-none text-gray-800 font-medium text-center">
+      <span className="sr-only">Sign Out</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+        />
+      </svg>
+    </button>
+  )
+}
+
 export function Loader() {
   return (
     <div className="p-4 mx-auto w-20" role="status">
@@ -294,6 +323,7 @@ function OrderDetail({
           </div>
 
           {!user && <ConnectWallet label='Connect UP Wallet to Avail Discounts' />}
+          {user && <RemoveWallet />}
 
           {passes && passes.length !== 0 && (
             <div>
