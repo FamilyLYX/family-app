@@ -57,7 +57,9 @@ const contentMap: ContentMap = {
 export default function Marketplace() {
   const [activeCategory, setActiveCategory] = useState("Marketplace");
   const [info, setInfo] = useState(false);
-  const { data, loading, error } = useQuery(INDEX_LISTINGS);
+  const { data, loading, error } = useQuery(INDEX_LISTINGS, {
+    variables: { first: 10, skip: 0 }, // Pass valid integers here
+  });
   console.log(data, loading, error);
   // const [anchorEl] = React.useState<HTMLButtonElement | null>(
   //   null
@@ -210,7 +212,7 @@ export default function Marketplace() {
 
                   <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
                     {!loading
-                      ? data.listings.map((card: any) => (
+                      ? data?.Listing.map((card: any) => (
                           <ProductCardListing data={card} key={card.id} />
                         ))
                       : [1, 2, 3, 4].map(() => (
@@ -218,10 +220,16 @@ export default function Marketplace() {
                         ))}
                   </div>
 
-                  <div className="mt-8 flex flex-col gap-4">
-                    <p className="text-center mx-auto text-black/50">60/206</p>
-                    <Button onClick={console.log}>Load More</Button>
-                  </div>
+                  {data?.Listing.length == 0 ? (
+                    <div>No listed item</div>
+                  ) : (
+                    <div className="mt-8 flex flex-col gap-4">
+                      <p className="text-center mx-auto text-black/50">
+                        60/206
+                      </p>
+                      <Button onClick={console.log}>Load More</Button>
+                    </div>
+                  )}
                 </section>
 
                 <section className="mt-20">

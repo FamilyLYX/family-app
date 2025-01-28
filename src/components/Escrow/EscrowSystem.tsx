@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Button } from "..";
 import styles from "./EscrowSystem.module.css";
 import { Link } from "react-router-dom";
+import { INDEX_USER_TRADES } from "../../queries/trade";
+import { useQuery } from "@apollo/client";
+import { useConnectWallet, useWallets } from "@web3-onboard/react";
 
 interface EscrowSystemProps {
   setInfo: React.Dispatch<React.SetStateAction<boolean>>;
@@ -10,8 +13,15 @@ interface EscrowSystemProps {
 export default function EscrowSystem({ setInfo }: EscrowSystemProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
   const [imageWidth, setImageWidth] = useState(calculateImageWidth());
+
+  const [{ wallet }] = useConnectWallet();
   const [productstatus] = useState("Confirm");
 
+  const { data, loading, error } = useQuery(INDEX_USER_TRADES, {
+    variables: { user: "0x4473B023285D5fa144F4a038420Aef43B6F44dED" },
+  });
+
+  console.log("wallets", wallet, data, loading, error);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1023);

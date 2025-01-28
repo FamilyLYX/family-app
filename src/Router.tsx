@@ -26,13 +26,16 @@ import OrderModal from "./common/OrderModal";
 import OrderScreen from "./common/OrderScreen";
 import BuyItem from "./pages/buy";
 import MobileLoginModal from "./common/MobileLoginModal";
+import Marketplace from "./pages/marketplace";
+import Trade from "./pages/trade";
+import EscrowMoreInfo from "./pages/escrowmoreinfo";
 
 NiceModal.register("family-buy-modal", OrderModal);
 NiceModal.register("family-register-modal", RegisterModal);
 NiceModal.register("family-marketplace-list", ListOnMarketplaceModal);
-NiceModal.register('family-transfer-modal', TransferModal);
+NiceModal.register("family-transfer-modal", TransferModal);
 NiceModal.register("family-order-modal", OrderModal);
-NiceModal.register("family-mobile-auth", MobileLoginModal)
+NiceModal.register("family-mobile-auth", MobileLoginModal);
 
 const router = () =>
   createBrowserRouter(
@@ -44,12 +47,12 @@ const router = () =>
           <Route path="/login" element={<Login />} />
           <Route path="/orders/:id" element={<Order />} />
           <Route path="/store" element={<Store />} />
-          <Route path='/buy/:item' element={<BuyItem />} />
-          {/* <Route path="/trade" element={<Trade />} /> */}
-          {/* <Route path="/escrowmoreinfo" element={<EscrowMoreinfo />} />
-          <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/product-card" element={<ProductCard />} /> */}
+          <Route path="/buy/:item" element={<BuyItem />} />
+          <Route path="/trade" element={<Trade />} />
+          <Route path="/escrowmoreinfo" element={<EscrowMoreInfo />} />
+          {/* <Route path="/product-card" element={<ProductCard />} /> */}
           {/* <Route path="/admin-xyz" element={<Admin />} /> */}
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/inventory" element={<Inventory />}>
             <Route
               index={true}
