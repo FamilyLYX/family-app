@@ -8,15 +8,20 @@ export function useAssetRegistry() {
 
   async function getCollection(uid: string) {
     const identifier = keccak256(toUtf8Bytes(uid));
-
-    const [collection, tokenId] = await registry.getFunction("checkIdentifier")(
-      identifier
+    console.log(
+      "registry",
+      import.meta.env.VITE_ASSET_REGISTRY,
+      identifier,
+      registry
     );
 
+    // const [collection, tokenId] = await registry.checkIdentifier(identifier);
+
     return {
-      collection,
-      registered: tokenId !== zeroPadValue(hexlify("0x"), 32).toString(),
-      tokenId: TokenId.parseTokenId(tokenId),
+      collection: "0x7cdbcd982546863f3647d3c0203928c3c8d3b99d",
+      registered: false,
+      // reg÷istered: tokenId !== zeroPadValue(hexlify("0x"), 32).toString(),
+      tokenId: TokenId.parseTokenId(zeroPadValue(hexlify("0x"), 32)),
     };
   }
 
